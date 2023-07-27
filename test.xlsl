@@ -1,5 +1,5 @@
-import abc.xlsl
-import def.xlsl
+import abc.xlsl;
+import def.xlsl;
 
 test = (123 + 2345 * -122.2);
 

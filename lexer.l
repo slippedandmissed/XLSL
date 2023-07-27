@@ -1,4 +1,5 @@
 %{
+  #include "node_types.h"
   #include "y.tab.h"
 %}
 
@@ -26,8 +27,8 @@ digit [0-9]
 "bool"                      { return BOOL; }
 "void"                      { return VOID; }
 "return"                    { return RETURN; }
-"-"?{digit}+(\.{digit}*)?   { return NUMBER; }
-{alpha}({alpha}|{digit})*   { return ID; }
+"-"?{digit}+(\.{digit}*)?   { yylval.tokenText = malloc(sizeof(yytext)); strcpy(yylval.tokenText, (yytext)); return NUMBER; }
+{alpha}({alpha}|{digit})*   { yylval.tokenText = malloc(sizeof(yytext)); strcpy(yylval.tokenText, (yytext)); return ID; }
 "+"                         { return PLUS; }
 "-"                         { return MINUS; }
 "*"                         { return TIMES; }

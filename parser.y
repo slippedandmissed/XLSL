@@ -1,45 +1,60 @@
 %{
-    #include<stdio.h>
-    #include<string.h>
-    #include<stdlib.h>
-    #include<ctype.h>
-    #include"lex.yy.c"
-    
-    void yyerror(const char *s);
-    int yylex();
-    int yywrap();
+  #include <stdio.h>
+  #include <string.h>
+  #include <stdlib.h>
+  #include <ctype.h>
+  #include "node_types.h"
+  #include "lex.yy.c"
+
+  void yyerror(const char *s);
+  int yylex();
+  int yywrap();
+
 %}
 
-%token IMPORT NAMESPACE STRUCT
-%token IF ELSE
-%token TRUE FALSE NULLTOKEN
-%token UINT8 INT8 UINT16 INT16 UINT32 INT32 UINT64 INT64 BOOL VOID
-%token RETURN
-%token NUMBER ID
-%token PLUS MINUS TIMES DIVIDE
-%token EQ NEQ LT GT LE GE
-%token AND OR NOT
-%token ASSIGN
-%token COMMA SEMICOLON DOT
-%token OPENPAREN CLOSEPAREN
-%token OPENCURLY CLOSECURLY
+%union {
+  char *tokenText;
+  struct IdentifierNode identifierNode;
+  struct ImportsNode imports;
+  struct MultiplyExpressionNode multiplyExpression;
+}
+
+
+%token <tokenText> IMPORT NAMESPACE STRUCT
+%token <tokenText> IF ELSE
+%token <tokenText> TRUE FALSE NULLTOKEN
+%token <tokenText> UINT8 INT8 UINT16 INT16 UINT32 INT32 UINT64 INT64 BOOL VOID
+%token <tokenText> RETURN
+%token <tokenText> NUMBER ID
+%token <tokenText> PLUS MINUS TIMES DIVIDE
+%token <tokenText> EQ NEQ LT GT LE GE
+%token <tokenText> AND OR NOT
+%token <tokenText> ASSIGN
+%token <tokenText> COMMA SEMICOLON DOT
+%token <tokenText> OPENPAREN CLOSEPAREN
+%token <tokenText> OPENCURLY CLOSECURLY
+
+%type <identifierNode> identifier
+%type <imports> imports
+%type <multiplyExpression> multiplyExpression
+
 %start program
 
 %%
 
-identifier: ID
-  | ID DOT identifier
+identifier: ID { $$.text=malloc(sizeof($1)); strcpy($$.text, $1); $$.next = NULL; }
+  | ID DOT identifier { $$.text=malloc(sizeof($1)); strcpy($$.text, $1); $$.next = &$3; }
   ;
 
-import: IMPORT identifier
-  | import import
+imports: IMPORT identifier SEMICOLON { $$.identifier=&$2; $$.next=NULL; }
+  | IMPORT identifier SEMICOLON imports { $$.identifier=&$2; $$.next=&$4; }
   ;
 
-multiplyExpression: NUMBER
-  | identifier
-  | OPENPAREN multiplyExpression CLOSEPAREN
-  | multiplyExpression TIMES multiplyExpression
-  | multiplyExpression DIVIDE multiplyExpression
+multiplyExpression: NUMBER { $$.type = MUL_NODE_TYPE_NUMBER; $$.value.rawValue=malloc(sizeof($1)); strcpy($$.value.rawValue, $1); }
+  | identifier { $$.type = MUL_NODE_TYPE_IDENTIFIER; $$.value.identifier = &$1; }
+  | OPENPAREN multiplyExpression CLOSEPAREN { $$ = $2; }
+  | multiplyExpression TIMES multiplyExpression { $$.type = MUL_NODE_TYPE_TIMES; $$.value.sides.left = &$1; $$.value.sides.right = &$3; }
+  | multiplyExpression DIVIDE multiplyExpression { $$.type = MUL_NODE_TYPE_DIVIDE; $$.value.sides.left = &$1; $$.value.sides.right = &$3; }
   ;
 
 arithmeticExpression: multiplyExpression
@@ -145,7 +160,7 @@ body:
   ;
 
 program: body
-  | import body
+  | imports body
   ;
 
 %%
