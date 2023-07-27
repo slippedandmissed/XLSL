@@ -87,8 +87,8 @@
 
 %%
 
-identifierText: ID { $$=(struct IdentifierTextNode *)malloc(sizeof(struct IdentifierTextNode)); $$->text=malloc(sizeof($1)); strcpy($$->text, $1); $$->next = NULL; }
-  | ID DOT identifierText { $$=(struct IdentifierTextNode *)malloc(sizeof(struct IdentifierTextNode)); $$->text=malloc(sizeof($1)); strcpy($$->text, $1); $$->next = $3; }
+identifierText: ID { $$=(struct IdentifierTextNode *)malloc(sizeof(struct IdentifierTextNode)); $$->text=malloc(strlen($1)+1); strcpy($$->text, $1); $$->next = NULL; }
+  | ID DOT identifierText { $$=(struct IdentifierTextNode *)malloc(sizeof(struct IdentifierTextNode)); $$->text=malloc(strlen($1)+1); strcpy($$->text, $1); $$->next = $3; }
   ;
 
 identifier: identifierText {{ $$=(struct IdentifierNode *)malloc(sizeof(struct IdentifierNode)); $$->type=ID_NODE_TYPE_TEXT; $$->text=$1; }}
@@ -99,7 +99,7 @@ imports: IMPORT identifier SEMICOLON { $$=(struct ImportsNode *)malloc(sizeof(st
   | IMPORT identifier SEMICOLON imports { $$=(struct ImportsNode *)malloc(sizeof(struct ImportsNode)); $$->identifier=$2; $$->next=$4; }
   ;
 
-multiplyExpression: NUMBER { $$=(struct MultiplyExpressionNode *)malloc(sizeof(struct MultiplyExpressionNode)); $$->type = MUL_NODE_TYPE_LITERAL; $$->value.literalValue=malloc(sizeof($1)); strcpy($$->value.literalValue, $1); }
+multiplyExpression: NUMBER { $$=(struct MultiplyExpressionNode *)malloc(sizeof(struct MultiplyExpressionNode)); $$->type = MUL_NODE_TYPE_LITERAL; $$->value.literalValue=malloc(strlen($1)+1); strcpy($$->value.literalValue, $1); }
   | identifier { $$=(struct MultiplyExpressionNode *)malloc(sizeof(struct MultiplyExpressionNode)); $$->type = MUL_NODE_TYPE_IDENTIFIER; $$->value.identifier = $1; }
   | functionCall { $$=(struct MultiplyExpressionNode *)malloc(sizeof(struct MultiplyExpressionNode)); $$->type = MUL_NODE_TYPE_FUNCTION_CALL; $$->value.functionCall = $1; }
   | OPENPAREN multiplyExpression CLOSEPAREN { $$ = $2; }
@@ -140,20 +140,20 @@ type: TEXT { $$=(struct TypeNode *)malloc(sizeof(struct TypeNode)); $$->type = T
   | identifier { $$=(struct TypeNode *)malloc(sizeof(struct TypeNode)); $$->type = TYPE_NODE_TYPE_IDENTIFIER; $$->identifier = $1; }
   ;
 
-variableDeclaration: type ID SEMICOLON { $$=(struct VariableDeclarationNode *)malloc(sizeof(struct VariableDeclarationNode)); $$->variableType=$1; $$->name=malloc(sizeof($2)); strcpy($$->name, $2); }
+variableDeclaration: type ID SEMICOLON { $$=(struct VariableDeclarationNode *)malloc(sizeof(struct VariableDeclarationNode)); $$->variableType=$1; $$->name=malloc(strlen($2)+1); strcpy($$->name, $2); }
   ;
 
-variableDefinition: type ID ASSIGN expression SEMICOLON {{ $$=(struct VariableDefinitionNode *)malloc(sizeof(struct VariableDefinitionNode)); $$->variableType=$1; $$->name=malloc(sizeof($2)); strcpy($$->name, $2); $$->expression=$4; }}
+variableDefinition: type ID ASSIGN expression SEMICOLON {{ $$=(struct VariableDefinitionNode *)malloc(sizeof(struct VariableDefinitionNode)); $$->variableType=$1; $$->name=malloc(strlen($2)+1); strcpy($$->name, $2); $$->expression=$4; }}
   ;
 
-argList: type ID { $$=(struct ArgListNode *)malloc(sizeof(struct ArgListNode)); $$->argumentType=$1; $$->argumentName=malloc(sizeof($2)); strcpy($$->argumentName, $2); $$->next=NULL; }
-  | type ID COMMA argList { $$=(struct ArgListNode *)malloc(sizeof(struct ArgListNode)); $$->argumentType=$1; $$->argumentName=malloc(sizeof($2)); strcpy($$->argumentName, $2); $$->next=$4; }
+argList: type ID { $$=(struct ArgListNode *)malloc(sizeof(struct ArgListNode)); $$->argumentType=$1; $$->argumentName=malloc(strlen($2)+1); strcpy($$->argumentName, $2); $$->next=NULL; }
+  | type ID COMMA argList { $$=(struct ArgListNode *)malloc(sizeof(struct ArgListNode)); $$->argumentType=$1; $$->argumentName=malloc(strlen($2)+1); strcpy($$->argumentName, $2); $$->next=$4; }
   ;
 
-functionDeclaration: type ID OPENPAREN CLOSEPAREN OPENCURLY body CLOSECURLY { $$=(struct FunctionDeclarationNode *)malloc(sizeof(struct FunctionDeclarationNode)); $$->returnType=$1; $$->name=malloc(sizeof($2)); strcpy($$->name, $2); $$->argList=NULL; $$->body=$6; }
-  | type ID OPENPAREN CLOSEPAREN OPENCURLY CLOSECURLY { $$=(struct FunctionDeclarationNode *)malloc(sizeof(struct FunctionDeclarationNode)); $$->returnType=$1; $$->name=malloc(sizeof($2)); strcpy($$->name, $2); $$->argList=NULL; $$->body=NULL; }
-  | type ID OPENPAREN argList CLOSEPAREN OPENCURLY body CLOSECURLY { $$=(struct FunctionDeclarationNode *)malloc(sizeof(struct FunctionDeclarationNode)); $$->returnType=$1; $$->name=malloc(sizeof($2)); strcpy($$->name, $2); $$->argList=$4; $$->body=$7; }
-  | type ID OPENPAREN argList CLOSEPAREN OPENCURLY CLOSECURLY { $$=(struct FunctionDeclarationNode *)malloc(sizeof(struct FunctionDeclarationNode)); $$->returnType=$1; $$->name=malloc(sizeof($2)); strcpy($$->name, $2); $$->argList=$4; $$->body=NULL; }
+functionDeclaration: type ID OPENPAREN CLOSEPAREN OPENCURLY body CLOSECURLY { $$=(struct FunctionDeclarationNode *)malloc(sizeof(struct FunctionDeclarationNode)); $$->returnType=$1; $$->name=malloc(strlen($2)+1); strcpy($$->name, $2); $$->argList=NULL; $$->body=$6; }
+  | type ID OPENPAREN CLOSEPAREN OPENCURLY CLOSECURLY { $$=(struct FunctionDeclarationNode *)malloc(sizeof(struct FunctionDeclarationNode)); $$->returnType=$1; $$->name=malloc(strlen($2)+1); strcpy($$->name, $2); $$->argList=NULL; $$->body=NULL; }
+  | type ID OPENPAREN argList CLOSEPAREN OPENCURLY body CLOSECURLY { $$=(struct FunctionDeclarationNode *)malloc(sizeof(struct FunctionDeclarationNode)); $$->returnType=$1; $$->name=malloc(strlen($2)+1); strcpy($$->name, $2); $$->argList=$4; $$->body=$7; }
+  | type ID OPENPAREN argList CLOSEPAREN OPENCURLY CLOSECURLY { $$=(struct FunctionDeclarationNode *)malloc(sizeof(struct FunctionDeclarationNode)); $$->returnType=$1; $$->name=malloc(strlen($2)+1); strcpy($$->name, $2); $$->argList=$4; $$->body=NULL; }
   ;
 
 exprList: expression {{ $$=(struct ExpressionListNode *)malloc(sizeof(struct ExpressionListNode)); $$->expression=$1; $$->next=NULL; }}
@@ -168,15 +168,15 @@ variableDeclarationList: variableDeclaration {{ $$=(struct VariableDeclarationLi
   | variableDeclaration variableDeclarationList {{ $$=(struct VariableDeclarationListNode *)malloc(sizeof(struct VariableDeclarationListNode)); $$->current=$1; $$->next=$2; }}
   ;
 
-structDeclaration: STRUCT ID OPENCURLY variableDeclarationList CLOSECURLY {{ $$=(struct StructDeclarationNode *)malloc(sizeof(struct StructDeclarationNode)); $$->name=malloc(sizeof($2)); strcpy($$->name,$2); $$->declarations=$4; }}
-  | STRUCT ID OPENCURLY CLOSECURLY {{ $$=(struct StructDeclarationNode *)malloc(sizeof(struct StructDeclarationNode)); $$->name=malloc(sizeof($2)); strcpy($$->name,$2); $$->declarations=NULL; }}
+structDeclaration: STRUCT ID OPENCURLY variableDeclarationList CLOSECURLY {{ $$=(struct StructDeclarationNode *)malloc(sizeof(struct StructDeclarationNode)); $$->name=malloc(strlen($2)+1); strcpy($$->name,$2); $$->declarations=$4; }}
+  | STRUCT ID OPENCURLY CLOSECURLY {{ $$=(struct StructDeclarationNode *)malloc(sizeof(struct StructDeclarationNode)); $$->name=malloc(strlen($2)+1); strcpy($$->name,$2); $$->declarations=NULL; }}
   ;
 
 structInstantiation: identifier OPENCURLY exprList CLOSECURLY {{ $$=(struct StructInstantiationNode *)malloc(sizeof(struct StructInstantiationNode)); $$->identifier=$1; $$->arguments=$3; }}
   ;
 
-stringLiteral: DOUBLEQUOTEDSTRING {{ $$=(struct StringLiteralNode *)malloc(sizeof(struct StringLiteralNode)); $$->value=malloc(sizeof($1)); strcpy($$->value, $1); }}
-  | SINGLEQUOTEDSTRING {{ $$=(struct StringLiteralNode *)malloc(sizeof(struct StringLiteralNode)); $$->value=malloc(sizeof($1)); strcpy($$->value, $1); }}
+stringLiteral: DOUBLEQUOTEDSTRING {{ $$=(struct StringLiteralNode *)malloc(sizeof(struct StringLiteralNode)); $$->value=malloc(strlen($1)+1); strcpy($$->value, $1); }}
+  | SINGLEQUOTEDSTRING {{ $$=(struct StringLiteralNode *)malloc(sizeof(struct StringLiteralNode)); $$->value=malloc(strlen($1)+1); strcpy($$->value, $1); }}
   ;
 
 ternary: booleanExpression QUESTION expression COLON expression {{ $$=(struct TernaryNode *)malloc(sizeof(struct TernaryNode)); $$->condition=$1; $$->ifTrue=$3; $$->ifFalse=$5; }}
