@@ -19,8 +19,8 @@ digit [0-9]
 "logical"                   { return LOGICAL; }
 "void"                      { return VOID; }
 "return"                    { return RETURN; }
-{digit}+(\.{digit}*)?       { yylval.tokenText = malloc(strlen(yytext)+1); strcpy(yylval.tokenText, (yytext)); return NUMBER; }
-{alpha}({alpha}|{digit})*   { yylval.tokenText = malloc(strlen(yytext)+1); strcpy(yylval.tokenText, (yytext)); return ID; }
+{digit}+(\.{digit}*)?       { yylval.tokenText = malloc(strlen(yytext)+1); strcpy(yylval.tokenText, yytext); return NUMBER; }
+{alpha}({alpha}|{digit})*   { yylval.tokenText = malloc(strlen(yytext)+1); strcpy(yylval.tokenText, yytext); return ID; }
 "+"                         { return PLUS; }
 "-"                         { return MINUS; }
 "*"                         { return TIMES; }
@@ -44,8 +44,8 @@ digit [0-9]
 \/\*(.*\n)*.*\*\/           { ; } 
 [ \t]*                      { ; }
 "\n"                        { ; }
-\"(\\.|[^\\"])*\"           { yylval.tokenText = malloc(strlen(yytext)+1); strcpy(yylval.tokenText, (yytext)); return DOUBLEQUOTEDSTRING; }
-\'(\\.|[^\\'])*\'           { yylval.tokenText = malloc(strlen(yytext)+1); strcpy(yylval.tokenText, (yytext)); return SINGLEQUOTEDSTRING; }
+\"(\\.|[^\\"])*\"           { yylval.tokenText = malloc(strlen(yytext)); strcpy(yylval.tokenText, yytext+1); yylval.tokenText[strlen(yytext)-2]=0; return DOUBLEQUOTEDSTRING; }
+\'(\\.|[^\\'])*\'           { yylval.tokenText = malloc(strlen(yytext)); strcpy(yylval.tokenText, yytext+1); yylval.tokenText[strlen(yytext)-2]=0; return SINGLEQUOTEDSTRING; }
 "("                         { return OPENPAREN; }
 ")"                         { return CLOSEPAREN; }
 "{"                         { return OPENCURLY; }
