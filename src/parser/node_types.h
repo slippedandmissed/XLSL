@@ -1,8 +1,19 @@
 #pragma once
 
-struct IdentifierNode {
+
+struct IdentifierTextNode {
   char *text;
-  struct IdentifierNode *next;
+  struct IdentifierTextNode *next;
+};
+
+enum IdentifierNodeType {
+  ID_NODE_TYPE_TEXT,
+  ID_NODE_TYPE_SELF,
+};
+
+struct IdentifierNode {
+  enum IdentifierNodeType type;
+  struct IdentifierTextNode *text;
 };
 
 struct ImportsNode {
@@ -13,6 +24,7 @@ struct ImportsNode {
 enum MultiplyExpressionType {
   MUL_NODE_TYPE_LITERAL,
   MUL_NODE_TYPE_IDENTIFIER,
+  MUL_NODE_TYPE_FUNCTION_CALL,
   MUL_NODE_TYPE_TIMES,
   MUL_NODE_TYPE_DIVIDE
 };
@@ -22,6 +34,7 @@ struct MultiplyExpressionNode {
   union {
     char *literalValue;
     struct IdentifierNode *identifier;
+    struct FunctionCallNode *functionCall;
     struct {
       struct MultiplyExpressionNode *left;
       struct MultiplyExpressionNode *right;
@@ -29,19 +42,27 @@ struct MultiplyExpressionNode {
   } value;
 };
 
-enum ArithmeticExpressionNodeType {
-  ARITH_NODE_TYPE_MULTIPLY_EXPRESSION,
-  ARITH_NODE_TYPE_PLUS,
-  ARITH_NODE_TYPE_MINUS,
+enum ExpressionNodeType {
+  EXPR_NODE_TYPE_MULTIPLY_EXPRESSION,
+  EXPR_NODE_TYPE_PLUS,
+  EXPR_NODE_TYPE_MINUS,
+  EXPR_NODE_TYPE_BOOLEAN,
+  EXPR_NODE_TYPE_STRUCT_INSTANTIATION,
+  EXPR_NODE_TYPE_STRING_LITERAL,
+  EXPR_NODE_TYPE_TERNARY
 };
 
-struct ArithmeticExpressionNode {
-  enum ArithmeticExpressionNodeType type;
+struct ExpressionNode {
+  enum ExpressionNodeType type;
   union {
-    struct MultiplyExpressionNode *child;
+    struct MultiplyExpressionNode *multiplyExpression;
+    struct BooleanExpressionNode *booleanExpression;
+    struct StructInstantiationNode *structInstantiation;
+    struct StringLiteralNode *stringLiteral;
+    struct TernaryNode *ternary;
     struct {
-      struct ArithmeticExpressionNode *left;
-      struct ArithmeticExpressionNode *right;
+      struct ExpressionNode *left;
+      struct ExpressionNode *right;
     } sides;
   } value;
 };
@@ -50,8 +71,8 @@ enum BooleanExpressionNodeType {
   BOOL_NODE_TYPE_TRUE,
   BOOL_NODE_TYPE_FALSE,
   BOOL_NODE_TYPE_IDENTIFIER,
-  BOOL_NODE_TYPE_ARITH_EQ,
-  BOOL_NODE_TYPE_ARITH_NEQ,
+  BOOL_NODE_TYPE_EQ,
+  BOOL_NODE_TYPE_NEQ,
   BOOL_NODE_TYPE_LT,
   BOOL_NODE_TYPE_GT,
   BOOL_NODE_TYPE_LE,
@@ -59,8 +80,6 @@ enum BooleanExpressionNodeType {
   BOOL_NODE_TYPE_AND,
   BOOL_NODE_TYPE_OR,
   BOOL_NODE_TYPE_NOT,
-  BOOL_NODE_TYPE_BOOL_EQ,
-  BOOL_NODE_TYPE_BOOL_NEQ,
 };
 
 struct BooleanExpressionNode {
@@ -68,14 +87,10 @@ struct BooleanExpressionNode {
   union {
     struct IdentifierNode *identifier;
     struct {
-      struct ArithmeticExpressionNode *left;
-      struct ArithmeticExpressionNode *right;
-    } arithChildren;
-    struct {
-      struct BooleanExpressionNode *left;
-      struct BooleanExpressionNode *right;
-    } boolChildren;
-    struct BooleanExpressionNode *child;
+      struct ExpressionNode *left;
+      struct ExpressionNode *right;
+    } children;
+    struct ExpressionNode *child;
   } value;
 };
 
@@ -101,11 +116,6 @@ struct VariableDefinitionNode {
   struct TypeNode *variableType;
   char *name;
   struct ExpressionNode *expression;
-};
-
-struct VariableAssignmentNode {
-  struct IdentifierNode *identifier;
-  struct ExpressionNode *expression; 
 };
 
 struct ArgListNode {
@@ -150,23 +160,10 @@ struct StringLiteralNode {
   char *value;
 };
 
-enum ExpressionNodeType {
-  EXPR_NODE_TYPE_ARITHMETIC,
-  EXPR_NODE_TYPE_BOOLEAN,
-  EXPR_NODE_TYPE_FUNC_CALL,
-  EXPR_NODE_TYPE_STRUCT_INSTANTIATION,
-  EXPR_NODE_TYPE_STRING_LITERAL,
-};
-
-struct ExpressionNode {
-  enum ExpressionNodeType type;
-  union {
-    struct ArithmeticExpressionNode *arithmeticExpression;
-    struct BooleanExpressionNode *booleanExpression;
-    struct FunctionCallNode *functionCall;
-    struct StructInstantiationNode *structInstantiation;
-    struct StringLiteralNode *stringLiteral;
-  } value;
+struct TernaryNode {
+  struct BooleanExpressionNode *condition;
+  struct ExpressionNode *ifTrue;
+  struct ExpressionNode *ifFalse;
 };
 
 struct NamespaceDeclarationNode {
@@ -178,35 +175,23 @@ struct ReturnStatementNode {
   struct ExpressionNode *value;
 };
 
-struct IfStatementNode {
-  struct BooleanExpressionNode *condition;
-  struct BodyNode *ifBody;
-  struct BodyNode *elseBody;
-};
-
 enum StatementNodeType {
-  STMT_NODE_TYPE_VAR_ASSIGNMENT,
-  STMT_NODE_TYPE_VAR_DECLARATION,
   STMT_NODE_TYPE_VAR_DEFINITION,
   STMT_NODE_TYPE_STRUCT_DECLARATION,
   STMT_NODE_TYPE_NAMESPACE_DECLARATION,
   STMT_NODE_TYPE_EXPRESSION,
   STMT_NODE_TYPE_FUNCTION_DECLARATION,
-  STMT_NODE_TYPE_IF_STATEMENT,
   STMT_NODE_TYPE_RETURN_STATEMENT,
 };
 
 struct StatementNode {
   enum StatementNodeType type;
   union {
-    struct VariableAssignmentNode *varAssignment;
-    struct VariableDeclarationNode *varDeclaration;
     struct VariableDefinitionNode *varDefinition;
     struct StructDeclarationNode *structDeclaration;
     struct NamespaceDeclarationNode *namespaceDeclaration;
     struct ExpressionNode *expression;
     struct FunctionDeclarationNode *functionDeclaration;
-    struct IfStatementNode *ifStatement;
     struct ReturnStatementNode *returnStatement;
   } value;
 };

@@ -52,92 +52,95 @@ extern int yydebug;
     IMPORT = 258,
     NAMESPACE = 259,
     STRUCT = 260,
-    IF = 261,
-    ELSE = 262,
-    TRUE = 263,
-    FALSE = 264,
-    TEXT = 265,
-    LOGICAL = 266,
-    NUMBERTOKEN = 267,
-    VOID = 268,
-    RETURN = 269,
-    NUMBER = 270,
-    SINGLEQUOTEDSTRING = 271,
-    DOUBLEQUOTEDSTRING = 272,
-    ID = 273,
-    PLUS = 274,
-    MINUS = 275,
-    TIMES = 276,
-    DIVIDE = 277,
-    EQ = 278,
-    NEQ = 279,
-    LT = 280,
-    GT = 281,
-    LE = 282,
-    GE = 283,
-    AND = 284,
-    OR = 285,
-    NOT = 286,
-    ASSIGN = 287,
-    COMMA = 288,
-    SEMICOLON = 289,
-    DOT = 290,
-    OPENPAREN = 291,
-    CLOSEPAREN = 292,
-    OPENCURLY = 293,
-    CLOSECURLY = 294
+    SELF = 261,
+    TRUE = 262,
+    FALSE = 263,
+    TEXT = 264,
+    LOGICAL = 265,
+    NUMBERTOKEN = 266,
+    VOID = 267,
+    RETURN = 268,
+    NUMBER = 269,
+    SINGLEQUOTEDSTRING = 270,
+    DOUBLEQUOTEDSTRING = 271,
+    ID = 272,
+    PLUS = 273,
+    MINUS = 274,
+    TIMES = 275,
+    DIVIDE = 276,
+    EQ = 277,
+    NEQ = 278,
+    LT = 279,
+    GT = 280,
+    LE = 281,
+    GE = 282,
+    AND = 283,
+    OR = 284,
+    NOT = 285,
+    ASSIGN = 286,
+    COMMA = 287,
+    SEMICOLON = 288,
+    COLON = 289,
+    QUESTION = 290,
+    DOT = 291,
+    OPENPAREN = 292,
+    CLOSEPAREN = 293,
+    OPENCURLY = 294,
+    CLOSECURLY = 295
   };
 #endif
 /* Tokens.  */
 #define IMPORT 258
 #define NAMESPACE 259
 #define STRUCT 260
-#define IF 261
-#define ELSE 262
-#define TRUE 263
-#define FALSE 264
-#define TEXT 265
-#define LOGICAL 266
-#define NUMBERTOKEN 267
-#define VOID 268
-#define RETURN 269
-#define NUMBER 270
-#define SINGLEQUOTEDSTRING 271
-#define DOUBLEQUOTEDSTRING 272
-#define ID 273
-#define PLUS 274
-#define MINUS 275
-#define TIMES 276
-#define DIVIDE 277
-#define EQ 278
-#define NEQ 279
-#define LT 280
-#define GT 281
-#define LE 282
-#define GE 283
-#define AND 284
-#define OR 285
-#define NOT 286
-#define ASSIGN 287
-#define COMMA 288
-#define SEMICOLON 289
-#define DOT 290
-#define OPENPAREN 291
-#define CLOSEPAREN 292
-#define OPENCURLY 293
-#define CLOSECURLY 294
+#define SELF 261
+#define TRUE 262
+#define FALSE 263
+#define TEXT 264
+#define LOGICAL 265
+#define NUMBERTOKEN 266
+#define VOID 267
+#define RETURN 268
+#define NUMBER 269
+#define SINGLEQUOTEDSTRING 270
+#define DOUBLEQUOTEDSTRING 271
+#define ID 272
+#define PLUS 273
+#define MINUS 274
+#define TIMES 275
+#define DIVIDE 276
+#define EQ 277
+#define NEQ 278
+#define LT 279
+#define GT 280
+#define LE 281
+#define GE 282
+#define AND 283
+#define OR 284
+#define NOT 285
+#define ASSIGN 286
+#define COMMA 287
+#define SEMICOLON 288
+#define COLON 289
+#define QUESTION 290
+#define DOT 291
+#define OPENPAREN 292
+#define CLOSEPAREN 293
+#define OPENCURLY 294
+#define CLOSECURLY 295
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 17 "parser.y"
+#line 18 "parser.y"
 
   char *tokenText;
-  struct IdentifierNode *identifierNode;
+  struct IdentifierTextNode *identifierText;
+  struct IdentifierNode *identifier;
   struct ImportsNode *imports;
   struct MultiplyExpressionNode *multiplyExpression;
-  struct ArithmeticExpressionNode *arithmeticExpression;
+  struct ExpressionNode *expression;
   struct BooleanExpressionNode *booleanExpression;
   struct TypeNode *type;
   struct VariableDeclarationNode *variableDeclaration;
@@ -151,15 +154,14 @@ union YYSTYPE
   struct StructDeclarationNode *structDeclaration;
   struct StructInstantiationNode *structInstantiation;
   struct StringLiteralNode *stringLiteral;
-  struct ExpressionNode *expression;
   struct NamespaceDeclarationNode *namespaceDeclaration;
   struct ReturnStatementNode *returnStatement;
-  struct IfStatementNode *ifStatement;
+  struct TernaryNode *ternary;
   struct StatementNode *statement;
   struct BodyNode *body;
   struct ProgramNode *program;
 
-#line 163 "y.tab.h"
+#line 165 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

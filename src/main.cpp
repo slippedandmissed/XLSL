@@ -7,6 +7,6 @@ extern "C" int yyparse();
 int main() {
   yyparse();
   ProgramNode *program = head;
-  std::cout << "Output: " << program->imports->identifier->text << std::endl;
+  std::cout << "Output: " << program->imports->identifier->text->text << std::endl;
   return 0;
 }

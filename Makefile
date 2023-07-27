@@ -1,17 +1,17 @@
 SRC_DIR := ./src
 BUILD_DIR := ./build
 
+SRC_FILES := $(shell find $(SRC_DIR)/ -type f -name '*.cpp')
+
 all: compiler
 
-compiler: parser lexer build_dir
-	gcc -lfl -o $(BUILD_DIR)/parser.o -c $(SRC_DIR)/parser/y.tab.c
-	g++ -o $(BUILD_DIR)/parse $(BUILD_DIR)/parser.o $(SRC_DIR)/main.cpp
+compiler: parser
+	g++ -o $(BUILD_DIR)/compile $(BUILD_DIR)/parser.o $(SRC_FILES)
 
-parser:
+parser: build_dir
 	cd $(SRC_DIR)/parser && yacc -v -d parser.y
-
-lexer:
 	cd $(SRC_DIR)/parser && flex lexer.l
+	gcc -lfl -o $(BUILD_DIR)/parser.o -c $(SRC_DIR)/parser/y.tab.c
 
 build_dir:
 	mkdir -p $(BUILD_DIR)

@@ -11,8 +11,7 @@ digit [0-9]
 "import"                    { return IMPORT; }
 "namespace"                 { return NAMESPACE; }
 "struct"                    { return STRUCT; }
-"if"                        { return IF; }
-"else"                      { return ELSE; }
+"self"                      { return SELF; }
 "true"                      { return TRUE; }
 "false"                     { return FALSE; }
 "text"                      { return TEXT; }
@@ -20,7 +19,7 @@ digit [0-9]
 "logical"                   { return LOGICAL; }
 "void"                      { return VOID; }
 "return"                    { return RETURN; }
-"-"?{digit}+(\.{digit}*)?   { yylval.tokenText = malloc(sizeof(yytext)); strcpy(yylval.tokenText, (yytext)); return NUMBER; }
+{digit}+(\.{digit}*)?       { yylval.tokenText = malloc(sizeof(yytext)); strcpy(yylval.tokenText, (yytext)); return NUMBER; }
 {alpha}({alpha}|{digit})*   { yylval.tokenText = malloc(sizeof(yytext)); strcpy(yylval.tokenText, (yytext)); return ID; }
 "+"                         { return PLUS; }
 "-"                         { return MINUS; }
@@ -38,6 +37,8 @@ digit [0-9]
 "="                         { return ASSIGN; }
 ","                         { return COMMA; }
 ";"                         { return SEMICOLON; }
+":"                         { return COLON; }
+"?"                         { return QUESTION; }
 "."                         { return DOT; }
 \/\/.*                      { ; }
 \/\*(.*\n)*.*\*\/           { ; } 
