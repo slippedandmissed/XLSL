@@ -1,19 +1,24 @@
-all: frontend
+SRC_DIR := ./src
+BUILD_DIR := ./build
 
-frontend: parser lexer
-	gcc -lfl -o parser.o -c y.tab.c
-	g++ -o parse parser.o main.cpp
+all: compiler
+
+compiler: parser lexer build_dir
+	gcc -lfl -o $(BUILD_DIR)/parser.o -c $(SRC_DIR)/parser/y.tab.c
+	g++ -o $(BUILD_DIR)/parse $(BUILD_DIR)/parser.o $(SRC_DIR)/main.cpp
 
 parser:
-	yacc -v -d parser.y
+	cd $(SRC_DIR)/parser && yacc -v -d parser.y
 
 lexer:
-	flex lexer.l
+	cd $(SRC_DIR)/parser && flex lexer.l
+
+build_dir:
+	mkdir -p $(BUILD_DIR)
 
 clean:
-	rm -f y.tab.c
-	rm -f y.tab.h
-	rm -f y.output
-	rm -f lex.yy.c
-	rm -f parse
-	rm -f parser.o
+	rm -f $(SRC_DIR)/parser/y.tab.c
+	rm -f $(SRC_DIR)/parser/y.tab.h
+	rm -f $(SRC_DIR)/parser/y.output
+	rm -f $(SRC_DIR)/parser/lex.yy.c
+	rm -rf ${BUILD_DIR}

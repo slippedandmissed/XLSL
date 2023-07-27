@@ -1,5 +1,5 @@
 #include <iostream>
-#include "node_types.h"
+#include "parser/node_types.h"
 
 extern "C" ProgramNode *head;
 extern "C" int yyparse();
