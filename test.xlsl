@@ -1,0 +1,35 @@
+import abc.xlsl
+import def.xlsl
+
+test = (123 + 2345 * -122.2);
+
+if (test == 1) {
+  uint8 a = 3;
+} else {
+  b = 4;
+}
+
+if (abc <= 3) {
+  a=1;
+}
+
+uint8 myFunction() {
+  int8 a=3;
+  return 1;
+}
+
+
+namespace Test {
+  void myFunction2(int32 a) {
+    return;
+  } 
+}
+
+struct ABC {
+  bool x;
+  uint16 y;
+}
+
+ABC foo = ABC {true, 1};
+
+void bar = foo.baz + 1;
