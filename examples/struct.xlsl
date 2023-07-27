@@ -1,0 +1,12 @@
+struct Color {
+  number r;
+  number g;
+  number b;
+}
+
+Color main() {
+  number rValue = 102;
+  number gValue = 51;
+  number bValue = 153;
+  return Color { rValue, gValue, bValue };
+}

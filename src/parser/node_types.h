@@ -205,3 +205,28 @@ struct ProgramNode {
   struct ImportsNode *imports;
   struct BodyNode *body;
 };
+
+#define FOR_ALL_NODE_TYPES \
+  X(IdentifierTextNode) \
+  X(IdentifierNode) \
+  X(ImportsNode) \
+  X(MultiplyExpressionNode) \
+  X(ExpressionNode) \
+  X(BooleanExpressionNode) \
+  X(TypeNode) \
+  X(VariableDeclarationNode) \
+  X(VariableDefinitionNode) \
+  X(ArgListNode) \
+  X(FunctionDeclarationNode) \
+  X(ExpressionListNode) \
+  X(FunctionCallNode) \
+  X(VariableDeclarationListNode) \
+  X(StructDeclarationNode) \
+  X(StructInstantiationNode) \
+  X(StringLiteralNode) \
+  X(TernaryNode) \
+  X(NamespaceDeclarationNode) \
+  X(ReturnStatementNode) \
+  X(StatementNode) \
+  X(BodyNode) \
+  X(ProgramNode)
