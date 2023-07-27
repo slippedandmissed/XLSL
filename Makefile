@@ -1,7 +1,7 @@
 all: frontend
 
 frontend: parser lexer
-	gcc -lfl -o parse y.tab.c
+	gcc -lfl -o parse y.tab.c main.c
 
 parser:
 	yacc -v -d parser.y

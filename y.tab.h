@@ -56,41 +56,36 @@ extern int yydebug;
     ELSE = 262,
     TRUE = 263,
     FALSE = 264,
-    NULLTOKEN = 265,
-    UINT8 = 266,
-    INT8 = 267,
-    UINT16 = 268,
-    INT16 = 269,
-    UINT32 = 270,
-    INT32 = 271,
-    UINT64 = 272,
-    INT64 = 273,
-    BOOL = 274,
-    VOID = 275,
-    RETURN = 276,
-    NUMBER = 277,
-    ID = 278,
-    PLUS = 279,
-    MINUS = 280,
-    TIMES = 281,
-    DIVIDE = 282,
-    EQ = 283,
-    NEQ = 284,
-    LT = 285,
-    GT = 286,
-    LE = 287,
-    GE = 288,
-    AND = 289,
-    OR = 290,
-    NOT = 291,
-    ASSIGN = 292,
-    COMMA = 293,
-    SEMICOLON = 294,
-    DOT = 295,
-    OPENPAREN = 296,
-    CLOSEPAREN = 297,
-    OPENCURLY = 298,
-    CLOSECURLY = 299
+    TEXT = 265,
+    LOGICAL = 266,
+    NUMBERTOKEN = 267,
+    VOID = 268,
+    RETURN = 269,
+    NUMBER = 270,
+    SINGLEQUOTEDSTRING = 271,
+    DOUBLEQUOTEDSTRING = 272,
+    ID = 273,
+    PLUS = 274,
+    MINUS = 275,
+    TIMES = 276,
+    DIVIDE = 277,
+    EQ = 278,
+    NEQ = 279,
+    LT = 280,
+    GT = 281,
+    LE = 282,
+    GE = 283,
+    AND = 284,
+    OR = 285,
+    NOT = 286,
+    ASSIGN = 287,
+    COMMA = 288,
+    SEMICOLON = 289,
+    DOT = 290,
+    OPENPAREN = 291,
+    CLOSEPAREN = 292,
+    OPENCURLY = 293,
+    CLOSECURLY = 294
   };
 #endif
 /* Tokens.  */
@@ -101,54 +96,70 @@ extern int yydebug;
 #define ELSE 262
 #define TRUE 263
 #define FALSE 264
-#define NULLTOKEN 265
-#define UINT8 266
-#define INT8 267
-#define UINT16 268
-#define INT16 269
-#define UINT32 270
-#define INT32 271
-#define UINT64 272
-#define INT64 273
-#define BOOL 274
-#define VOID 275
-#define RETURN 276
-#define NUMBER 277
-#define ID 278
-#define PLUS 279
-#define MINUS 280
-#define TIMES 281
-#define DIVIDE 282
-#define EQ 283
-#define NEQ 284
-#define LT 285
-#define GT 286
-#define LE 287
-#define GE 288
-#define AND 289
-#define OR 290
-#define NOT 291
-#define ASSIGN 292
-#define COMMA 293
-#define SEMICOLON 294
-#define DOT 295
-#define OPENPAREN 296
-#define CLOSEPAREN 297
-#define OPENCURLY 298
-#define CLOSECURLY 299
+#define TEXT 265
+#define LOGICAL 266
+#define NUMBERTOKEN 267
+#define VOID 268
+#define RETURN 269
+#define NUMBER 270
+#define SINGLEQUOTEDSTRING 271
+#define DOUBLEQUOTEDSTRING 272
+#define ID 273
+#define PLUS 274
+#define MINUS 275
+#define TIMES 276
+#define DIVIDE 277
+#define EQ 278
+#define NEQ 279
+#define LT 280
+#define GT 281
+#define LE 282
+#define GE 283
+#define AND 284
+#define OR 285
+#define NOT 286
+#define ASSIGN 287
+#define COMMA 288
+#define SEMICOLON 289
+#define DOT 290
+#define OPENPAREN 291
+#define CLOSEPAREN 292
+#define OPENCURLY 293
+#define CLOSECURLY 294
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 15 "parser.y"
+#line 17 "parser.y"
 
   char *tokenText;
-  struct IdentifierNode identifierNode;
-  struct ImportsNode imports;
-  struct MultiplyExpressionNode multiplyExpression;
+  struct IdentifierNode *identifierNode;
+  struct ImportsNode *imports;
+  struct MultiplyExpressionNode *multiplyExpression;
+  struct ArithmeticExpressionNode *arithmeticExpression;
+  struct BooleanExpressionNode *booleanExpression;
+  struct TypeNode *type;
+  struct VariableDeclarationNode *variableDeclaration;
+  struct VariableDefinitionNode *variableDefinition;
+  struct VariableAssignmentNode *variableAssignment;
+  struct ArgListNode *argList;
+  struct FunctionDeclarationNode *functionDeclaration;
+  struct ExpressionListNode *exprList;
+  struct FunctionCallNode *functionCall;
+  struct VariableDeclarationListNode *variableDeclarationList;
+  struct StructDeclarationNode *structDeclaration;
+  struct StructInstantiationNode *structInstantiation;
+  struct StringLiteralNode *stringLiteral;
+  struct ExpressionNode *expression;
+  struct NamespaceDeclarationNode *namespaceDeclaration;
+  struct ReturnStatementNode *returnStatement;
+  struct IfStatementNode *ifStatement;
+  struct StatementNode *statement;
+  struct BodyNode *body;
+  struct ProgramNode *program;
 
-#line 152 "y.tab.h"
+#line 163 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

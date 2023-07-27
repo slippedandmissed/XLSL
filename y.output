@@ -1,20 +1,18 @@
-State 23 conflicts: 3 reduce/reduce
-State 47 conflicts: 6 reduce/reduce
-State 51 conflicts: 3 reduce/reduce
-State 53 conflicts: 4 shift/reduce
-State 54 conflicts: 1 shift/reduce
-State 55 conflicts: 1 shift/reduce
-State 56 conflicts: 1 shift/reduce
+State 18 conflicts: 3 reduce/reduce
+State 44 conflicts: 6 reduce/reduce
+State 48 conflicts: 3 reduce/reduce
+State 50 conflicts: 4 shift/reduce
+State 51 conflicts: 1 shift/reduce
+State 52 conflicts: 1 shift/reduce
+State 53 conflicts: 1 shift/reduce
+State 96 conflicts: 2 shift/reduce
+State 97 conflicts: 2 shift/reduce
 State 99 conflicts: 2 shift/reduce
 State 100 conflicts: 2 shift/reduce
-State 102 conflicts: 2 shift/reduce
-State 103 conflicts: 2 shift/reduce
+State 107 conflicts: 4 shift/reduce
+State 108 conflicts: 4 shift/reduce
+State 109 conflicts: 4 shift/reduce
 State 110 conflicts: 4 shift/reduce
-State 111 conflicts: 4 shift/reduce
-State 112 conflicts: 4 shift/reduce
-State 113 conflicts: 4 shift/reduce
-State 139 conflicts: 1 shift/reduce
-State 147 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -54,71 +52,80 @@ Grammar
    27                  | booleanExpression EQ booleanExpression
    28                  | booleanExpression NEQ booleanExpression
 
-   29 type: UINT8
-   30     | INT8
-   31     | UINT16
-   32     | INT16
-   33     | UINT32
-   34     | INT32
-   35     | UINT64
-   36     | INT64
-   37     | BOOL
-   38     | VOID
-   39     | identifier
+   29 type: TEXT
+   30     | NUMBERTOKEN
+   31     | LOGICAL
+   32     | VOID
+   33     | identifier
 
-   40 variableDeclaration: type ID SEMICOLON
+   34 variableDeclaration: type ID SEMICOLON
 
-   41 variableDefinition: type ID ASSIGN expression SEMICOLON
+   35 variableDefinition: type ID ASSIGN expression SEMICOLON
 
-   42 variableAssignment: identifier ASSIGN expression SEMICOLON
+   36 variableAssignment: identifier ASSIGN expression SEMICOLON
 
-   43 argList: type ID
-   44        | argList COMMA argList
+   37 argList: type ID
+   38        | type ID COMMA argList
 
-   45 functionDeclaration: type ID OPENPAREN CLOSEPAREN OPENCURLY body CLOSECURLY
-   46                    | type ID OPENPAREN argList CLOSEPAREN OPENCURLY body CLOSECURLY
+   39 functionDeclaration: type ID OPENPAREN CLOSEPAREN OPENCURLY body CLOSECURLY
+   40                    | type ID OPENPAREN CLOSEPAREN OPENCURLY CLOSECURLY
+   41                    | type ID OPENPAREN argList CLOSEPAREN OPENCURLY body CLOSECURLY
+   42                    | type ID OPENPAREN argList CLOSEPAREN OPENCURLY CLOSECURLY
 
-   47 exprList: expression
-   48         | exprList COMMA exprList
+   43 exprList: expression
+   44         | expression COMMA exprList
 
-   49 functionCall: identifier OPENPAREN CLOSEPAREN
-   50             | identifier OPENPAREN exprList CLOSEPAREN
+   45 functionCall: identifier OPENPAREN CLOSEPAREN
+   46             | identifier OPENPAREN exprList CLOSEPAREN
 
-   51 declarationList: %empty
-   52                | variableDeclaration declarationList
+   47 variableDeclarationList: variableDeclaration
+   48                        | variableDeclaration variableDeclarationList
 
-   53 structDeclaration: STRUCT ID OPENCURLY declarationList CLOSECURLY
+   49 structDeclaration: STRUCT ID OPENCURLY variableDeclarationList CLOSECURLY
+   50                  | STRUCT ID OPENCURLY CLOSECURLY
 
-   54 structCreation: identifier OPENCURLY exprList CLOSECURLY
+   51 structInstantiation: identifier OPENCURLY exprList CLOSECURLY
 
-   55 expression: arithmeticExpression
-   56           | booleanExpression
-   57           | functionCall
-   58           | structCreation
-   59           | NULLTOKEN
-   60           | OPENPAREN expression CLOSEPAREN
+   52 stringLiteral: DOUBLEQUOTEDSTRING
+   53              | SINGLEQUOTEDSTRING
 
-   61 namespaceDeclaration: NAMESPACE identifier OPENCURLY body CLOSECURLY
+   54 expression: arithmeticExpression
+   55           | booleanExpression
+   56           | functionCall
+   57           | structInstantiation
+   58           | stringLiteral
+   59           | OPENPAREN expression CLOSEPAREN
+
+   60 namespaceDeclaration: NAMESPACE identifier OPENCURLY body CLOSECURLY
+   61                     | NAMESPACE identifier OPENCURLY CLOSECURLY
 
    62 return: RETURN SEMICOLON
    63       | RETURN expression SEMICOLON
 
-   64 statement: variableAssignment
-   65          | variableDeclaration
-   66          | variableDefinition
-   67          | structDeclaration
-   68          | namespaceDeclaration
-   69          | expression SEMICOLON
-   70          | functionDeclaration
-   71          | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY
-   72          | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY ELSE OPENCURLY body CLOSECURLY
-   73          | return
+   64 ifStatement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY
+   65            | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY CLOSECURLY
+   66            | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY ELSE OPENCURLY body CLOSECURLY
+   67            | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY ELSE OPENCURLY CLOSECURLY
+   68            | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY CLOSECURLY ELSE OPENCURLY body CLOSECURLY
+   69            | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY CLOSECURLY ELSE OPENCURLY CLOSECURLY
 
-   74 body: %empty
-   75     | statement body
+   70 statement: variableAssignment
+   71          | variableDeclaration
+   72          | variableDefinition
+   73          | structDeclaration
+   74          | namespaceDeclaration
+   75          | expression SEMICOLON
+   76          | functionDeclaration
+   77          | ifStatement
+   78          | return
 
-   76 program: body
-   77        | imports body
+   79 body: statement
+   80     | statement body
+
+   81 program: %empty
+   82        | body
+   83        | imports
+   84        | imports body
 
 
 Terminals, with rules where they appear
@@ -126,118 +133,119 @@ Terminals, with rules where they appear
     $end (0) 0
     error (256)
     IMPORT <tokenText> (258) 3 4
-    NAMESPACE <tokenText> (259) 61
-    STRUCT <tokenText> (260) 53
-    IF <tokenText> (261) 71 72
-    ELSE <tokenText> (262) 72
+    NAMESPACE <tokenText> (259) 60 61
+    STRUCT <tokenText> (260) 49 50
+    IF <tokenText> (261) 64 65 66 67 68 69
+    ELSE <tokenText> (262) 66 67 68 69
     TRUE <tokenText> (263) 14
     FALSE <tokenText> (264) 15
-    NULLTOKEN <tokenText> (265) 59
-    UINT8 <tokenText> (266) 29
-    INT8 <tokenText> (267) 30
-    UINT16 <tokenText> (268) 31
-    INT16 <tokenText> (269) 32
-    UINT32 <tokenText> (270) 33
-    INT32 <tokenText> (271) 34
-    UINT64 <tokenText> (272) 35
-    INT64 <tokenText> (273) 36
-    BOOL <tokenText> (274) 37
-    VOID <tokenText> (275) 38
-    RETURN <tokenText> (276) 62 63
-    NUMBER <tokenText> (277) 5
-    ID <tokenText> (278) 1 2 40 41 43 45 46 53
-    PLUS <tokenText> (279) 11
-    MINUS <tokenText> (280) 12
-    TIMES <tokenText> (281) 8
-    DIVIDE <tokenText> (282) 9
-    EQ <tokenText> (283) 18 27
-    NEQ <tokenText> (284) 19 28
-    LT <tokenText> (285) 20
-    GT <tokenText> (286) 21
-    LE <tokenText> (287) 22
-    GE <tokenText> (288) 23
-    AND <tokenText> (289) 24
-    OR <tokenText> (290) 25
-    NOT <tokenText> (291) 26
-    ASSIGN <tokenText> (292) 41 42
-    COMMA <tokenText> (293) 44 48
-    SEMICOLON <tokenText> (294) 3 4 40 41 42 62 63 69
-    DOT <tokenText> (295) 2
-    OPENPAREN <tokenText> (296) 7 13 17 45 46 49 50 60 71 72
-    CLOSEPAREN <tokenText> (297) 7 13 17 45 46 49 50 60 71 72
-    OPENCURLY <tokenText> (298) 45 46 53 54 61 71 72
-    CLOSECURLY <tokenText> (299) 45 46 53 54 61 71 72
+    TEXT <tokenText> (265) 29
+    LOGICAL <tokenText> (266) 31
+    NUMBERTOKEN <tokenText> (267) 30
+    VOID <tokenText> (268) 32
+    RETURN <tokenText> (269) 62 63
+    NUMBER <tokenText> (270) 5
+    SINGLEQUOTEDSTRING <tokenText> (271) 53
+    DOUBLEQUOTEDSTRING <tokenText> (272) 52
+    ID <tokenText> (273) 1 2 34 35 37 38 39 40 41 42 49 50
+    PLUS <tokenText> (274) 11
+    MINUS <tokenText> (275) 12
+    TIMES <tokenText> (276) 8
+    DIVIDE <tokenText> (277) 9
+    EQ <tokenText> (278) 18 27
+    NEQ <tokenText> (279) 19 28
+    LT <tokenText> (280) 20
+    GT <tokenText> (281) 21
+    LE <tokenText> (282) 22
+    GE <tokenText> (283) 23
+    AND <tokenText> (284) 24
+    OR <tokenText> (285) 25
+    NOT <tokenText> (286) 26
+    ASSIGN <tokenText> (287) 35 36
+    COMMA <tokenText> (288) 38 44
+    SEMICOLON <tokenText> (289) 3 4 34 35 36 62 63 75
+    DOT <tokenText> (290) 2
+    OPENPAREN <tokenText> (291) 7 13 17 39 40 41 42 45 46 59 64 65 66 67 68 69
+    CLOSEPAREN <tokenText> (292) 7 13 17 39 40 41 42 45 46 59 64 65 66 67 68 69
+    OPENCURLY <tokenText> (293) 39 40 41 42 49 50 51 60 61 64 65 66 67 68 69
+    CLOSECURLY <tokenText> (294) 39 40 41 42 49 50 51 60 61 64 65 66 67 68 69
 
 
 Nonterminals, with rules where they appear
 
-    $accept (45)
+    $accept (40)
         on left: 0
-    identifier <identifierNode> (46)
+    identifier <identifierNode> (41)
         on left: 1 2
-        on right: 2 3 4 6 16 39 42 49 50 54 61
-    imports <imports> (47)
+        on right: 2 3 4 6 16 33 36 45 46 51 60 61
+    imports <imports> (42)
         on left: 3 4
-        on right: 4 77
-    multiplyExpression <multiplyExpression> (48)
+        on right: 4 83 84
+    multiplyExpression <multiplyExpression> (43)
         on left: 5 6 7 8 9
         on right: 7 8 9 10
-    arithmeticExpression (49)
+    arithmeticExpression <arithmeticExpression> (44)
         on left: 10 11 12 13
-        on right: 11 12 13 18 19 20 21 22 23 55
-    booleanExpression (50)
+        on right: 11 12 13 18 19 20 21 22 23 54
+    booleanExpression <booleanExpression> (45)
         on left: 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28
-        on right: 17 24 25 26 27 28 56 71 72
-    type (51)
-        on left: 29 30 31 32 33 34 35 36 37 38 39
-        on right: 40 41 43 45 46
-    variableDeclaration (52)
-        on left: 40
-        on right: 52 65
-    variableDefinition (53)
-        on left: 41
-        on right: 66
-    variableAssignment (54)
-        on left: 42
-        on right: 64
-    argList (55)
-        on left: 43 44
-        on right: 44 46
-    functionDeclaration (56)
-        on left: 45 46
+        on right: 17 24 25 26 27 28 55 64 65 66 67 68 69
+    type <type> (46)
+        on left: 29 30 31 32 33
+        on right: 34 35 37 38 39 40 41 42
+    variableDeclaration <variableDeclaration> (47)
+        on left: 34
+        on right: 47 48 71
+    variableDefinition <variableDefinition> (48)
+        on left: 35
+        on right: 72
+    variableAssignment <variableAssignment> (49)
+        on left: 36
         on right: 70
-    exprList (57)
+    argList <argList> (50)
+        on left: 37 38
+        on right: 38 41 42
+    functionDeclaration <functionDeclaration> (51)
+        on left: 39 40 41 42
+        on right: 76
+    exprList <exprList> (52)
+        on left: 43 44
+        on right: 44 46 51
+    functionCall <functionCall> (53)
+        on left: 45 46
+        on right: 56
+    variableDeclarationList <variableDeclarationList> (54)
         on left: 47 48
-        on right: 48 50 54
-    functionCall (58)
+        on right: 48 49
+    structDeclaration <structDeclaration> (55)
         on left: 49 50
-        on right: 57
-    declarationList (59)
-        on left: 51 52
-        on right: 52 53
-    structDeclaration (60)
-        on left: 53
-        on right: 67
-    structCreation (61)
-        on left: 54
-        on right: 58
-    expression (62)
-        on left: 55 56 57 58 59 60
-        on right: 41 42 47 60 63 69
-    namespaceDeclaration (63)
-        on left: 61
-        on right: 68
-    return (64)
-        on left: 62 63
         on right: 73
-    statement (65)
-        on left: 64 65 66 67 68 69 70 71 72 73
-        on right: 75
-    body (66)
-        on left: 74 75
-        on right: 45 46 61 71 72 75 76 77
-    program (67)
-        on left: 76 77
+    structInstantiation <structInstantiation> (56)
+        on left: 51
+        on right: 57
+    stringLiteral <stringLiteral> (57)
+        on left: 52 53
+        on right: 58
+    expression <expression> (58)
+        on left: 54 55 56 57 58 59
+        on right: 35 36 43 44 59 63 75
+    namespaceDeclaration <namespaceDeclaration> (59)
+        on left: 60 61
+        on right: 74
+    return <returnStatement> (60)
+        on left: 62 63
+        on right: 78
+    ifStatement <ifStatement> (61)
+        on left: 64 65 66 67 68 69
+        on right: 77
+    statement <statement> (62)
+        on left: 70 71 72 73 74 75 76 77 78
+        on right: 79 80
+    body <body> (63)
+        on left: 79 80
+        on right: 39 41 60 64 66 67 68 80 82 84
+    program <program> (64)
+        on left: 81 82 83 84
         on right: 0
 
 
@@ -245,50 +253,47 @@ State 0
 
     0 $accept: . program $end
 
-    IMPORT     shift, and go to state 1
-    NAMESPACE  shift, and go to state 2
-    STRUCT     shift, and go to state 3
-    IF         shift, and go to state 4
-    TRUE       shift, and go to state 5
-    FALSE      shift, and go to state 6
-    NULLTOKEN  shift, and go to state 7
-    UINT8      shift, and go to state 8
-    INT8       shift, and go to state 9
-    UINT16     shift, and go to state 10
-    INT16      shift, and go to state 11
-    UINT32     shift, and go to state 12
-    INT32      shift, and go to state 13
-    UINT64     shift, and go to state 14
-    INT64      shift, and go to state 15
-    BOOL       shift, and go to state 16
-    VOID       shift, and go to state 17
-    RETURN     shift, and go to state 18
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    OPENPAREN  shift, and go to state 22
+    IMPORT              shift, and go to state 1
+    NAMESPACE           shift, and go to state 2
+    STRUCT              shift, and go to state 3
+    IF                  shift, and go to state 4
+    TRUE                shift, and go to state 5
+    FALSE               shift, and go to state 6
+    TEXT                shift, and go to state 7
+    LOGICAL             shift, and go to state 8
+    NUMBERTOKEN         shift, and go to state 9
+    VOID                shift, and go to state 10
+    RETURN              shift, and go to state 11
+    NUMBER              shift, and go to state 12
+    SINGLEQUOTEDSTRING  shift, and go to state 13
+    DOUBLEQUOTEDSTRING  shift, and go to state 14
+    ID                  shift, and go to state 15
+    NOT                 shift, and go to state 16
+    OPENPAREN           shift, and go to state 17
 
-    $default  reduce using rule 74 (body)
+    $default  reduce using rule 81 (program)
 
-    identifier            go to state 23
-    imports               go to state 24
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 26
-    booleanExpression     go to state 27
-    type                  go to state 28
-    variableDeclaration   go to state 29
-    variableDefinition    go to state 30
-    variableAssignment    go to state 31
-    functionDeclaration   go to state 32
-    functionCall          go to state 33
-    structDeclaration     go to state 34
-    structCreation        go to state 35
-    expression            go to state 36
-    namespaceDeclaration  go to state 37
-    return                go to state 38
-    statement             go to state 39
-    body                  go to state 40
-    program               go to state 41
+    identifier            go to state 18
+    imports               go to state 19
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 21
+    booleanExpression     go to state 22
+    type                  go to state 23
+    variableDeclaration   go to state 24
+    variableDefinition    go to state 25
+    variableAssignment    go to state 26
+    functionDeclaration   go to state 27
+    functionCall          go to state 28
+    structDeclaration     go to state 29
+    structInstantiation   go to state 30
+    stringLiteral         go to state 31
+    expression            go to state 32
+    namespaceDeclaration  go to state 33
+    return                go to state 34
+    ifStatement           go to state 35
+    statement             go to state 36
+    body                  go to state 37
+    program               go to state 38
 
 
 State 1
@@ -296,33 +301,39 @@ State 1
     3 imports: IMPORT . identifier SEMICOLON
     4        | IMPORT . identifier SEMICOLON imports
 
-    ID  shift, and go to state 20
+    ID  shift, and go to state 15
 
-    identifier  go to state 42
+    identifier  go to state 39
 
 
 State 2
 
-   61 namespaceDeclaration: NAMESPACE . identifier OPENCURLY body CLOSECURLY
+   60 namespaceDeclaration: NAMESPACE . identifier OPENCURLY body CLOSECURLY
+   61                     | NAMESPACE . identifier OPENCURLY CLOSECURLY
 
-    ID  shift, and go to state 20
+    ID  shift, and go to state 15
 
-    identifier  go to state 43
+    identifier  go to state 40
 
 
 State 3
 
-   53 structDeclaration: STRUCT . ID OPENCURLY declarationList CLOSECURLY
+   49 structDeclaration: STRUCT . ID OPENCURLY variableDeclarationList CLOSECURLY
+   50                  | STRUCT . ID OPENCURLY CLOSECURLY
 
-    ID  shift, and go to state 44
+    ID  shift, and go to state 41
 
 
 State 4
 
-   71 statement: IF . OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY
-   72          | IF . OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY ELSE OPENCURLY body CLOSECURLY
+   64 ifStatement: IF . OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY
+   65            | IF . OPENPAREN booleanExpression CLOSEPAREN OPENCURLY CLOSECURLY
+   66            | IF . OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY ELSE OPENCURLY body CLOSECURLY
+   67            | IF . OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY ELSE OPENCURLY CLOSECURLY
+   68            | IF . OPENPAREN booleanExpression CLOSEPAREN OPENCURLY CLOSECURLY ELSE OPENCURLY body CLOSECURLY
+   69            | IF . OPENPAREN booleanExpression CLOSEPAREN OPENCURLY CLOSECURLY ELSE OPENCURLY CLOSECURLY
 
-    OPENPAREN  shift, and go to state 45
+    OPENPAREN  shift, and go to state 42
 
 
 State 5
@@ -341,177 +352,146 @@ State 6
 
 State 7
 
-   59 expression: NULLTOKEN .
-
-    $default  reduce using rule 59 (expression)
-
-
-State 8
-
-   29 type: UINT8 .
+   29 type: TEXT .
 
     $default  reduce using rule 29 (type)
 
 
+State 8
+
+   31 type: LOGICAL .
+
+    $default  reduce using rule 31 (type)
+
+
 State 9
 
-   30 type: INT8 .
+   30 type: NUMBERTOKEN .
 
     $default  reduce using rule 30 (type)
 
 
 State 10
 
-   31 type: UINT16 .
-
-    $default  reduce using rule 31 (type)
-
-
-State 11
-
-   32 type: INT16 .
+   32 type: VOID .
 
     $default  reduce using rule 32 (type)
 
 
-State 12
-
-   33 type: UINT32 .
-
-    $default  reduce using rule 33 (type)
-
-
-State 13
-
-   34 type: INT32 .
-
-    $default  reduce using rule 34 (type)
-
-
-State 14
-
-   35 type: UINT64 .
-
-    $default  reduce using rule 35 (type)
-
-
-State 15
-
-   36 type: INT64 .
-
-    $default  reduce using rule 36 (type)
-
-
-State 16
-
-   37 type: BOOL .
-
-    $default  reduce using rule 37 (type)
-
-
-State 17
-
-   38 type: VOID .
-
-    $default  reduce using rule 38 (type)
-
-
-State 18
+State 11
 
    62 return: RETURN . SEMICOLON
    63       | RETURN . expression SEMICOLON
 
-    TRUE       shift, and go to state 5
-    FALSE      shift, and go to state 6
-    NULLTOKEN  shift, and go to state 7
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    SEMICOLON  shift, and go to state 46
-    OPENPAREN  shift, and go to state 22
+    TRUE                shift, and go to state 5
+    FALSE               shift, and go to state 6
+    NUMBER              shift, and go to state 12
+    SINGLEQUOTEDSTRING  shift, and go to state 13
+    DOUBLEQUOTEDSTRING  shift, and go to state 14
+    ID                  shift, and go to state 15
+    NOT                 shift, and go to state 16
+    SEMICOLON           shift, and go to state 43
+    OPENPAREN           shift, and go to state 17
 
-    identifier            go to state 47
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 26
-    booleanExpression     go to state 27
-    functionCall          go to state 33
-    structCreation        go to state 35
-    expression            go to state 48
+    identifier            go to state 44
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 21
+    booleanExpression     go to state 22
+    functionCall          go to state 28
+    structInstantiation   go to state 30
+    stringLiteral         go to state 31
+    expression            go to state 45
 
 
-State 19
+State 12
 
     5 multiplyExpression: NUMBER .
 
     $default  reduce using rule 5 (multiplyExpression)
 
 
-State 20
+State 13
+
+   53 stringLiteral: SINGLEQUOTEDSTRING .
+
+    $default  reduce using rule 53 (stringLiteral)
+
+
+State 14
+
+   52 stringLiteral: DOUBLEQUOTEDSTRING .
+
+    $default  reduce using rule 52 (stringLiteral)
+
+
+State 15
 
     1 identifier: ID .
     2           | ID . DOT identifier
 
-    DOT  shift, and go to state 49
+    DOT  shift, and go to state 46
 
     $default  reduce using rule 1 (identifier)
 
 
-State 21
+State 16
 
    26 booleanExpression: NOT . booleanExpression
 
     TRUE       shift, and go to state 5
     FALSE      shift, and go to state 6
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    OPENPAREN  shift, and go to state 50
+    NUMBER     shift, and go to state 12
+    ID         shift, and go to state 15
+    NOT        shift, and go to state 16
+    OPENPAREN  shift, and go to state 47
 
-    identifier            go to state 51
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 52
-    booleanExpression     go to state 53
+    identifier            go to state 48
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 49
+    booleanExpression     go to state 50
 
 
-State 22
+State 17
 
     7 multiplyExpression: OPENPAREN . multiplyExpression CLOSEPAREN
    13 arithmeticExpression: OPENPAREN . arithmeticExpression CLOSEPAREN
    17 booleanExpression: OPENPAREN . booleanExpression CLOSEPAREN
-   60 expression: OPENPAREN . expression CLOSEPAREN
+   59 expression: OPENPAREN . expression CLOSEPAREN
 
-    TRUE       shift, and go to state 5
-    FALSE      shift, and go to state 6
-    NULLTOKEN  shift, and go to state 7
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    OPENPAREN  shift, and go to state 22
+    TRUE                shift, and go to state 5
+    FALSE               shift, and go to state 6
+    NUMBER              shift, and go to state 12
+    SINGLEQUOTEDSTRING  shift, and go to state 13
+    DOUBLEQUOTEDSTRING  shift, and go to state 14
+    ID                  shift, and go to state 15
+    NOT                 shift, and go to state 16
+    OPENPAREN           shift, and go to state 17
 
-    identifier            go to state 47
-    multiplyExpression    go to state 54
-    arithmeticExpression  go to state 55
-    booleanExpression     go to state 56
-    functionCall          go to state 33
-    structCreation        go to state 35
-    expression            go to state 57
+    identifier            go to state 44
+    multiplyExpression    go to state 51
+    arithmeticExpression  go to state 52
+    booleanExpression     go to state 53
+    functionCall          go to state 28
+    structInstantiation   go to state 30
+    stringLiteral         go to state 31
+    expression            go to state 54
 
 
-State 23
+State 18
 
     6 multiplyExpression: identifier .
    16 booleanExpression: identifier .
-   39 type: identifier .
-   42 variableAssignment: identifier . ASSIGN expression SEMICOLON
-   49 functionCall: identifier . OPENPAREN CLOSEPAREN
-   50             | identifier . OPENPAREN exprList CLOSEPAREN
-   54 structCreation: identifier . OPENCURLY exprList CLOSECURLY
+   33 type: identifier .
+   36 variableAssignment: identifier . ASSIGN expression SEMICOLON
+   45 functionCall: identifier . OPENPAREN CLOSEPAREN
+   46             | identifier . OPENPAREN exprList CLOSEPAREN
+   51 structInstantiation: identifier . OPENCURLY exprList CLOSECURLY
 
-    ASSIGN     shift, and go to state 58
-    OPENPAREN  shift, and go to state 59
-    OPENCURLY  shift, and go to state 60
+    ASSIGN     shift, and go to state 55
+    OPENPAREN  shift, and go to state 56
+    OPENCURLY  shift, and go to state 57
 
-    ID         reduce using rule 39 (type)
+    ID         reduce using rule 33 (type)
     EQ         reduce using rule 6 (multiplyExpression)
     EQ         [reduce using rule 16 (booleanExpression)]
     NEQ        reduce using rule 6 (multiplyExpression)
@@ -523,66 +503,64 @@ State 23
     $default   reduce using rule 6 (multiplyExpression)
 
 
-State 24
+State 19
 
-   77 program: imports . body
+   83 program: imports .
+   84        | imports . body
 
-    NAMESPACE  shift, and go to state 2
-    STRUCT     shift, and go to state 3
-    IF         shift, and go to state 4
-    TRUE       shift, and go to state 5
-    FALSE      shift, and go to state 6
-    NULLTOKEN  shift, and go to state 7
-    UINT8      shift, and go to state 8
-    INT8       shift, and go to state 9
-    UINT16     shift, and go to state 10
-    INT16      shift, and go to state 11
-    UINT32     shift, and go to state 12
-    INT32      shift, and go to state 13
-    UINT64     shift, and go to state 14
-    INT64      shift, and go to state 15
-    BOOL       shift, and go to state 16
-    VOID       shift, and go to state 17
-    RETURN     shift, and go to state 18
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    OPENPAREN  shift, and go to state 22
+    NAMESPACE           shift, and go to state 2
+    STRUCT              shift, and go to state 3
+    IF                  shift, and go to state 4
+    TRUE                shift, and go to state 5
+    FALSE               shift, and go to state 6
+    TEXT                shift, and go to state 7
+    LOGICAL             shift, and go to state 8
+    NUMBERTOKEN         shift, and go to state 9
+    VOID                shift, and go to state 10
+    RETURN              shift, and go to state 11
+    NUMBER              shift, and go to state 12
+    SINGLEQUOTEDSTRING  shift, and go to state 13
+    DOUBLEQUOTEDSTRING  shift, and go to state 14
+    ID                  shift, and go to state 15
+    NOT                 shift, and go to state 16
+    OPENPAREN           shift, and go to state 17
 
-    $default  reduce using rule 74 (body)
+    $default  reduce using rule 83 (program)
 
-    identifier            go to state 23
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 26
-    booleanExpression     go to state 27
-    type                  go to state 28
-    variableDeclaration   go to state 29
-    variableDefinition    go to state 30
-    variableAssignment    go to state 31
-    functionDeclaration   go to state 32
-    functionCall          go to state 33
-    structDeclaration     go to state 34
-    structCreation        go to state 35
-    expression            go to state 36
-    namespaceDeclaration  go to state 37
-    return                go to state 38
-    statement             go to state 39
-    body                  go to state 61
+    identifier            go to state 18
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 21
+    booleanExpression     go to state 22
+    type                  go to state 23
+    variableDeclaration   go to state 24
+    variableDefinition    go to state 25
+    variableAssignment    go to state 26
+    functionDeclaration   go to state 27
+    functionCall          go to state 28
+    structDeclaration     go to state 29
+    structInstantiation   go to state 30
+    stringLiteral         go to state 31
+    expression            go to state 32
+    namespaceDeclaration  go to state 33
+    return                go to state 34
+    ifStatement           go to state 35
+    statement             go to state 36
+    body                  go to state 58
 
 
-State 25
+State 20
 
     8 multiplyExpression: multiplyExpression . TIMES multiplyExpression
     9                   | multiplyExpression . DIVIDE multiplyExpression
    10 arithmeticExpression: multiplyExpression .
 
-    TIMES   shift, and go to state 62
-    DIVIDE  shift, and go to state 63
+    TIMES   shift, and go to state 59
+    DIVIDE  shift, and go to state 60
 
     $default  reduce using rule 10 (arithmeticExpression)
 
 
-State 26
+State 21
 
    11 arithmeticExpression: arithmeticExpression . PLUS arithmeticExpression
    12                     | arithmeticExpression . MINUS arithmeticExpression
@@ -592,234 +570,254 @@ State 26
    21                  | arithmeticExpression . GT arithmeticExpression
    22                  | arithmeticExpression . LE arithmeticExpression
    23                  | arithmeticExpression . GE arithmeticExpression
-   55 expression: arithmeticExpression .
+   54 expression: arithmeticExpression .
 
-    PLUS   shift, and go to state 64
-    MINUS  shift, and go to state 65
-    EQ     shift, and go to state 66
-    NEQ    shift, and go to state 67
-    LT     shift, and go to state 68
-    GT     shift, and go to state 69
-    LE     shift, and go to state 70
-    GE     shift, and go to state 71
+    PLUS   shift, and go to state 61
+    MINUS  shift, and go to state 62
+    EQ     shift, and go to state 63
+    NEQ    shift, and go to state 64
+    LT     shift, and go to state 65
+    GT     shift, and go to state 66
+    LE     shift, and go to state 67
+    GE     shift, and go to state 68
 
-    $default  reduce using rule 55 (expression)
+    $default  reduce using rule 54 (expression)
 
 
-State 27
+State 22
 
    24 booleanExpression: booleanExpression . AND booleanExpression
    25                  | booleanExpression . OR booleanExpression
    27                  | booleanExpression . EQ booleanExpression
    28                  | booleanExpression . NEQ booleanExpression
-   56 expression: booleanExpression .
+   55 expression: booleanExpression .
 
-    EQ   shift, and go to state 72
-    NEQ  shift, and go to state 73
-    AND  shift, and go to state 74
-    OR   shift, and go to state 75
+    EQ   shift, and go to state 69
+    NEQ  shift, and go to state 70
+    AND  shift, and go to state 71
+    OR   shift, and go to state 72
 
-    $default  reduce using rule 56 (expression)
-
-
-State 28
-
-   40 variableDeclaration: type . ID SEMICOLON
-   41 variableDefinition: type . ID ASSIGN expression SEMICOLON
-   45 functionDeclaration: type . ID OPENPAREN CLOSEPAREN OPENCURLY body CLOSECURLY
-   46                    | type . ID OPENPAREN argList CLOSEPAREN OPENCURLY body CLOSECURLY
-
-    ID  shift, and go to state 76
+    $default  reduce using rule 55 (expression)
 
 
-State 29
+State 23
 
-   65 statement: variableDeclaration .
+   34 variableDeclaration: type . ID SEMICOLON
+   35 variableDefinition: type . ID ASSIGN expression SEMICOLON
+   39 functionDeclaration: type . ID OPENPAREN CLOSEPAREN OPENCURLY body CLOSECURLY
+   40                    | type . ID OPENPAREN CLOSEPAREN OPENCURLY CLOSECURLY
+   41                    | type . ID OPENPAREN argList CLOSEPAREN OPENCURLY body CLOSECURLY
+   42                    | type . ID OPENPAREN argList CLOSEPAREN OPENCURLY CLOSECURLY
 
-    $default  reduce using rule 65 (statement)
-
-
-State 30
-
-   66 statement: variableDefinition .
-
-    $default  reduce using rule 66 (statement)
+    ID  shift, and go to state 73
 
 
-State 31
+State 24
 
-   64 statement: variableAssignment .
+   71 statement: variableDeclaration .
 
-    $default  reduce using rule 64 (statement)
+    $default  reduce using rule 71 (statement)
 
 
-State 32
+State 25
 
-   70 statement: functionDeclaration .
+   72 statement: variableDefinition .
+
+    $default  reduce using rule 72 (statement)
+
+
+State 26
+
+   70 statement: variableAssignment .
 
     $default  reduce using rule 70 (statement)
 
 
-State 33
+State 27
 
-   57 expression: functionCall .
+   76 statement: functionDeclaration .
 
-    $default  reduce using rule 57 (expression)
-
-
-State 34
-
-   67 statement: structDeclaration .
-
-    $default  reduce using rule 67 (statement)
+    $default  reduce using rule 76 (statement)
 
 
-State 35
+State 28
 
-   58 expression: structCreation .
+   56 expression: functionCall .
 
-    $default  reduce using rule 58 (expression)
-
-
-State 36
-
-   69 statement: expression . SEMICOLON
-
-    SEMICOLON  shift, and go to state 77
+    $default  reduce using rule 56 (expression)
 
 
-State 37
+State 29
 
-   68 statement: namespaceDeclaration .
-
-    $default  reduce using rule 68 (statement)
-
-
-State 38
-
-   73 statement: return .
+   73 statement: structDeclaration .
 
     $default  reduce using rule 73 (statement)
 
 
-State 39
+State 30
 
-   75 body: statement . body
+   57 expression: structInstantiation .
 
-    NAMESPACE  shift, and go to state 2
-    STRUCT     shift, and go to state 3
-    IF         shift, and go to state 4
-    TRUE       shift, and go to state 5
-    FALSE      shift, and go to state 6
-    NULLTOKEN  shift, and go to state 7
-    UINT8      shift, and go to state 8
-    INT8       shift, and go to state 9
-    UINT16     shift, and go to state 10
-    INT16      shift, and go to state 11
-    UINT32     shift, and go to state 12
-    INT32      shift, and go to state 13
-    UINT64     shift, and go to state 14
-    INT64      shift, and go to state 15
-    BOOL       shift, and go to state 16
-    VOID       shift, and go to state 17
-    RETURN     shift, and go to state 18
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    OPENPAREN  shift, and go to state 22
-
-    $default  reduce using rule 74 (body)
-
-    identifier            go to state 23
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 26
-    booleanExpression     go to state 27
-    type                  go to state 28
-    variableDeclaration   go to state 29
-    variableDefinition    go to state 30
-    variableAssignment    go to state 31
-    functionDeclaration   go to state 32
-    functionCall          go to state 33
-    structDeclaration     go to state 34
-    structCreation        go to state 35
-    expression            go to state 36
-    namespaceDeclaration  go to state 37
-    return                go to state 38
-    statement             go to state 39
-    body                  go to state 78
+    $default  reduce using rule 57 (expression)
 
 
-State 40
+State 31
 
-   76 program: body .
+   58 expression: stringLiteral .
 
-    $default  reduce using rule 76 (program)
+    $default  reduce using rule 58 (expression)
 
 
-State 41
+State 32
+
+   75 statement: expression . SEMICOLON
+
+    SEMICOLON  shift, and go to state 74
+
+
+State 33
+
+   74 statement: namespaceDeclaration .
+
+    $default  reduce using rule 74 (statement)
+
+
+State 34
+
+   78 statement: return .
+
+    $default  reduce using rule 78 (statement)
+
+
+State 35
+
+   77 statement: ifStatement .
+
+    $default  reduce using rule 77 (statement)
+
+
+State 36
+
+   79 body: statement .
+   80     | statement . body
+
+    NAMESPACE           shift, and go to state 2
+    STRUCT              shift, and go to state 3
+    IF                  shift, and go to state 4
+    TRUE                shift, and go to state 5
+    FALSE               shift, and go to state 6
+    TEXT                shift, and go to state 7
+    LOGICAL             shift, and go to state 8
+    NUMBERTOKEN         shift, and go to state 9
+    VOID                shift, and go to state 10
+    RETURN              shift, and go to state 11
+    NUMBER              shift, and go to state 12
+    SINGLEQUOTEDSTRING  shift, and go to state 13
+    DOUBLEQUOTEDSTRING  shift, and go to state 14
+    ID                  shift, and go to state 15
+    NOT                 shift, and go to state 16
+    OPENPAREN           shift, and go to state 17
+
+    $default  reduce using rule 79 (body)
+
+    identifier            go to state 18
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 21
+    booleanExpression     go to state 22
+    type                  go to state 23
+    variableDeclaration   go to state 24
+    variableDefinition    go to state 25
+    variableAssignment    go to state 26
+    functionDeclaration   go to state 27
+    functionCall          go to state 28
+    structDeclaration     go to state 29
+    structInstantiation   go to state 30
+    stringLiteral         go to state 31
+    expression            go to state 32
+    namespaceDeclaration  go to state 33
+    return                go to state 34
+    ifStatement           go to state 35
+    statement             go to state 36
+    body                  go to state 75
+
+
+State 37
+
+   82 program: body .
+
+    $default  reduce using rule 82 (program)
+
+
+State 38
 
     0 $accept: program . $end
 
-    $end  shift, and go to state 79
+    $end  shift, and go to state 76
 
 
-State 42
+State 39
 
     3 imports: IMPORT identifier . SEMICOLON
     4        | IMPORT identifier . SEMICOLON imports
 
-    SEMICOLON  shift, and go to state 80
+    SEMICOLON  shift, and go to state 77
 
 
-State 43
+State 40
 
-   61 namespaceDeclaration: NAMESPACE identifier . OPENCURLY body CLOSECURLY
+   60 namespaceDeclaration: NAMESPACE identifier . OPENCURLY body CLOSECURLY
+   61                     | NAMESPACE identifier . OPENCURLY CLOSECURLY
 
-    OPENCURLY  shift, and go to state 81
-
-
-State 44
-
-   53 structDeclaration: STRUCT ID . OPENCURLY declarationList CLOSECURLY
-
-    OPENCURLY  shift, and go to state 82
+    OPENCURLY  shift, and go to state 78
 
 
-State 45
+State 41
 
-   71 statement: IF OPENPAREN . booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY
-   72          | IF OPENPAREN . booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY ELSE OPENCURLY body CLOSECURLY
+   49 structDeclaration: STRUCT ID . OPENCURLY variableDeclarationList CLOSECURLY
+   50                  | STRUCT ID . OPENCURLY CLOSECURLY
+
+    OPENCURLY  shift, and go to state 79
+
+
+State 42
+
+   64 ifStatement: IF OPENPAREN . booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY
+   65            | IF OPENPAREN . booleanExpression CLOSEPAREN OPENCURLY CLOSECURLY
+   66            | IF OPENPAREN . booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY ELSE OPENCURLY body CLOSECURLY
+   67            | IF OPENPAREN . booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY ELSE OPENCURLY CLOSECURLY
+   68            | IF OPENPAREN . booleanExpression CLOSEPAREN OPENCURLY CLOSECURLY ELSE OPENCURLY body CLOSECURLY
+   69            | IF OPENPAREN . booleanExpression CLOSEPAREN OPENCURLY CLOSECURLY ELSE OPENCURLY CLOSECURLY
 
     TRUE       shift, and go to state 5
     FALSE      shift, and go to state 6
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    OPENPAREN  shift, and go to state 50
+    NUMBER     shift, and go to state 12
+    ID         shift, and go to state 15
+    NOT        shift, and go to state 16
+    OPENPAREN  shift, and go to state 47
 
-    identifier            go to state 51
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 52
-    booleanExpression     go to state 83
+    identifier            go to state 48
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 49
+    booleanExpression     go to state 80
 
 
-State 46
+State 43
 
    62 return: RETURN SEMICOLON .
 
     $default  reduce using rule 62 (return)
 
 
-State 47
+State 44
 
     6 multiplyExpression: identifier .
    16 booleanExpression: identifier .
-   49 functionCall: identifier . OPENPAREN CLOSEPAREN
-   50             | identifier . OPENPAREN exprList CLOSEPAREN
-   54 structCreation: identifier . OPENCURLY exprList CLOSECURLY
+   45 functionCall: identifier . OPENPAREN CLOSEPAREN
+   46             | identifier . OPENPAREN exprList CLOSEPAREN
+   51 structInstantiation: identifier . OPENCURLY exprList CLOSECURLY
 
-    OPENPAREN  shift, and go to state 59
-    OPENCURLY  shift, and go to state 60
+    OPENPAREN  shift, and go to state 56
+    OPENCURLY  shift, and go to state 57
 
     EQ          reduce using rule 6 (multiplyExpression)
     EQ          [reduce using rule 16 (booleanExpression)]
@@ -838,23 +836,23 @@ State 47
     $default    reduce using rule 6 (multiplyExpression)
 
 
-State 48
+State 45
 
    63 return: RETURN expression . SEMICOLON
 
-    SEMICOLON  shift, and go to state 84
+    SEMICOLON  shift, and go to state 81
 
 
-State 49
+State 46
 
     2 identifier: ID DOT . identifier
 
-    ID  shift, and go to state 20
+    ID  shift, and go to state 15
 
-    identifier  go to state 85
+    identifier  go to state 82
 
 
-State 50
+State 47
 
     7 multiplyExpression: OPENPAREN . multiplyExpression CLOSEPAREN
    13 arithmeticExpression: OPENPAREN . arithmeticExpression CLOSEPAREN
@@ -862,18 +860,18 @@ State 50
 
     TRUE       shift, and go to state 5
     FALSE      shift, and go to state 6
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    OPENPAREN  shift, and go to state 50
+    NUMBER     shift, and go to state 12
+    ID         shift, and go to state 15
+    NOT        shift, and go to state 16
+    OPENPAREN  shift, and go to state 47
 
-    identifier            go to state 51
-    multiplyExpression    go to state 54
-    arithmeticExpression  go to state 86
-    booleanExpression     go to state 87
+    identifier            go to state 48
+    multiplyExpression    go to state 51
+    arithmeticExpression  go to state 83
+    booleanExpression     go to state 84
 
 
-State 51
+State 48
 
     6 multiplyExpression: identifier .
    16 booleanExpression: identifier .
@@ -892,7 +890,7 @@ State 51
     $default    reduce using rule 6 (multiplyExpression)
 
 
-State 52
+State 49
 
    11 arithmeticExpression: arithmeticExpression . PLUS arithmeticExpression
    12                     | arithmeticExpression . MINUS arithmeticExpression
@@ -903,17 +901,17 @@ State 52
    22                  | arithmeticExpression . LE arithmeticExpression
    23                  | arithmeticExpression . GE arithmeticExpression
 
-    PLUS   shift, and go to state 64
-    MINUS  shift, and go to state 65
-    EQ     shift, and go to state 66
-    NEQ    shift, and go to state 67
-    LT     shift, and go to state 68
-    GT     shift, and go to state 69
-    LE     shift, and go to state 70
-    GE     shift, and go to state 71
+    PLUS   shift, and go to state 61
+    MINUS  shift, and go to state 62
+    EQ     shift, and go to state 63
+    NEQ    shift, and go to state 64
+    LT     shift, and go to state 65
+    GT     shift, and go to state 66
+    LE     shift, and go to state 67
+    GE     shift, and go to state 68
 
 
-State 53
+State 50
 
    24 booleanExpression: booleanExpression . AND booleanExpression
    25                  | booleanExpression . OR booleanExpression
@@ -921,10 +919,10 @@ State 53
    27                  | booleanExpression . EQ booleanExpression
    28                  | booleanExpression . NEQ booleanExpression
 
-    EQ   shift, and go to state 72
-    NEQ  shift, and go to state 73
-    AND  shift, and go to state 74
-    OR   shift, and go to state 75
+    EQ   shift, and go to state 69
+    NEQ  shift, and go to state 70
+    AND  shift, and go to state 71
+    OR   shift, and go to state 72
 
     EQ        [reduce using rule 26 (booleanExpression)]
     NEQ       [reduce using rule 26 (booleanExpression)]
@@ -933,22 +931,22 @@ State 53
     $default  reduce using rule 26 (booleanExpression)
 
 
-State 54
+State 51
 
     7 multiplyExpression: OPENPAREN multiplyExpression . CLOSEPAREN
     8                   | multiplyExpression . TIMES multiplyExpression
     9                   | multiplyExpression . DIVIDE multiplyExpression
    10 arithmeticExpression: multiplyExpression .
 
-    TIMES       shift, and go to state 62
-    DIVIDE      shift, and go to state 63
-    CLOSEPAREN  shift, and go to state 88
+    TIMES       shift, and go to state 59
+    DIVIDE      shift, and go to state 60
+    CLOSEPAREN  shift, and go to state 85
 
     CLOSEPAREN  [reduce using rule 10 (arithmeticExpression)]
     $default    reduce using rule 10 (arithmeticExpression)
 
 
-State 55
+State 52
 
    11 arithmeticExpression: arithmeticExpression . PLUS arithmeticExpression
    12                     | arithmeticExpression . MINUS arithmeticExpression
@@ -959,350 +957,358 @@ State 55
    21                  | arithmeticExpression . GT arithmeticExpression
    22                  | arithmeticExpression . LE arithmeticExpression
    23                  | arithmeticExpression . GE arithmeticExpression
-   55 expression: arithmeticExpression .
+   54 expression: arithmeticExpression .
 
-    PLUS        shift, and go to state 64
-    MINUS       shift, and go to state 65
-    EQ          shift, and go to state 66
-    NEQ         shift, and go to state 67
-    LT          shift, and go to state 68
-    GT          shift, and go to state 69
-    LE          shift, and go to state 70
-    GE          shift, and go to state 71
-    CLOSEPAREN  shift, and go to state 89
+    PLUS        shift, and go to state 61
+    MINUS       shift, and go to state 62
+    EQ          shift, and go to state 63
+    NEQ         shift, and go to state 64
+    LT          shift, and go to state 65
+    GT          shift, and go to state 66
+    LE          shift, and go to state 67
+    GE          shift, and go to state 68
+    CLOSEPAREN  shift, and go to state 86
 
-    CLOSEPAREN  [reduce using rule 55 (expression)]
+    CLOSEPAREN  [reduce using rule 54 (expression)]
 
 
-State 56
+State 53
 
    17 booleanExpression: OPENPAREN booleanExpression . CLOSEPAREN
    24                  | booleanExpression . AND booleanExpression
    25                  | booleanExpression . OR booleanExpression
    27                  | booleanExpression . EQ booleanExpression
    28                  | booleanExpression . NEQ booleanExpression
-   56 expression: booleanExpression .
+   55 expression: booleanExpression .
 
-    EQ          shift, and go to state 72
-    NEQ         shift, and go to state 73
-    AND         shift, and go to state 74
-    OR          shift, and go to state 75
-    CLOSEPAREN  shift, and go to state 90
+    EQ          shift, and go to state 69
+    NEQ         shift, and go to state 70
+    AND         shift, and go to state 71
+    OR          shift, and go to state 72
+    CLOSEPAREN  shift, and go to state 87
 
-    CLOSEPAREN  [reduce using rule 56 (expression)]
+    CLOSEPAREN  [reduce using rule 55 (expression)]
+
+
+State 54
+
+   59 expression: OPENPAREN expression . CLOSEPAREN
+
+    CLOSEPAREN  shift, and go to state 88
+
+
+State 55
+
+   36 variableAssignment: identifier ASSIGN . expression SEMICOLON
+
+    TRUE                shift, and go to state 5
+    FALSE               shift, and go to state 6
+    NUMBER              shift, and go to state 12
+    SINGLEQUOTEDSTRING  shift, and go to state 13
+    DOUBLEQUOTEDSTRING  shift, and go to state 14
+    ID                  shift, and go to state 15
+    NOT                 shift, and go to state 16
+    OPENPAREN           shift, and go to state 17
+
+    identifier            go to state 44
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 21
+    booleanExpression     go to state 22
+    functionCall          go to state 28
+    structInstantiation   go to state 30
+    stringLiteral         go to state 31
+    expression            go to state 89
+
+
+State 56
+
+   45 functionCall: identifier OPENPAREN . CLOSEPAREN
+   46             | identifier OPENPAREN . exprList CLOSEPAREN
+
+    TRUE                shift, and go to state 5
+    FALSE               shift, and go to state 6
+    NUMBER              shift, and go to state 12
+    SINGLEQUOTEDSTRING  shift, and go to state 13
+    DOUBLEQUOTEDSTRING  shift, and go to state 14
+    ID                  shift, and go to state 15
+    NOT                 shift, and go to state 16
+    OPENPAREN           shift, and go to state 17
+    CLOSEPAREN          shift, and go to state 90
+
+    identifier            go to state 44
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 21
+    booleanExpression     go to state 22
+    exprList              go to state 91
+    functionCall          go to state 28
+    structInstantiation   go to state 30
+    stringLiteral         go to state 31
+    expression            go to state 92
 
 
 State 57
 
-   60 expression: OPENPAREN expression . CLOSEPAREN
+   51 structInstantiation: identifier OPENCURLY . exprList CLOSECURLY
 
-    CLOSEPAREN  shift, and go to state 91
+    TRUE                shift, and go to state 5
+    FALSE               shift, and go to state 6
+    NUMBER              shift, and go to state 12
+    SINGLEQUOTEDSTRING  shift, and go to state 13
+    DOUBLEQUOTEDSTRING  shift, and go to state 14
+    ID                  shift, and go to state 15
+    NOT                 shift, and go to state 16
+    OPENPAREN           shift, and go to state 17
+
+    identifier            go to state 44
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 21
+    booleanExpression     go to state 22
+    exprList              go to state 93
+    functionCall          go to state 28
+    structInstantiation   go to state 30
+    stringLiteral         go to state 31
+    expression            go to state 92
 
 
 State 58
 
-   42 variableAssignment: identifier ASSIGN . expression SEMICOLON
+   84 program: imports body .
 
-    TRUE       shift, and go to state 5
-    FALSE      shift, and go to state 6
-    NULLTOKEN  shift, and go to state 7
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    OPENPAREN  shift, and go to state 22
-
-    identifier            go to state 47
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 26
-    booleanExpression     go to state 27
-    functionCall          go to state 33
-    structCreation        go to state 35
-    expression            go to state 92
+    $default  reduce using rule 84 (program)
 
 
 State 59
 
-   49 functionCall: identifier OPENPAREN . CLOSEPAREN
-   50             | identifier OPENPAREN . exprList CLOSEPAREN
+    8 multiplyExpression: multiplyExpression TIMES . multiplyExpression
 
-    TRUE        shift, and go to state 5
-    FALSE       shift, and go to state 6
-    NULLTOKEN   shift, and go to state 7
-    NUMBER      shift, and go to state 19
-    ID          shift, and go to state 20
-    NOT         shift, and go to state 21
-    OPENPAREN   shift, and go to state 22
-    CLOSEPAREN  shift, and go to state 93
+    NUMBER     shift, and go to state 12
+    ID         shift, and go to state 15
+    OPENPAREN  shift, and go to state 94
 
-    identifier            go to state 47
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 26
-    booleanExpression     go to state 27
-    exprList              go to state 94
-    functionCall          go to state 33
-    structCreation        go to state 35
-    expression            go to state 95
+    identifier          go to state 95
+    multiplyExpression  go to state 96
 
 
 State 60
 
-   54 structCreation: identifier OPENCURLY . exprList CLOSECURLY
+    9 multiplyExpression: multiplyExpression DIVIDE . multiplyExpression
 
-    TRUE       shift, and go to state 5
-    FALSE      shift, and go to state 6
-    NULLTOKEN  shift, and go to state 7
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    OPENPAREN  shift, and go to state 22
+    NUMBER     shift, and go to state 12
+    ID         shift, and go to state 15
+    OPENPAREN  shift, and go to state 94
 
-    identifier            go to state 47
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 26
-    booleanExpression     go to state 27
-    exprList              go to state 96
-    functionCall          go to state 33
-    structCreation        go to state 35
-    expression            go to state 95
+    identifier          go to state 95
+    multiplyExpression  go to state 97
 
 
 State 61
 
-   77 program: imports body .
+   11 arithmeticExpression: arithmeticExpression PLUS . arithmeticExpression
 
-    $default  reduce using rule 77 (program)
+    NUMBER     shift, and go to state 12
+    ID         shift, and go to state 15
+    OPENPAREN  shift, and go to state 98
+
+    identifier            go to state 95
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 99
 
 
 State 62
 
-    8 multiplyExpression: multiplyExpression TIMES . multiplyExpression
+   12 arithmeticExpression: arithmeticExpression MINUS . arithmeticExpression
 
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    OPENPAREN  shift, and go to state 97
+    NUMBER     shift, and go to state 12
+    ID         shift, and go to state 15
+    OPENPAREN  shift, and go to state 98
 
-    identifier          go to state 98
-    multiplyExpression  go to state 99
+    identifier            go to state 95
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 100
 
 
 State 63
 
-    9 multiplyExpression: multiplyExpression DIVIDE . multiplyExpression
+   18 booleanExpression: arithmeticExpression EQ . arithmeticExpression
 
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    OPENPAREN  shift, and go to state 97
+    NUMBER     shift, and go to state 12
+    ID         shift, and go to state 15
+    OPENPAREN  shift, and go to state 98
 
-    identifier          go to state 98
-    multiplyExpression  go to state 100
+    identifier            go to state 95
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 101
 
 
 State 64
 
-   11 arithmeticExpression: arithmeticExpression PLUS . arithmeticExpression
+   19 booleanExpression: arithmeticExpression NEQ . arithmeticExpression
 
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    OPENPAREN  shift, and go to state 101
+    NUMBER     shift, and go to state 12
+    ID         shift, and go to state 15
+    OPENPAREN  shift, and go to state 98
 
-    identifier            go to state 98
-    multiplyExpression    go to state 25
+    identifier            go to state 95
+    multiplyExpression    go to state 20
     arithmeticExpression  go to state 102
 
 
 State 65
 
-   12 arithmeticExpression: arithmeticExpression MINUS . arithmeticExpression
+   20 booleanExpression: arithmeticExpression LT . arithmeticExpression
 
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    OPENPAREN  shift, and go to state 101
+    NUMBER     shift, and go to state 12
+    ID         shift, and go to state 15
+    OPENPAREN  shift, and go to state 98
 
-    identifier            go to state 98
-    multiplyExpression    go to state 25
+    identifier            go to state 95
+    multiplyExpression    go to state 20
     arithmeticExpression  go to state 103
 
 
 State 66
 
-   18 booleanExpression: arithmeticExpression EQ . arithmeticExpression
+   21 booleanExpression: arithmeticExpression GT . arithmeticExpression
 
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    OPENPAREN  shift, and go to state 101
+    NUMBER     shift, and go to state 12
+    ID         shift, and go to state 15
+    OPENPAREN  shift, and go to state 98
 
-    identifier            go to state 98
-    multiplyExpression    go to state 25
+    identifier            go to state 95
+    multiplyExpression    go to state 20
     arithmeticExpression  go to state 104
 
 
 State 67
 
-   19 booleanExpression: arithmeticExpression NEQ . arithmeticExpression
+   22 booleanExpression: arithmeticExpression LE . arithmeticExpression
 
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    OPENPAREN  shift, and go to state 101
+    NUMBER     shift, and go to state 12
+    ID         shift, and go to state 15
+    OPENPAREN  shift, and go to state 98
 
-    identifier            go to state 98
-    multiplyExpression    go to state 25
+    identifier            go to state 95
+    multiplyExpression    go to state 20
     arithmeticExpression  go to state 105
 
 
 State 68
 
-   20 booleanExpression: arithmeticExpression LT . arithmeticExpression
+   23 booleanExpression: arithmeticExpression GE . arithmeticExpression
 
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    OPENPAREN  shift, and go to state 101
+    NUMBER     shift, and go to state 12
+    ID         shift, and go to state 15
+    OPENPAREN  shift, and go to state 98
 
-    identifier            go to state 98
-    multiplyExpression    go to state 25
+    identifier            go to state 95
+    multiplyExpression    go to state 20
     arithmeticExpression  go to state 106
 
 
 State 69
 
-   21 booleanExpression: arithmeticExpression GT . arithmeticExpression
-
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    OPENPAREN  shift, and go to state 101
-
-    identifier            go to state 98
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 107
-
-
-State 70
-
-   22 booleanExpression: arithmeticExpression LE . arithmeticExpression
-
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    OPENPAREN  shift, and go to state 101
-
-    identifier            go to state 98
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 108
-
-
-State 71
-
-   23 booleanExpression: arithmeticExpression GE . arithmeticExpression
-
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    OPENPAREN  shift, and go to state 101
-
-    identifier            go to state 98
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 109
-
-
-State 72
-
    27 booleanExpression: booleanExpression EQ . booleanExpression
 
     TRUE       shift, and go to state 5
     FALSE      shift, and go to state 6
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    OPENPAREN  shift, and go to state 50
+    NUMBER     shift, and go to state 12
+    ID         shift, and go to state 15
+    NOT        shift, and go to state 16
+    OPENPAREN  shift, and go to state 47
 
-    identifier            go to state 51
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 52
-    booleanExpression     go to state 110
+    identifier            go to state 48
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 49
+    booleanExpression     go to state 107
 
 
-State 73
+State 70
 
    28 booleanExpression: booleanExpression NEQ . booleanExpression
 
     TRUE       shift, and go to state 5
     FALSE      shift, and go to state 6
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    OPENPAREN  shift, and go to state 50
+    NUMBER     shift, and go to state 12
+    ID         shift, and go to state 15
+    NOT        shift, and go to state 16
+    OPENPAREN  shift, and go to state 47
 
-    identifier            go to state 51
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 52
-    booleanExpression     go to state 111
+    identifier            go to state 48
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 49
+    booleanExpression     go to state 108
 
 
-State 74
+State 71
 
    24 booleanExpression: booleanExpression AND . booleanExpression
 
     TRUE       shift, and go to state 5
     FALSE      shift, and go to state 6
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    OPENPAREN  shift, and go to state 50
+    NUMBER     shift, and go to state 12
+    ID         shift, and go to state 15
+    NOT        shift, and go to state 16
+    OPENPAREN  shift, and go to state 47
 
-    identifier            go to state 51
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 52
-    booleanExpression     go to state 112
+    identifier            go to state 48
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 49
+    booleanExpression     go to state 109
 
 
-State 75
+State 72
 
    25 booleanExpression: booleanExpression OR . booleanExpression
 
     TRUE       shift, and go to state 5
     FALSE      shift, and go to state 6
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    OPENPAREN  shift, and go to state 50
+    NUMBER     shift, and go to state 12
+    ID         shift, and go to state 15
+    NOT        shift, and go to state 16
+    OPENPAREN  shift, and go to state 47
 
-    identifier            go to state 51
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 52
-    booleanExpression     go to state 113
+    identifier            go to state 48
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 49
+    booleanExpression     go to state 110
+
+
+State 73
+
+   34 variableDeclaration: type ID . SEMICOLON
+   35 variableDefinition: type ID . ASSIGN expression SEMICOLON
+   39 functionDeclaration: type ID . OPENPAREN CLOSEPAREN OPENCURLY body CLOSECURLY
+   40                    | type ID . OPENPAREN CLOSEPAREN OPENCURLY CLOSECURLY
+   41                    | type ID . OPENPAREN argList CLOSEPAREN OPENCURLY body CLOSECURLY
+   42                    | type ID . OPENPAREN argList CLOSEPAREN OPENCURLY CLOSECURLY
+
+    ASSIGN     shift, and go to state 111
+    SEMICOLON  shift, and go to state 112
+    OPENPAREN  shift, and go to state 113
+
+
+State 74
+
+   75 statement: expression SEMICOLON .
+
+    $default  reduce using rule 75 (statement)
+
+
+State 75
+
+   80 body: statement body .
+
+    $default  reduce using rule 80 (body)
 
 
 State 76
-
-   40 variableDeclaration: type ID . SEMICOLON
-   41 variableDefinition: type ID . ASSIGN expression SEMICOLON
-   45 functionDeclaration: type ID . OPENPAREN CLOSEPAREN OPENCURLY body CLOSECURLY
-   46                    | type ID . OPENPAREN argList CLOSEPAREN OPENCURLY body CLOSECURLY
-
-    ASSIGN     shift, and go to state 114
-    SEMICOLON  shift, and go to state 115
-    OPENPAREN  shift, and go to state 116
-
-
-State 77
-
-   69 statement: expression SEMICOLON .
-
-    $default  reduce using rule 69 (statement)
-
-
-State 78
-
-   75 body: statement body .
-
-    $default  reduce using rule 75 (body)
-
-
-State 79
 
     0 $accept: program $end .
 
     $default  accept
 
 
-State 80
+State 77
 
     3 imports: IMPORT identifier SEMICOLON .
     4        | IMPORT identifier SEMICOLON . imports
@@ -1311,111 +1317,106 @@ State 80
 
     $default  reduce using rule 3 (imports)
 
-    imports  go to state 117
+    imports  go to state 114
 
 
-State 81
+State 78
 
-   61 namespaceDeclaration: NAMESPACE identifier OPENCURLY . body CLOSECURLY
+   60 namespaceDeclaration: NAMESPACE identifier OPENCURLY . body CLOSECURLY
+   61                     | NAMESPACE identifier OPENCURLY . CLOSECURLY
 
-    NAMESPACE  shift, and go to state 2
-    STRUCT     shift, and go to state 3
-    IF         shift, and go to state 4
-    TRUE       shift, and go to state 5
-    FALSE      shift, and go to state 6
-    NULLTOKEN  shift, and go to state 7
-    UINT8      shift, and go to state 8
-    INT8       shift, and go to state 9
-    UINT16     shift, and go to state 10
-    INT16      shift, and go to state 11
-    UINT32     shift, and go to state 12
-    INT32      shift, and go to state 13
-    UINT64     shift, and go to state 14
-    INT64      shift, and go to state 15
-    BOOL       shift, and go to state 16
-    VOID       shift, and go to state 17
-    RETURN     shift, and go to state 18
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    OPENPAREN  shift, and go to state 22
+    NAMESPACE           shift, and go to state 2
+    STRUCT              shift, and go to state 3
+    IF                  shift, and go to state 4
+    TRUE                shift, and go to state 5
+    FALSE               shift, and go to state 6
+    TEXT                shift, and go to state 7
+    LOGICAL             shift, and go to state 8
+    NUMBERTOKEN         shift, and go to state 9
+    VOID                shift, and go to state 10
+    RETURN              shift, and go to state 11
+    NUMBER              shift, and go to state 12
+    SINGLEQUOTEDSTRING  shift, and go to state 13
+    DOUBLEQUOTEDSTRING  shift, and go to state 14
+    ID                  shift, and go to state 15
+    NOT                 shift, and go to state 16
+    OPENPAREN           shift, and go to state 17
+    CLOSECURLY          shift, and go to state 115
 
-    $default  reduce using rule 74 (body)
-
-    identifier            go to state 23
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 26
-    booleanExpression     go to state 27
-    type                  go to state 28
-    variableDeclaration   go to state 29
-    variableDefinition    go to state 30
-    variableAssignment    go to state 31
-    functionDeclaration   go to state 32
-    functionCall          go to state 33
-    structDeclaration     go to state 34
-    structCreation        go to state 35
-    expression            go to state 36
-    namespaceDeclaration  go to state 37
-    return                go to state 38
-    statement             go to state 39
-    body                  go to state 118
+    identifier            go to state 18
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 21
+    booleanExpression     go to state 22
+    type                  go to state 23
+    variableDeclaration   go to state 24
+    variableDefinition    go to state 25
+    variableAssignment    go to state 26
+    functionDeclaration   go to state 27
+    functionCall          go to state 28
+    structDeclaration     go to state 29
+    structInstantiation   go to state 30
+    stringLiteral         go to state 31
+    expression            go to state 32
+    namespaceDeclaration  go to state 33
+    return                go to state 34
+    ifStatement           go to state 35
+    statement             go to state 36
+    body                  go to state 116
 
 
-State 82
+State 79
 
-   53 structDeclaration: STRUCT ID OPENCURLY . declarationList CLOSECURLY
+   49 structDeclaration: STRUCT ID OPENCURLY . variableDeclarationList CLOSECURLY
+   50                  | STRUCT ID OPENCURLY . CLOSECURLY
 
-    UINT8   shift, and go to state 8
-    INT8    shift, and go to state 9
-    UINT16  shift, and go to state 10
-    INT16   shift, and go to state 11
-    UINT32  shift, and go to state 12
-    INT32   shift, and go to state 13
-    UINT64  shift, and go to state 14
-    INT64   shift, and go to state 15
-    BOOL    shift, and go to state 16
-    VOID    shift, and go to state 17
-    ID      shift, and go to state 20
+    TEXT         shift, and go to state 7
+    LOGICAL      shift, and go to state 8
+    NUMBERTOKEN  shift, and go to state 9
+    VOID         shift, and go to state 10
+    ID           shift, and go to state 15
+    CLOSECURLY   shift, and go to state 117
 
-    $default  reduce using rule 51 (declarationList)
-
-    identifier           go to state 119
-    type                 go to state 120
-    variableDeclaration  go to state 121
-    declarationList      go to state 122
+    identifier               go to state 118
+    type                     go to state 119
+    variableDeclaration      go to state 120
+    variableDeclarationList  go to state 121
 
 
-State 83
+State 80
 
    24 booleanExpression: booleanExpression . AND booleanExpression
    25                  | booleanExpression . OR booleanExpression
    27                  | booleanExpression . EQ booleanExpression
    28                  | booleanExpression . NEQ booleanExpression
-   71 statement: IF OPENPAREN booleanExpression . CLOSEPAREN OPENCURLY body CLOSECURLY
-   72          | IF OPENPAREN booleanExpression . CLOSEPAREN OPENCURLY body CLOSECURLY ELSE OPENCURLY body CLOSECURLY
+   64 ifStatement: IF OPENPAREN booleanExpression . CLOSEPAREN OPENCURLY body CLOSECURLY
+   65            | IF OPENPAREN booleanExpression . CLOSEPAREN OPENCURLY CLOSECURLY
+   66            | IF OPENPAREN booleanExpression . CLOSEPAREN OPENCURLY body CLOSECURLY ELSE OPENCURLY body CLOSECURLY
+   67            | IF OPENPAREN booleanExpression . CLOSEPAREN OPENCURLY body CLOSECURLY ELSE OPENCURLY CLOSECURLY
+   68            | IF OPENPAREN booleanExpression . CLOSEPAREN OPENCURLY CLOSECURLY ELSE OPENCURLY body CLOSECURLY
+   69            | IF OPENPAREN booleanExpression . CLOSEPAREN OPENCURLY CLOSECURLY ELSE OPENCURLY CLOSECURLY
 
-    EQ          shift, and go to state 72
-    NEQ         shift, and go to state 73
-    AND         shift, and go to state 74
-    OR          shift, and go to state 75
-    CLOSEPAREN  shift, and go to state 123
+    EQ          shift, and go to state 69
+    NEQ         shift, and go to state 70
+    AND         shift, and go to state 71
+    OR          shift, and go to state 72
+    CLOSEPAREN  shift, and go to state 122
 
 
-State 84
+State 81
 
    63 return: RETURN expression SEMICOLON .
 
     $default  reduce using rule 63 (return)
 
 
-State 85
+State 82
 
     2 identifier: ID DOT identifier .
 
     $default  reduce using rule 2 (identifier)
 
 
-State 86
+State 83
 
    11 arithmeticExpression: arithmeticExpression . PLUS arithmeticExpression
    12                     | arithmeticExpression . MINUS arithmeticExpression
@@ -1427,18 +1428,18 @@ State 86
    22                  | arithmeticExpression . LE arithmeticExpression
    23                  | arithmeticExpression . GE arithmeticExpression
 
-    PLUS        shift, and go to state 64
-    MINUS       shift, and go to state 65
-    EQ          shift, and go to state 66
-    NEQ         shift, and go to state 67
-    LT          shift, and go to state 68
-    GT          shift, and go to state 69
-    LE          shift, and go to state 70
-    GE          shift, and go to state 71
-    CLOSEPAREN  shift, and go to state 89
+    PLUS        shift, and go to state 61
+    MINUS       shift, and go to state 62
+    EQ          shift, and go to state 63
+    NEQ         shift, and go to state 64
+    LT          shift, and go to state 65
+    GT          shift, and go to state 66
+    LE          shift, and go to state 67
+    GE          shift, and go to state 68
+    CLOSEPAREN  shift, and go to state 86
 
 
-State 87
+State 84
 
    17 booleanExpression: OPENPAREN booleanExpression . CLOSEPAREN
    24                  | booleanExpression . AND booleanExpression
@@ -1446,242 +1447,241 @@ State 87
    27                  | booleanExpression . EQ booleanExpression
    28                  | booleanExpression . NEQ booleanExpression
 
-    EQ          shift, and go to state 72
-    NEQ         shift, and go to state 73
-    AND         shift, and go to state 74
-    OR          shift, and go to state 75
-    CLOSEPAREN  shift, and go to state 90
+    EQ          shift, and go to state 69
+    NEQ         shift, and go to state 70
+    AND         shift, and go to state 71
+    OR          shift, and go to state 72
+    CLOSEPAREN  shift, and go to state 87
 
 
-State 88
+State 85
 
     7 multiplyExpression: OPENPAREN multiplyExpression CLOSEPAREN .
 
     $default  reduce using rule 7 (multiplyExpression)
 
 
-State 89
+State 86
 
    13 arithmeticExpression: OPENPAREN arithmeticExpression CLOSEPAREN .
 
     $default  reduce using rule 13 (arithmeticExpression)
 
 
-State 90
+State 87
 
    17 booleanExpression: OPENPAREN booleanExpression CLOSEPAREN .
 
     $default  reduce using rule 17 (booleanExpression)
 
 
+State 88
+
+   59 expression: OPENPAREN expression CLOSEPAREN .
+
+    $default  reduce using rule 59 (expression)
+
+
+State 89
+
+   36 variableAssignment: identifier ASSIGN expression . SEMICOLON
+
+    SEMICOLON  shift, and go to state 123
+
+
+State 90
+
+   45 functionCall: identifier OPENPAREN CLOSEPAREN .
+
+    $default  reduce using rule 45 (functionCall)
+
+
 State 91
 
-   60 expression: OPENPAREN expression CLOSEPAREN .
+   46 functionCall: identifier OPENPAREN exprList . CLOSEPAREN
 
-    $default  reduce using rule 60 (expression)
+    CLOSEPAREN  shift, and go to state 124
 
 
 State 92
 
-   42 variableAssignment: identifier ASSIGN expression . SEMICOLON
+   43 exprList: expression .
+   44         | expression . COMMA exprList
 
-    SEMICOLON  shift, and go to state 124
+    COMMA  shift, and go to state 125
+
+    $default  reduce using rule 43 (exprList)
 
 
 State 93
 
-   49 functionCall: identifier OPENPAREN CLOSEPAREN .
+   51 structInstantiation: identifier OPENCURLY exprList . CLOSECURLY
 
-    $default  reduce using rule 49 (functionCall)
+    CLOSECURLY  shift, and go to state 126
 
 
 State 94
 
-   48 exprList: exprList . COMMA exprList
-   50 functionCall: identifier OPENPAREN exprList . CLOSEPAREN
+    7 multiplyExpression: OPENPAREN . multiplyExpression CLOSEPAREN
 
-    COMMA       shift, and go to state 125
-    CLOSEPAREN  shift, and go to state 126
+    NUMBER     shift, and go to state 12
+    ID         shift, and go to state 15
+    OPENPAREN  shift, and go to state 94
+
+    identifier          go to state 95
+    multiplyExpression  go to state 127
 
 
 State 95
-
-   47 exprList: expression .
-
-    $default  reduce using rule 47 (exprList)
-
-
-State 96
-
-   48 exprList: exprList . COMMA exprList
-   54 structCreation: identifier OPENCURLY exprList . CLOSECURLY
-
-    COMMA       shift, and go to state 125
-    CLOSECURLY  shift, and go to state 127
-
-
-State 97
-
-    7 multiplyExpression: OPENPAREN . multiplyExpression CLOSEPAREN
-
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    OPENPAREN  shift, and go to state 97
-
-    identifier          go to state 98
-    multiplyExpression  go to state 128
-
-
-State 98
 
     6 multiplyExpression: identifier .
 
     $default  reduce using rule 6 (multiplyExpression)
 
 
-State 99
+State 96
 
     8 multiplyExpression: multiplyExpression . TIMES multiplyExpression
     8                   | multiplyExpression TIMES multiplyExpression .
     9                   | multiplyExpression . DIVIDE multiplyExpression
 
-    TIMES   shift, and go to state 62
-    DIVIDE  shift, and go to state 63
+    TIMES   shift, and go to state 59
+    DIVIDE  shift, and go to state 60
 
     TIMES     [reduce using rule 8 (multiplyExpression)]
     DIVIDE    [reduce using rule 8 (multiplyExpression)]
     $default  reduce using rule 8 (multiplyExpression)
 
 
-State 100
+State 97
 
     8 multiplyExpression: multiplyExpression . TIMES multiplyExpression
     9                   | multiplyExpression . DIVIDE multiplyExpression
     9                   | multiplyExpression DIVIDE multiplyExpression .
 
-    TIMES   shift, and go to state 62
-    DIVIDE  shift, and go to state 63
+    TIMES   shift, and go to state 59
+    DIVIDE  shift, and go to state 60
 
     TIMES     [reduce using rule 9 (multiplyExpression)]
     DIVIDE    [reduce using rule 9 (multiplyExpression)]
     $default  reduce using rule 9 (multiplyExpression)
 
 
-State 101
+State 98
 
     7 multiplyExpression: OPENPAREN . multiplyExpression CLOSEPAREN
    13 arithmeticExpression: OPENPAREN . arithmeticExpression CLOSEPAREN
 
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    OPENPAREN  shift, and go to state 101
+    NUMBER     shift, and go to state 12
+    ID         shift, and go to state 15
+    OPENPAREN  shift, and go to state 98
 
-    identifier            go to state 98
-    multiplyExpression    go to state 54
-    arithmeticExpression  go to state 129
+    identifier            go to state 95
+    multiplyExpression    go to state 51
+    arithmeticExpression  go to state 128
 
 
-State 102
+State 99
 
    11 arithmeticExpression: arithmeticExpression . PLUS arithmeticExpression
    11                     | arithmeticExpression PLUS arithmeticExpression .
    12                     | arithmeticExpression . MINUS arithmeticExpression
 
-    PLUS   shift, and go to state 64
-    MINUS  shift, and go to state 65
+    PLUS   shift, and go to state 61
+    MINUS  shift, and go to state 62
 
     PLUS      [reduce using rule 11 (arithmeticExpression)]
     MINUS     [reduce using rule 11 (arithmeticExpression)]
     $default  reduce using rule 11 (arithmeticExpression)
 
 
-State 103
+State 100
 
    11 arithmeticExpression: arithmeticExpression . PLUS arithmeticExpression
    12                     | arithmeticExpression . MINUS arithmeticExpression
    12                     | arithmeticExpression MINUS arithmeticExpression .
 
-    PLUS   shift, and go to state 64
-    MINUS  shift, and go to state 65
+    PLUS   shift, and go to state 61
+    MINUS  shift, and go to state 62
 
     PLUS      [reduce using rule 12 (arithmeticExpression)]
     MINUS     [reduce using rule 12 (arithmeticExpression)]
     $default  reduce using rule 12 (arithmeticExpression)
 
 
-State 104
+State 101
 
    11 arithmeticExpression: arithmeticExpression . PLUS arithmeticExpression
    12                     | arithmeticExpression . MINUS arithmeticExpression
    18 booleanExpression: arithmeticExpression EQ arithmeticExpression .
 
-    PLUS   shift, and go to state 64
-    MINUS  shift, and go to state 65
+    PLUS   shift, and go to state 61
+    MINUS  shift, and go to state 62
 
     $default  reduce using rule 18 (booleanExpression)
+
+
+State 102
+
+   11 arithmeticExpression: arithmeticExpression . PLUS arithmeticExpression
+   12                     | arithmeticExpression . MINUS arithmeticExpression
+   19 booleanExpression: arithmeticExpression NEQ arithmeticExpression .
+
+    PLUS   shift, and go to state 61
+    MINUS  shift, and go to state 62
+
+    $default  reduce using rule 19 (booleanExpression)
+
+
+State 103
+
+   11 arithmeticExpression: arithmeticExpression . PLUS arithmeticExpression
+   12                     | arithmeticExpression . MINUS arithmeticExpression
+   20 booleanExpression: arithmeticExpression LT arithmeticExpression .
+
+    PLUS   shift, and go to state 61
+    MINUS  shift, and go to state 62
+
+    $default  reduce using rule 20 (booleanExpression)
+
+
+State 104
+
+   11 arithmeticExpression: arithmeticExpression . PLUS arithmeticExpression
+   12                     | arithmeticExpression . MINUS arithmeticExpression
+   21 booleanExpression: arithmeticExpression GT arithmeticExpression .
+
+    PLUS   shift, and go to state 61
+    MINUS  shift, and go to state 62
+
+    $default  reduce using rule 21 (booleanExpression)
 
 
 State 105
 
    11 arithmeticExpression: arithmeticExpression . PLUS arithmeticExpression
    12                     | arithmeticExpression . MINUS arithmeticExpression
-   19 booleanExpression: arithmeticExpression NEQ arithmeticExpression .
+   22 booleanExpression: arithmeticExpression LE arithmeticExpression .
 
-    PLUS   shift, and go to state 64
-    MINUS  shift, and go to state 65
+    PLUS   shift, and go to state 61
+    MINUS  shift, and go to state 62
 
-    $default  reduce using rule 19 (booleanExpression)
+    $default  reduce using rule 22 (booleanExpression)
 
 
 State 106
 
    11 arithmeticExpression: arithmeticExpression . PLUS arithmeticExpression
    12                     | arithmeticExpression . MINUS arithmeticExpression
-   20 booleanExpression: arithmeticExpression LT arithmeticExpression .
-
-    PLUS   shift, and go to state 64
-    MINUS  shift, and go to state 65
-
-    $default  reduce using rule 20 (booleanExpression)
-
-
-State 107
-
-   11 arithmeticExpression: arithmeticExpression . PLUS arithmeticExpression
-   12                     | arithmeticExpression . MINUS arithmeticExpression
-   21 booleanExpression: arithmeticExpression GT arithmeticExpression .
-
-    PLUS   shift, and go to state 64
-    MINUS  shift, and go to state 65
-
-    $default  reduce using rule 21 (booleanExpression)
-
-
-State 108
-
-   11 arithmeticExpression: arithmeticExpression . PLUS arithmeticExpression
-   12                     | arithmeticExpression . MINUS arithmeticExpression
-   22 booleanExpression: arithmeticExpression LE arithmeticExpression .
-
-    PLUS   shift, and go to state 64
-    MINUS  shift, and go to state 65
-
-    $default  reduce using rule 22 (booleanExpression)
-
-
-State 109
-
-   11 arithmeticExpression: arithmeticExpression . PLUS arithmeticExpression
-   12                     | arithmeticExpression . MINUS arithmeticExpression
    23 booleanExpression: arithmeticExpression GE arithmeticExpression .
 
-    PLUS   shift, and go to state 64
-    MINUS  shift, and go to state 65
+    PLUS   shift, and go to state 61
+    MINUS  shift, and go to state 62
 
     $default  reduce using rule 23 (booleanExpression)
 
 
-State 110
+State 107
 
    24 booleanExpression: booleanExpression . AND booleanExpression
    25                  | booleanExpression . OR booleanExpression
@@ -1689,10 +1689,10 @@ State 110
    27                  | booleanExpression EQ booleanExpression .
    28                  | booleanExpression . NEQ booleanExpression
 
-    EQ   shift, and go to state 72
-    NEQ  shift, and go to state 73
-    AND  shift, and go to state 74
-    OR   shift, and go to state 75
+    EQ   shift, and go to state 69
+    NEQ  shift, and go to state 70
+    AND  shift, and go to state 71
+    OR   shift, and go to state 72
 
     EQ        [reduce using rule 27 (booleanExpression)]
     NEQ       [reduce using rule 27 (booleanExpression)]
@@ -1701,7 +1701,7 @@ State 110
     $default  reduce using rule 27 (booleanExpression)
 
 
-State 111
+State 108
 
    24 booleanExpression: booleanExpression . AND booleanExpression
    25                  | booleanExpression . OR booleanExpression
@@ -1709,10 +1709,10 @@ State 111
    28                  | booleanExpression . NEQ booleanExpression
    28                  | booleanExpression NEQ booleanExpression .
 
-    EQ   shift, and go to state 72
-    NEQ  shift, and go to state 73
-    AND  shift, and go to state 74
-    OR   shift, and go to state 75
+    EQ   shift, and go to state 69
+    NEQ  shift, and go to state 70
+    AND  shift, and go to state 71
+    OR   shift, and go to state 72
 
     EQ        [reduce using rule 28 (booleanExpression)]
     NEQ       [reduce using rule 28 (booleanExpression)]
@@ -1721,7 +1721,7 @@ State 111
     $default  reduce using rule 28 (booleanExpression)
 
 
-State 112
+State 109
 
    24 booleanExpression: booleanExpression . AND booleanExpression
    24                  | booleanExpression AND booleanExpression .
@@ -1729,10 +1729,10 @@ State 112
    27                  | booleanExpression . EQ booleanExpression
    28                  | booleanExpression . NEQ booleanExpression
 
-    EQ   shift, and go to state 72
-    NEQ  shift, and go to state 73
-    AND  shift, and go to state 74
-    OR   shift, and go to state 75
+    EQ   shift, and go to state 69
+    NEQ  shift, and go to state 70
+    AND  shift, and go to state 71
+    OR   shift, and go to state 72
 
     EQ        [reduce using rule 24 (booleanExpression)]
     NEQ       [reduce using rule 24 (booleanExpression)]
@@ -1741,7 +1741,7 @@ State 112
     $default  reduce using rule 24 (booleanExpression)
 
 
-State 113
+State 110
 
    24 booleanExpression: booleanExpression . AND booleanExpression
    25                  | booleanExpression . OR booleanExpression
@@ -1749,10 +1749,10 @@ State 113
    27                  | booleanExpression . EQ booleanExpression
    28                  | booleanExpression . NEQ booleanExpression
 
-    EQ   shift, and go to state 72
-    NEQ  shift, and go to state 73
-    AND  shift, and go to state 74
-    OR   shift, and go to state 75
+    EQ   shift, and go to state 69
+    NEQ  shift, and go to state 70
+    AND  shift, and go to state 71
+    OR   shift, and go to state 72
 
     EQ        [reduce using rule 25 (booleanExpression)]
     NEQ       [reduce using rule 25 (booleanExpression)]
@@ -1761,562 +1761,665 @@ State 113
     $default  reduce using rule 25 (booleanExpression)
 
 
+State 111
+
+   35 variableDefinition: type ID ASSIGN . expression SEMICOLON
+
+    TRUE                shift, and go to state 5
+    FALSE               shift, and go to state 6
+    NUMBER              shift, and go to state 12
+    SINGLEQUOTEDSTRING  shift, and go to state 13
+    DOUBLEQUOTEDSTRING  shift, and go to state 14
+    ID                  shift, and go to state 15
+    NOT                 shift, and go to state 16
+    OPENPAREN           shift, and go to state 17
+
+    identifier            go to state 44
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 21
+    booleanExpression     go to state 22
+    functionCall          go to state 28
+    structInstantiation   go to state 30
+    stringLiteral         go to state 31
+    expression            go to state 129
+
+
+State 112
+
+   34 variableDeclaration: type ID SEMICOLON .
+
+    $default  reduce using rule 34 (variableDeclaration)
+
+
+State 113
+
+   39 functionDeclaration: type ID OPENPAREN . CLOSEPAREN OPENCURLY body CLOSECURLY
+   40                    | type ID OPENPAREN . CLOSEPAREN OPENCURLY CLOSECURLY
+   41                    | type ID OPENPAREN . argList CLOSEPAREN OPENCURLY body CLOSECURLY
+   42                    | type ID OPENPAREN . argList CLOSEPAREN OPENCURLY CLOSECURLY
+
+    TEXT         shift, and go to state 7
+    LOGICAL      shift, and go to state 8
+    NUMBERTOKEN  shift, and go to state 9
+    VOID         shift, and go to state 10
+    ID           shift, and go to state 15
+    CLOSEPAREN   shift, and go to state 130
+
+    identifier  go to state 118
+    type        go to state 131
+    argList     go to state 132
+
+
 State 114
-
-   41 variableDefinition: type ID ASSIGN . expression SEMICOLON
-
-    TRUE       shift, and go to state 5
-    FALSE      shift, and go to state 6
-    NULLTOKEN  shift, and go to state 7
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    OPENPAREN  shift, and go to state 22
-
-    identifier            go to state 47
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 26
-    booleanExpression     go to state 27
-    functionCall          go to state 33
-    structCreation        go to state 35
-    expression            go to state 130
-
-
-State 115
-
-   40 variableDeclaration: type ID SEMICOLON .
-
-    $default  reduce using rule 40 (variableDeclaration)
-
-
-State 116
-
-   45 functionDeclaration: type ID OPENPAREN . CLOSEPAREN OPENCURLY body CLOSECURLY
-   46                    | type ID OPENPAREN . argList CLOSEPAREN OPENCURLY body CLOSECURLY
-
-    UINT8       shift, and go to state 8
-    INT8        shift, and go to state 9
-    UINT16      shift, and go to state 10
-    INT16       shift, and go to state 11
-    UINT32      shift, and go to state 12
-    INT32       shift, and go to state 13
-    UINT64      shift, and go to state 14
-    INT64       shift, and go to state 15
-    BOOL        shift, and go to state 16
-    VOID        shift, and go to state 17
-    ID          shift, and go to state 20
-    CLOSEPAREN  shift, and go to state 131
-
-    identifier  go to state 119
-    type        go to state 132
-    argList     go to state 133
-
-
-State 117
 
     4 imports: IMPORT identifier SEMICOLON imports .
 
     $default  reduce using rule 4 (imports)
 
 
+State 115
+
+   61 namespaceDeclaration: NAMESPACE identifier OPENCURLY CLOSECURLY .
+
+    $default  reduce using rule 61 (namespaceDeclaration)
+
+
+State 116
+
+   60 namespaceDeclaration: NAMESPACE identifier OPENCURLY body . CLOSECURLY
+
+    CLOSECURLY  shift, and go to state 133
+
+
+State 117
+
+   50 structDeclaration: STRUCT ID OPENCURLY CLOSECURLY .
+
+    $default  reduce using rule 50 (structDeclaration)
+
+
 State 118
 
-   61 namespaceDeclaration: NAMESPACE identifier OPENCURLY body . CLOSECURLY
+   33 type: identifier .
 
-    CLOSECURLY  shift, and go to state 134
+    $default  reduce using rule 33 (type)
 
 
 State 119
 
-   39 type: identifier .
+   34 variableDeclaration: type . ID SEMICOLON
 
-    $default  reduce using rule 39 (type)
+    ID  shift, and go to state 134
 
 
 State 120
 
-   40 variableDeclaration: type . ID SEMICOLON
+   47 variableDeclarationList: variableDeclaration .
+   48                        | variableDeclaration . variableDeclarationList
 
-    ID  shift, and go to state 135
+    TEXT         shift, and go to state 7
+    LOGICAL      shift, and go to state 8
+    NUMBERTOKEN  shift, and go to state 9
+    VOID         shift, and go to state 10
+    ID           shift, and go to state 15
+
+    $default  reduce using rule 47 (variableDeclarationList)
+
+    identifier               go to state 118
+    type                     go to state 119
+    variableDeclaration      go to state 120
+    variableDeclarationList  go to state 135
 
 
 State 121
 
-   52 declarationList: variableDeclaration . declarationList
+   49 structDeclaration: STRUCT ID OPENCURLY variableDeclarationList . CLOSECURLY
 
-    UINT8   shift, and go to state 8
-    INT8    shift, and go to state 9
-    UINT16  shift, and go to state 10
-    INT16   shift, and go to state 11
-    UINT32  shift, and go to state 12
-    INT32   shift, and go to state 13
-    UINT64  shift, and go to state 14
-    INT64   shift, and go to state 15
-    BOOL    shift, and go to state 16
-    VOID    shift, and go to state 17
-    ID      shift, and go to state 20
-
-    $default  reduce using rule 51 (declarationList)
-
-    identifier           go to state 119
-    type                 go to state 120
-    variableDeclaration  go to state 121
-    declarationList      go to state 136
+    CLOSECURLY  shift, and go to state 136
 
 
 State 122
 
-   53 structDeclaration: STRUCT ID OPENCURLY declarationList . CLOSECURLY
+   64 ifStatement: IF OPENPAREN booleanExpression CLOSEPAREN . OPENCURLY body CLOSECURLY
+   65            | IF OPENPAREN booleanExpression CLOSEPAREN . OPENCURLY CLOSECURLY
+   66            | IF OPENPAREN booleanExpression CLOSEPAREN . OPENCURLY body CLOSECURLY ELSE OPENCURLY body CLOSECURLY
+   67            | IF OPENPAREN booleanExpression CLOSEPAREN . OPENCURLY body CLOSECURLY ELSE OPENCURLY CLOSECURLY
+   68            | IF OPENPAREN booleanExpression CLOSEPAREN . OPENCURLY CLOSECURLY ELSE OPENCURLY body CLOSECURLY
+   69            | IF OPENPAREN booleanExpression CLOSEPAREN . OPENCURLY CLOSECURLY ELSE OPENCURLY CLOSECURLY
 
-    CLOSECURLY  shift, and go to state 137
+    OPENCURLY  shift, and go to state 137
 
 
 State 123
 
-   71 statement: IF OPENPAREN booleanExpression CLOSEPAREN . OPENCURLY body CLOSECURLY
-   72          | IF OPENPAREN booleanExpression CLOSEPAREN . OPENCURLY body CLOSECURLY ELSE OPENCURLY body CLOSECURLY
+   36 variableAssignment: identifier ASSIGN expression SEMICOLON .
 
-    OPENCURLY  shift, and go to state 138
+    $default  reduce using rule 36 (variableAssignment)
 
 
 State 124
 
-   42 variableAssignment: identifier ASSIGN expression SEMICOLON .
+   46 functionCall: identifier OPENPAREN exprList CLOSEPAREN .
 
-    $default  reduce using rule 42 (variableAssignment)
+    $default  reduce using rule 46 (functionCall)
 
 
 State 125
 
-   48 exprList: exprList COMMA . exprList
+   44 exprList: expression COMMA . exprList
 
-    TRUE       shift, and go to state 5
-    FALSE      shift, and go to state 6
-    NULLTOKEN  shift, and go to state 7
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    OPENPAREN  shift, and go to state 22
+    TRUE                shift, and go to state 5
+    FALSE               shift, and go to state 6
+    NUMBER              shift, and go to state 12
+    SINGLEQUOTEDSTRING  shift, and go to state 13
+    DOUBLEQUOTEDSTRING  shift, and go to state 14
+    ID                  shift, and go to state 15
+    NOT                 shift, and go to state 16
+    OPENPAREN           shift, and go to state 17
 
-    identifier            go to state 47
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 26
-    booleanExpression     go to state 27
-    exprList              go to state 139
-    functionCall          go to state 33
-    structCreation        go to state 35
-    expression            go to state 95
+    identifier            go to state 44
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 21
+    booleanExpression     go to state 22
+    exprList              go to state 138
+    functionCall          go to state 28
+    structInstantiation   go to state 30
+    stringLiteral         go to state 31
+    expression            go to state 92
 
 
 State 126
 
-   50 functionCall: identifier OPENPAREN exprList CLOSEPAREN .
+   51 structInstantiation: identifier OPENCURLY exprList CLOSECURLY .
 
-    $default  reduce using rule 50 (functionCall)
+    $default  reduce using rule 51 (structInstantiation)
 
 
 State 127
-
-   54 structCreation: identifier OPENCURLY exprList CLOSECURLY .
-
-    $default  reduce using rule 54 (structCreation)
-
-
-State 128
 
     7 multiplyExpression: OPENPAREN multiplyExpression . CLOSEPAREN
     8                   | multiplyExpression . TIMES multiplyExpression
     9                   | multiplyExpression . DIVIDE multiplyExpression
 
-    TIMES       shift, and go to state 62
-    DIVIDE      shift, and go to state 63
-    CLOSEPAREN  shift, and go to state 88
+    TIMES       shift, and go to state 59
+    DIVIDE      shift, and go to state 60
+    CLOSEPAREN  shift, and go to state 85
 
 
-State 129
+State 128
 
    11 arithmeticExpression: arithmeticExpression . PLUS arithmeticExpression
    12                     | arithmeticExpression . MINUS arithmeticExpression
    13                     | OPENPAREN arithmeticExpression . CLOSEPAREN
 
-    PLUS        shift, and go to state 64
-    MINUS       shift, and go to state 65
-    CLOSEPAREN  shift, and go to state 89
+    PLUS        shift, and go to state 61
+    MINUS       shift, and go to state 62
+    CLOSEPAREN  shift, and go to state 86
+
+
+State 129
+
+   35 variableDefinition: type ID ASSIGN expression . SEMICOLON
+
+    SEMICOLON  shift, and go to state 139
 
 
 State 130
 
-   41 variableDefinition: type ID ASSIGN expression . SEMICOLON
+   39 functionDeclaration: type ID OPENPAREN CLOSEPAREN . OPENCURLY body CLOSECURLY
+   40                    | type ID OPENPAREN CLOSEPAREN . OPENCURLY CLOSECURLY
 
-    SEMICOLON  shift, and go to state 140
+    OPENCURLY  shift, and go to state 140
 
 
 State 131
 
-   45 functionDeclaration: type ID OPENPAREN CLOSEPAREN . OPENCURLY body CLOSECURLY
+   37 argList: type . ID
+   38        | type . ID COMMA argList
 
-    OPENCURLY  shift, and go to state 141
+    ID  shift, and go to state 141
 
 
 State 132
 
-   43 argList: type . ID
+   41 functionDeclaration: type ID OPENPAREN argList . CLOSEPAREN OPENCURLY body CLOSECURLY
+   42                    | type ID OPENPAREN argList . CLOSEPAREN OPENCURLY CLOSECURLY
 
-    ID  shift, and go to state 142
+    CLOSEPAREN  shift, and go to state 142
 
 
 State 133
 
-   44 argList: argList . COMMA argList
-   46 functionDeclaration: type ID OPENPAREN argList . CLOSEPAREN OPENCURLY body CLOSECURLY
+   60 namespaceDeclaration: NAMESPACE identifier OPENCURLY body CLOSECURLY .
 
-    COMMA       shift, and go to state 143
-    CLOSEPAREN  shift, and go to state 144
+    $default  reduce using rule 60 (namespaceDeclaration)
 
 
 State 134
 
-   61 namespaceDeclaration: NAMESPACE identifier OPENCURLY body CLOSECURLY .
+   34 variableDeclaration: type ID . SEMICOLON
 
-    $default  reduce using rule 61 (namespaceDeclaration)
+    SEMICOLON  shift, and go to state 112
 
 
 State 135
 
-   40 variableDeclaration: type ID . SEMICOLON
+   48 variableDeclarationList: variableDeclaration variableDeclarationList .
 
-    SEMICOLON  shift, and go to state 115
+    $default  reduce using rule 48 (variableDeclarationList)
 
 
 State 136
 
-   52 declarationList: variableDeclaration declarationList .
+   49 structDeclaration: STRUCT ID OPENCURLY variableDeclarationList CLOSECURLY .
 
-    $default  reduce using rule 52 (declarationList)
+    $default  reduce using rule 49 (structDeclaration)
 
 
 State 137
 
-   53 structDeclaration: STRUCT ID OPENCURLY declarationList CLOSECURLY .
+   64 ifStatement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY . body CLOSECURLY
+   65            | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY . CLOSECURLY
+   66            | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY . body CLOSECURLY ELSE OPENCURLY body CLOSECURLY
+   67            | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY . body CLOSECURLY ELSE OPENCURLY CLOSECURLY
+   68            | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY . CLOSECURLY ELSE OPENCURLY body CLOSECURLY
+   69            | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY . CLOSECURLY ELSE OPENCURLY CLOSECURLY
 
-    $default  reduce using rule 53 (structDeclaration)
+    NAMESPACE           shift, and go to state 2
+    STRUCT              shift, and go to state 3
+    IF                  shift, and go to state 4
+    TRUE                shift, and go to state 5
+    FALSE               shift, and go to state 6
+    TEXT                shift, and go to state 7
+    LOGICAL             shift, and go to state 8
+    NUMBERTOKEN         shift, and go to state 9
+    VOID                shift, and go to state 10
+    RETURN              shift, and go to state 11
+    NUMBER              shift, and go to state 12
+    SINGLEQUOTEDSTRING  shift, and go to state 13
+    DOUBLEQUOTEDSTRING  shift, and go to state 14
+    ID                  shift, and go to state 15
+    NOT                 shift, and go to state 16
+    OPENPAREN           shift, and go to state 17
+    CLOSECURLY          shift, and go to state 143
+
+    identifier            go to state 18
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 21
+    booleanExpression     go to state 22
+    type                  go to state 23
+    variableDeclaration   go to state 24
+    variableDefinition    go to state 25
+    variableAssignment    go to state 26
+    functionDeclaration   go to state 27
+    functionCall          go to state 28
+    structDeclaration     go to state 29
+    structInstantiation   go to state 30
+    stringLiteral         go to state 31
+    expression            go to state 32
+    namespaceDeclaration  go to state 33
+    return                go to state 34
+    ifStatement           go to state 35
+    statement             go to state 36
+    body                  go to state 144
 
 
 State 138
 
-   71 statement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY . body CLOSECURLY
-   72          | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY . body CLOSECURLY ELSE OPENCURLY body CLOSECURLY
+   44 exprList: expression COMMA exprList .
 
-    NAMESPACE  shift, and go to state 2
-    STRUCT     shift, and go to state 3
-    IF         shift, and go to state 4
-    TRUE       shift, and go to state 5
-    FALSE      shift, and go to state 6
-    NULLTOKEN  shift, and go to state 7
-    UINT8      shift, and go to state 8
-    INT8       shift, and go to state 9
-    UINT16     shift, and go to state 10
-    INT16      shift, and go to state 11
-    UINT32     shift, and go to state 12
-    INT32      shift, and go to state 13
-    UINT64     shift, and go to state 14
-    INT64      shift, and go to state 15
-    BOOL       shift, and go to state 16
-    VOID       shift, and go to state 17
-    RETURN     shift, and go to state 18
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    OPENPAREN  shift, and go to state 22
-
-    $default  reduce using rule 74 (body)
-
-    identifier            go to state 23
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 26
-    booleanExpression     go to state 27
-    type                  go to state 28
-    variableDeclaration   go to state 29
-    variableDefinition    go to state 30
-    variableAssignment    go to state 31
-    functionDeclaration   go to state 32
-    functionCall          go to state 33
-    structDeclaration     go to state 34
-    structCreation        go to state 35
-    expression            go to state 36
-    namespaceDeclaration  go to state 37
-    return                go to state 38
-    statement             go to state 39
-    body                  go to state 145
+    $default  reduce using rule 44 (exprList)
 
 
 State 139
 
-   48 exprList: exprList . COMMA exprList
-   48         | exprList COMMA exprList .
+   35 variableDefinition: type ID ASSIGN expression SEMICOLON .
 
-    COMMA  shift, and go to state 125
-
-    COMMA     [reduce using rule 48 (exprList)]
-    $default  reduce using rule 48 (exprList)
+    $default  reduce using rule 35 (variableDefinition)
 
 
 State 140
 
-   41 variableDefinition: type ID ASSIGN expression SEMICOLON .
+   39 functionDeclaration: type ID OPENPAREN CLOSEPAREN OPENCURLY . body CLOSECURLY
+   40                    | type ID OPENPAREN CLOSEPAREN OPENCURLY . CLOSECURLY
 
-    $default  reduce using rule 41 (variableDefinition)
+    NAMESPACE           shift, and go to state 2
+    STRUCT              shift, and go to state 3
+    IF                  shift, and go to state 4
+    TRUE                shift, and go to state 5
+    FALSE               shift, and go to state 6
+    TEXT                shift, and go to state 7
+    LOGICAL             shift, and go to state 8
+    NUMBERTOKEN         shift, and go to state 9
+    VOID                shift, and go to state 10
+    RETURN              shift, and go to state 11
+    NUMBER              shift, and go to state 12
+    SINGLEQUOTEDSTRING  shift, and go to state 13
+    DOUBLEQUOTEDSTRING  shift, and go to state 14
+    ID                  shift, and go to state 15
+    NOT                 shift, and go to state 16
+    OPENPAREN           shift, and go to state 17
+    CLOSECURLY          shift, and go to state 145
+
+    identifier            go to state 18
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 21
+    booleanExpression     go to state 22
+    type                  go to state 23
+    variableDeclaration   go to state 24
+    variableDefinition    go to state 25
+    variableAssignment    go to state 26
+    functionDeclaration   go to state 27
+    functionCall          go to state 28
+    structDeclaration     go to state 29
+    structInstantiation   go to state 30
+    stringLiteral         go to state 31
+    expression            go to state 32
+    namespaceDeclaration  go to state 33
+    return                go to state 34
+    ifStatement           go to state 35
+    statement             go to state 36
+    body                  go to state 146
 
 
 State 141
 
-   45 functionDeclaration: type ID OPENPAREN CLOSEPAREN OPENCURLY . body CLOSECURLY
+   37 argList: type ID .
+   38        | type ID . COMMA argList
 
-    NAMESPACE  shift, and go to state 2
-    STRUCT     shift, and go to state 3
-    IF         shift, and go to state 4
-    TRUE       shift, and go to state 5
-    FALSE      shift, and go to state 6
-    NULLTOKEN  shift, and go to state 7
-    UINT8      shift, and go to state 8
-    INT8       shift, and go to state 9
-    UINT16     shift, and go to state 10
-    INT16      shift, and go to state 11
-    UINT32     shift, and go to state 12
-    INT32      shift, and go to state 13
-    UINT64     shift, and go to state 14
-    INT64      shift, and go to state 15
-    BOOL       shift, and go to state 16
-    VOID       shift, and go to state 17
-    RETURN     shift, and go to state 18
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    OPENPAREN  shift, and go to state 22
+    COMMA  shift, and go to state 147
 
-    $default  reduce using rule 74 (body)
-
-    identifier            go to state 23
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 26
-    booleanExpression     go to state 27
-    type                  go to state 28
-    variableDeclaration   go to state 29
-    variableDefinition    go to state 30
-    variableAssignment    go to state 31
-    functionDeclaration   go to state 32
-    functionCall          go to state 33
-    structDeclaration     go to state 34
-    structCreation        go to state 35
-    expression            go to state 36
-    namespaceDeclaration  go to state 37
-    return                go to state 38
-    statement             go to state 39
-    body                  go to state 146
+    $default  reduce using rule 37 (argList)
 
 
 State 142
 
-   43 argList: type ID .
-
-    $default  reduce using rule 43 (argList)
-
-
-State 143
-
-   44 argList: argList COMMA . argList
-
-    UINT8   shift, and go to state 8
-    INT8    shift, and go to state 9
-    UINT16  shift, and go to state 10
-    INT16   shift, and go to state 11
-    UINT32  shift, and go to state 12
-    INT32   shift, and go to state 13
-    UINT64  shift, and go to state 14
-    INT64   shift, and go to state 15
-    BOOL    shift, and go to state 16
-    VOID    shift, and go to state 17
-    ID      shift, and go to state 20
-
-    identifier  go to state 119
-    type        go to state 132
-    argList     go to state 147
-
-
-State 144
-
-   46 functionDeclaration: type ID OPENPAREN argList CLOSEPAREN . OPENCURLY body CLOSECURLY
+   41 functionDeclaration: type ID OPENPAREN argList CLOSEPAREN . OPENCURLY body CLOSECURLY
+   42                    | type ID OPENPAREN argList CLOSEPAREN . OPENCURLY CLOSECURLY
 
     OPENCURLY  shift, and go to state 148
 
 
-State 145
+State 143
 
-   71 statement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body . CLOSECURLY
-   72          | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body . CLOSECURLY ELSE OPENCURLY body CLOSECURLY
+   65 ifStatement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY CLOSECURLY .
+   68            | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY CLOSECURLY . ELSE OPENCURLY body CLOSECURLY
+   69            | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY CLOSECURLY . ELSE OPENCURLY CLOSECURLY
 
-    CLOSECURLY  shift, and go to state 149
+    ELSE  shift, and go to state 149
+
+    $default  reduce using rule 65 (ifStatement)
 
 
-State 146
+State 144
 
-   45 functionDeclaration: type ID OPENPAREN CLOSEPAREN OPENCURLY body . CLOSECURLY
+   64 ifStatement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body . CLOSECURLY
+   66            | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body . CLOSECURLY ELSE OPENCURLY body CLOSECURLY
+   67            | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body . CLOSECURLY ELSE OPENCURLY CLOSECURLY
 
     CLOSECURLY  shift, and go to state 150
 
 
+State 145
+
+   40 functionDeclaration: type ID OPENPAREN CLOSEPAREN OPENCURLY CLOSECURLY .
+
+    $default  reduce using rule 40 (functionDeclaration)
+
+
+State 146
+
+   39 functionDeclaration: type ID OPENPAREN CLOSEPAREN OPENCURLY body . CLOSECURLY
+
+    CLOSECURLY  shift, and go to state 151
+
+
 State 147
 
-   44 argList: argList . COMMA argList
-   44        | argList COMMA argList .
+   38 argList: type ID COMMA . argList
 
-    COMMA  shift, and go to state 143
+    TEXT         shift, and go to state 7
+    LOGICAL      shift, and go to state 8
+    NUMBERTOKEN  shift, and go to state 9
+    VOID         shift, and go to state 10
+    ID           shift, and go to state 15
 
-    COMMA     [reduce using rule 44 (argList)]
-    $default  reduce using rule 44 (argList)
+    identifier  go to state 118
+    type        go to state 131
+    argList     go to state 152
 
 
 State 148
 
-   46 functionDeclaration: type ID OPENPAREN argList CLOSEPAREN OPENCURLY . body CLOSECURLY
+   41 functionDeclaration: type ID OPENPAREN argList CLOSEPAREN OPENCURLY . body CLOSECURLY
+   42                    | type ID OPENPAREN argList CLOSEPAREN OPENCURLY . CLOSECURLY
 
-    NAMESPACE  shift, and go to state 2
-    STRUCT     shift, and go to state 3
-    IF         shift, and go to state 4
-    TRUE       shift, and go to state 5
-    FALSE      shift, and go to state 6
-    NULLTOKEN  shift, and go to state 7
-    UINT8      shift, and go to state 8
-    INT8       shift, and go to state 9
-    UINT16     shift, and go to state 10
-    INT16      shift, and go to state 11
-    UINT32     shift, and go to state 12
-    INT32      shift, and go to state 13
-    UINT64     shift, and go to state 14
-    INT64      shift, and go to state 15
-    BOOL       shift, and go to state 16
-    VOID       shift, and go to state 17
-    RETURN     shift, and go to state 18
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    OPENPAREN  shift, and go to state 22
+    NAMESPACE           shift, and go to state 2
+    STRUCT              shift, and go to state 3
+    IF                  shift, and go to state 4
+    TRUE                shift, and go to state 5
+    FALSE               shift, and go to state 6
+    TEXT                shift, and go to state 7
+    LOGICAL             shift, and go to state 8
+    NUMBERTOKEN         shift, and go to state 9
+    VOID                shift, and go to state 10
+    RETURN              shift, and go to state 11
+    NUMBER              shift, and go to state 12
+    SINGLEQUOTEDSTRING  shift, and go to state 13
+    DOUBLEQUOTEDSTRING  shift, and go to state 14
+    ID                  shift, and go to state 15
+    NOT                 shift, and go to state 16
+    OPENPAREN           shift, and go to state 17
+    CLOSECURLY          shift, and go to state 153
 
-    $default  reduce using rule 74 (body)
-
-    identifier            go to state 23
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 26
-    booleanExpression     go to state 27
-    type                  go to state 28
-    variableDeclaration   go to state 29
-    variableDefinition    go to state 30
-    variableAssignment    go to state 31
-    functionDeclaration   go to state 32
-    functionCall          go to state 33
-    structDeclaration     go to state 34
-    structCreation        go to state 35
-    expression            go to state 36
-    namespaceDeclaration  go to state 37
-    return                go to state 38
-    statement             go to state 39
-    body                  go to state 151
+    identifier            go to state 18
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 21
+    booleanExpression     go to state 22
+    type                  go to state 23
+    variableDeclaration   go to state 24
+    variableDefinition    go to state 25
+    variableAssignment    go to state 26
+    functionDeclaration   go to state 27
+    functionCall          go to state 28
+    structDeclaration     go to state 29
+    structInstantiation   go to state 30
+    stringLiteral         go to state 31
+    expression            go to state 32
+    namespaceDeclaration  go to state 33
+    return                go to state 34
+    ifStatement           go to state 35
+    statement             go to state 36
+    body                  go to state 154
 
 
 State 149
 
-   71 statement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY .
-   72          | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY . ELSE OPENCURLY body CLOSECURLY
+   68 ifStatement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY CLOSECURLY ELSE . OPENCURLY body CLOSECURLY
+   69            | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY CLOSECURLY ELSE . OPENCURLY CLOSECURLY
 
-    ELSE  shift, and go to state 152
-
-    $default  reduce using rule 71 (statement)
+    OPENCURLY  shift, and go to state 155
 
 
 State 150
 
-   45 functionDeclaration: type ID OPENPAREN CLOSEPAREN OPENCURLY body CLOSECURLY .
+   64 ifStatement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY .
+   66            | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY . ELSE OPENCURLY body CLOSECURLY
+   67            | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY . ELSE OPENCURLY CLOSECURLY
 
-    $default  reduce using rule 45 (functionDeclaration)
+    ELSE  shift, and go to state 156
+
+    $default  reduce using rule 64 (ifStatement)
 
 
 State 151
 
-   46 functionDeclaration: type ID OPENPAREN argList CLOSEPAREN OPENCURLY body . CLOSECURLY
+   39 functionDeclaration: type ID OPENPAREN CLOSEPAREN OPENCURLY body CLOSECURLY .
 
-    CLOSECURLY  shift, and go to state 153
+    $default  reduce using rule 39 (functionDeclaration)
 
 
 State 152
 
-   72 statement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY ELSE . OPENCURLY body CLOSECURLY
+   38 argList: type ID COMMA argList .
 
-    OPENCURLY  shift, and go to state 154
+    $default  reduce using rule 38 (argList)
 
 
 State 153
 
-   46 functionDeclaration: type ID OPENPAREN argList CLOSEPAREN OPENCURLY body CLOSECURLY .
+   42 functionDeclaration: type ID OPENPAREN argList CLOSEPAREN OPENCURLY CLOSECURLY .
 
-    $default  reduce using rule 46 (functionDeclaration)
+    $default  reduce using rule 42 (functionDeclaration)
 
 
 State 154
 
-   72 statement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY ELSE OPENCURLY . body CLOSECURLY
+   41 functionDeclaration: type ID OPENPAREN argList CLOSEPAREN OPENCURLY body . CLOSECURLY
 
-    NAMESPACE  shift, and go to state 2
-    STRUCT     shift, and go to state 3
-    IF         shift, and go to state 4
-    TRUE       shift, and go to state 5
-    FALSE      shift, and go to state 6
-    NULLTOKEN  shift, and go to state 7
-    UINT8      shift, and go to state 8
-    INT8       shift, and go to state 9
-    UINT16     shift, and go to state 10
-    INT16      shift, and go to state 11
-    UINT32     shift, and go to state 12
-    INT32      shift, and go to state 13
-    UINT64     shift, and go to state 14
-    INT64      shift, and go to state 15
-    BOOL       shift, and go to state 16
-    VOID       shift, and go to state 17
-    RETURN     shift, and go to state 18
-    NUMBER     shift, and go to state 19
-    ID         shift, and go to state 20
-    NOT        shift, and go to state 21
-    OPENPAREN  shift, and go to state 22
-
-    $default  reduce using rule 74 (body)
-
-    identifier            go to state 23
-    multiplyExpression    go to state 25
-    arithmeticExpression  go to state 26
-    booleanExpression     go to state 27
-    type                  go to state 28
-    variableDeclaration   go to state 29
-    variableDefinition    go to state 30
-    variableAssignment    go to state 31
-    functionDeclaration   go to state 32
-    functionCall          go to state 33
-    structDeclaration     go to state 34
-    structCreation        go to state 35
-    expression            go to state 36
-    namespaceDeclaration  go to state 37
-    return                go to state 38
-    statement             go to state 39
-    body                  go to state 155
+    CLOSECURLY  shift, and go to state 157
 
 
 State 155
 
-   72 statement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY ELSE OPENCURLY body . CLOSECURLY
+   68 ifStatement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY CLOSECURLY ELSE OPENCURLY . body CLOSECURLY
+   69            | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY CLOSECURLY ELSE OPENCURLY . CLOSECURLY
 
-    CLOSECURLY  shift, and go to state 156
+    NAMESPACE           shift, and go to state 2
+    STRUCT              shift, and go to state 3
+    IF                  shift, and go to state 4
+    TRUE                shift, and go to state 5
+    FALSE               shift, and go to state 6
+    TEXT                shift, and go to state 7
+    LOGICAL             shift, and go to state 8
+    NUMBERTOKEN         shift, and go to state 9
+    VOID                shift, and go to state 10
+    RETURN              shift, and go to state 11
+    NUMBER              shift, and go to state 12
+    SINGLEQUOTEDSTRING  shift, and go to state 13
+    DOUBLEQUOTEDSTRING  shift, and go to state 14
+    ID                  shift, and go to state 15
+    NOT                 shift, and go to state 16
+    OPENPAREN           shift, and go to state 17
+    CLOSECURLY          shift, and go to state 158
+
+    identifier            go to state 18
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 21
+    booleanExpression     go to state 22
+    type                  go to state 23
+    variableDeclaration   go to state 24
+    variableDefinition    go to state 25
+    variableAssignment    go to state 26
+    functionDeclaration   go to state 27
+    functionCall          go to state 28
+    structDeclaration     go to state 29
+    structInstantiation   go to state 30
+    stringLiteral         go to state 31
+    expression            go to state 32
+    namespaceDeclaration  go to state 33
+    return                go to state 34
+    ifStatement           go to state 35
+    statement             go to state 36
+    body                  go to state 159
 
 
 State 156
 
-   72 statement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY ELSE OPENCURLY body CLOSECURLY .
+   66 ifStatement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY ELSE . OPENCURLY body CLOSECURLY
+   67            | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY ELSE . OPENCURLY CLOSECURLY
 
-    $default  reduce using rule 72 (statement)
+    OPENCURLY  shift, and go to state 160
+
+
+State 157
+
+   41 functionDeclaration: type ID OPENPAREN argList CLOSEPAREN OPENCURLY body CLOSECURLY .
+
+    $default  reduce using rule 41 (functionDeclaration)
+
+
+State 158
+
+   69 ifStatement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY CLOSECURLY ELSE OPENCURLY CLOSECURLY .
+
+    $default  reduce using rule 69 (ifStatement)
+
+
+State 159
+
+   68 ifStatement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY CLOSECURLY ELSE OPENCURLY body . CLOSECURLY
+
+    CLOSECURLY  shift, and go to state 161
+
+
+State 160
+
+   66 ifStatement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY ELSE OPENCURLY . body CLOSECURLY
+   67            | IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY ELSE OPENCURLY . CLOSECURLY
+
+    NAMESPACE           shift, and go to state 2
+    STRUCT              shift, and go to state 3
+    IF                  shift, and go to state 4
+    TRUE                shift, and go to state 5
+    FALSE               shift, and go to state 6
+    TEXT                shift, and go to state 7
+    LOGICAL             shift, and go to state 8
+    NUMBERTOKEN         shift, and go to state 9
+    VOID                shift, and go to state 10
+    RETURN              shift, and go to state 11
+    NUMBER              shift, and go to state 12
+    SINGLEQUOTEDSTRING  shift, and go to state 13
+    DOUBLEQUOTEDSTRING  shift, and go to state 14
+    ID                  shift, and go to state 15
+    NOT                 shift, and go to state 16
+    OPENPAREN           shift, and go to state 17
+    CLOSECURLY          shift, and go to state 162
+
+    identifier            go to state 18
+    multiplyExpression    go to state 20
+    arithmeticExpression  go to state 21
+    booleanExpression     go to state 22
+    type                  go to state 23
+    variableDeclaration   go to state 24
+    variableDefinition    go to state 25
+    variableAssignment    go to state 26
+    functionDeclaration   go to state 27
+    functionCall          go to state 28
+    structDeclaration     go to state 29
+    structInstantiation   go to state 30
+    stringLiteral         go to state 31
+    expression            go to state 32
+    namespaceDeclaration  go to state 33
+    return                go to state 34
+    ifStatement           go to state 35
+    statement             go to state 36
+    body                  go to state 163
+
+
+State 161
+
+   68 ifStatement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY CLOSECURLY ELSE OPENCURLY body CLOSECURLY .
+
+    $default  reduce using rule 68 (ifStatement)
+
+
+State 162
+
+   67 ifStatement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY ELSE OPENCURLY CLOSECURLY .
+
+    $default  reduce using rule 67 (ifStatement)
+
+
+State 163
+
+   66 ifStatement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY ELSE OPENCURLY body . CLOSECURLY
+
+    CLOSECURLY  shift, and go to state 164
+
+
+State 164
+
+   66 ifStatement: IF OPENPAREN booleanExpression CLOSEPAREN OPENCURLY body CLOSECURLY ELSE OPENCURLY body CLOSECURLY .
+
+    $default  reduce using rule 66 (ifStatement)

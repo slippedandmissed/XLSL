@@ -15,16 +15,9 @@ digit [0-9]
 "else"                      { return ELSE; }
 "true"                      { return TRUE; }
 "false"                     { return FALSE; }
-"null"                      { return NULLTOKEN; }
-"uint8"                     { return UINT8; }
-"int8"                      { return INT8; }
-"uint16"                    { return UINT16; }
-"int16"                     { return INT16; }
-"uint32"                    { return UINT32; }
-"int32"                     { return INT32; }
-"uint64"                    { return UINT64; }
-"int64"                     { return INT64; }
-"bool"                      { return BOOL; }
+"text"                      { return TEXT; }
+"number"                    { return NUMBERTOKEN; }
+"logical"                   { return LOGICAL; }
 "void"                      { return VOID; }
 "return"                    { return RETURN; }
 "-"?{digit}+(\.{digit}*)?   { yylval.tokenText = malloc(sizeof(yytext)); strcpy(yylval.tokenText, (yytext)); return NUMBER; }
@@ -50,6 +43,8 @@ digit [0-9]
 \/\*(.*\n)*.*\*\/           { ; } 
 [ \t]*                      { ; }
 "\n"                        { ; }
+["].*["]                    { yylval.tokenText = malloc(sizeof(yytext)); strcpy(yylval.tokenText, (yytext)); return DOUBLEQUOTEDSTRING; }
+['].*[']                    { yylval.tokenText = malloc(sizeof(yytext)); strcpy(yylval.tokenText, (yytext)); return SINGLEQUOTEDSTRING; }
 "("                         { return OPENPAREN; }
 ")"                         { return CLOSEPAREN; }
 "{"                         { return OPENCURLY; }
