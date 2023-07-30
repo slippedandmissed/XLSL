@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <string>
-#include "parser/node_types.h"
+#include "../parser/node_types.h"
 
 namespace AST {
   #define X(NodeType) std::string nodeToString(NodeType const &, int indent);

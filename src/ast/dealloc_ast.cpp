@@ -18,7 +18,6 @@ void AST::deallocTree(IdentifierNode *node)
   case ID_NODE_TYPE_SELF:
     break;
   case ID_NODE_TYPE_TEXT:
-  AST:
     deallocTree(node->text);
     break;
   }

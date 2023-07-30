@@ -1,7 +1,7 @@
 #include <iostream>
 #include "parser/node_types.h"
-#include "print_ast.hpp"
-#include "dealloc_ast.hpp"
+#include "ast/print_ast.hpp"
+#include "ast/dealloc_ast.hpp"
 
 extern "C" ProgramNode *head;
 extern "C" int yyparse();
