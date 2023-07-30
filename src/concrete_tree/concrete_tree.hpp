@@ -14,6 +14,7 @@ namespace ConcreteTree
 
   struct Namespace
   {
+    std::string toString(int indent) const;
     inline static std::shared_ptr<Namespace> createFromAST(std::shared_ptr<Namespace> currentNamespace, IdentifierTextNode *node)
     {
       return Namespace::createFromAST(currentNamespace, node, true);
@@ -30,6 +31,7 @@ namespace ConcreteTree
 
   struct Type
   {
+    std::string toString(int indent) const;
     enum TypeType
     {
       NUMBER,
@@ -45,6 +47,7 @@ namespace ConcreteTree
 
   struct Variable
   {
+    std::string toString(int indent) const;
     static std::shared_ptr<Variable> localizeFromAST(std::shared_ptr<Namespace>, Scope const &, IdentifierNode *);
     void populateChildrenFromStruct();
     std::shared_ptr<Namespace> namespace_;
@@ -55,6 +58,7 @@ namespace ConcreteTree
 
   struct Function
   {
+    std::string toString(int indent) const;
     static std::shared_ptr<Function> localizeFromAST(std::shared_ptr<Namespace>, Scope const &, IdentifierNode *);
     void populateFromAST(Scope, FunctionDeclarationNode *);
     std::shared_ptr<Namespace> namespace_;
@@ -66,6 +70,7 @@ namespace ConcreteTree
 
   struct Struct
   {
+    std::string toString(int indent) const;
     static std::shared_ptr<Struct> localizeFromAST(std::shared_ptr<Namespace>, Scope const &, IdentifierNode *);
     void populateFromAST(Scope const &, StructDeclarationNode *);
     std::shared_ptr<Namespace> namespace_;
@@ -75,6 +80,7 @@ namespace ConcreteTree
 
   struct Scope
   {
+    std::string toString(int indent) const;
     std::vector<std::shared_ptr<Function>> functions;
     std::vector<std::shared_ptr<Struct>> structs;
     std::vector<std::shared_ptr<Variable>> variables;
@@ -83,6 +89,7 @@ namespace ConcreteTree
 
   struct Expression
   {
+    std::string toString(int indent) const;
     enum ExpressionType
     {
       TRUE_LITERAL,
@@ -147,6 +154,7 @@ namespace ConcreteTree
 
   struct Statement
   {
+    std::string toString(int indent) const;
     enum StatementType
     {
       RETURN,
@@ -160,6 +168,7 @@ namespace ConcreteTree
 
   struct Block
   {
+    std::string toString(int indent) const;
     void populateFromAST(std::shared_ptr<Namespace>, Scope &, BodyNode *);
     std::vector<std::shared_ptr<Statement>> statements;
     std::unique_ptr<Block> next;
@@ -167,8 +176,12 @@ namespace ConcreteTree
 
   struct Program
   {
+    std::string toString(int indent) const;
     std::shared_ptr<Namespace> globalNamespace;
     std::unique_ptr<Block> block;
     static std::unique_ptr<Program> fromAST(ProgramNode *);
   };
+
 }
+
+std::ostream &operator<<(std::ostream &, ConcreteTree::Program const &);

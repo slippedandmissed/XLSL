@@ -2,7 +2,7 @@
 #include "parser/node_types.h"
 #include "ast/print_ast.hpp"
 #include "ast/dealloc_ast.hpp"
-#include "concrete_tree/program.hpp"
+#include "concrete_tree/concrete_tree.hpp"
 
 extern "C" ProgramNode *head;
 extern "C" int yyparse();
@@ -19,5 +19,9 @@ int main() {
   auto program = ConcreteTree::Program::fromAST(ast);
 
   AST::deallocTree(ast);
+
+  std::cout << "Concrete Tree:" << std::endl << *program << std::endl;
+  std::cout << std::endl;
+
   return 0;
 }

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <string.h>
-#include "program.hpp"
+#include "concrete_tree.hpp"
 #include "../ast/print_ast.hpp"
 #include "../ast/dealloc_ast.hpp"
 
