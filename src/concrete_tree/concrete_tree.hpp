@@ -58,7 +58,8 @@ namespace ConcreteTree
 
   struct Function
   {
-    std::string toString(int indent) const;
+    inline std::string toString(int indent) const { return this->toString(indent, false); }
+    std::string toString(int indent, bool brief) const;
     static std::shared_ptr<Function> localizeFromAST(std::shared_ptr<Namespace>, Scope const &, IdentifierNode *);
     void populateFromAST(Scope, FunctionDeclarationNode *);
     std::shared_ptr<Namespace> namespace_;
@@ -122,33 +123,33 @@ namespace ConcreteTree
     struct FunctionCallData
     {
       std::shared_ptr<Function> function;
-      std::vector<std::unique_ptr<Expression>> arguments;
+      std::vector<std::shared_ptr<Expression>> arguments;
     };
     struct BinaryOpData
     {
-      std::unique_ptr<Expression> left;
-      std::unique_ptr<Expression> right;
+      std::shared_ptr<Expression> left;
+      std::shared_ptr<Expression> right;
     };
     struct StructInstantiationData
     {
       std::shared_ptr<Struct> struct_;
-      std::vector<std::unique_ptr<Expression>> arguments;
+      std::vector<std::shared_ptr<Expression>> arguments;
     };
     struct TernaryData
     {
-      std::unique_ptr<Expression> condition;
-      std::unique_ptr<Expression> ifTrue;
-      std::unique_ptr<Expression> ifFalse;
+      std::shared_ptr<Expression> condition;
+      std::shared_ptr<Expression> ifTrue;
+      std::shared_ptr<Expression> ifFalse;
     };
 
     std::variant<
         std::string,
         std::shared_ptr<Variable>,
-        std::unique_ptr<FunctionCallData>,
-        std::unique_ptr<BinaryOpData>,
-        std::unique_ptr<Expression>,
-        std::unique_ptr<StructInstantiationData>,
-        std::unique_ptr<TernaryData>>
+        FunctionCallData,
+        BinaryOpData,
+        std::shared_ptr<Expression>,
+        StructInstantiationData,
+        TernaryData>
         value;
   };
 

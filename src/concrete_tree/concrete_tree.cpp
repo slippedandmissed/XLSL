@@ -419,13 +419,9 @@ void Function::populateFromAST(Scope currentScope, FunctionDeclarationNode *node
     currentScope.variables.push_back(argument);
     currentArg = currentArg->next;
   }
-  if (node->body == nullptr)
+  this->block = std::make_unique<Block>();
+  if (node->body != nullptr)
   {
-    this->block = nullptr;
-  }
-  else
-  {
-    this->block = std::make_unique<Block>();
     this->block->populateFromAST(this->namespace_, currentScope, node->body);
   }
 }
@@ -484,23 +480,23 @@ void Expression::populateFromAST(std::shared_ptr<Namespace> currentNamespace, Sc
   case EXPR_NODE_TYPE_MINUS:
   {
     this->type = Expression::ExpressionType::MINUS;
-    auto value = std::make_unique<Expression::BinaryOpData>();
-    value->left = std::make_unique<Expression>();
-    value->right = std::make_unique<Expression>();
-    value->left->populateFromAST(currentNamespace, currentScope, node->value.sides.left);
-    value->right->populateFromAST(currentNamespace, currentScope, node->value.sides.right);
-    this->value = std::move(value);
+    Expression::BinaryOpData value;
+    value.left = std::make_unique<Expression>();
+    value.right = std::make_unique<Expression>();
+    value.left->populateFromAST(currentNamespace, currentScope, node->value.sides.left);
+    value.right->populateFromAST(currentNamespace, currentScope, node->value.sides.right);
+    this->value = value;
     break;
   }
   case EXPR_NODE_TYPE_PLUS:
   {
     this->type = Expression::ExpressionType::PLUS;
-    auto value = std::make_unique<Expression::BinaryOpData>();
-    value->left = std::make_unique<Expression>();
-    value->right = std::make_unique<Expression>();
-    value->left->populateFromAST(currentNamespace, currentScope, node->value.sides.left);
-    value->right->populateFromAST(currentNamespace, currentScope, node->value.sides.right);
-    this->value = std::move(value);
+    Expression::BinaryOpData value;
+    value.left = std::make_unique<Expression>();
+    value.right = std::make_unique<Expression>();
+    value.left->populateFromAST(currentNamespace, currentScope, node->value.sides.left);
+    value.right->populateFromAST(currentNamespace, currentScope, node->value.sides.right);
+    this->value = value;
     break;
   }
   case EXPR_NODE_TYPE_STRING_LITERAL:
@@ -512,31 +508,31 @@ void Expression::populateFromAST(std::shared_ptr<Namespace> currentNamespace, Sc
   case EXPR_NODE_TYPE_STRUCT_INSTANTIATION:
   {
     this->type = Expression::ExpressionType::STRUCT_INSTANTIATION;
-    auto value = std::make_unique<Expression::StructInstantiationData>();
-    value->struct_ = Struct::localizeFromAST(currentNamespace, currentScope, node->value.structInstantiation->identifier);
+    Expression::StructInstantiationData value;
+    value.struct_ = Struct::localizeFromAST(currentNamespace, currentScope, node->value.structInstantiation->identifier);
     auto currentArg = node->value.structInstantiation->arguments;
     while (currentArg != nullptr)
     {
-      auto argument = std::make_unique<Expression>();
+      auto argument = std::make_shared<Expression>();
       argument->populateFromAST(currentNamespace, currentScope, currentArg->expression);
-      value->arguments.push_back(std::move(argument));
+      value.arguments.push_back(argument);
       currentArg = currentArg->next;
     }
-    this->value = std::move(value);
+    this->value = value;
     break;
   }
   case EXPR_NODE_TYPE_TERNARY:
   {
     this->type = Expression::ExpressionType::TERNARY;
-    auto value = std::make_unique<Expression::TernaryData>();
-    value->condition = std::make_unique<Expression>();
-    value->ifTrue = std::make_unique<Expression>();
-    value->ifFalse = std::make_unique<Expression>();
+    Expression::TernaryData value;
+    value.condition = std::make_shared<Expression>();
+    value.ifTrue = std::make_shared<Expression>();
+    value.ifFalse = std::make_shared<Expression>();
 
-    value->condition->populateFromAST(currentNamespace, currentScope, node->value.ternary->condition);
-    value->ifTrue->populateFromAST(currentNamespace, currentScope, node->value.ternary->ifTrue);
-    value->ifFalse->populateFromAST(currentNamespace, currentScope, node->value.ternary->ifFalse);
-    this->value = std::move(value);
+    value.condition->populateFromAST(currentNamespace, currentScope, node->value.ternary->condition);
+    value.ifTrue->populateFromAST(currentNamespace, currentScope, node->value.ternary->ifTrue);
+    value.ifFalse->populateFromAST(currentNamespace, currentScope, node->value.ternary->ifFalse);
+    this->value = value;
     break;
   }
   }
@@ -549,39 +545,39 @@ void Expression::populateFromAST(std::shared_ptr<Namespace> currentNamespace, Sc
   case MUL_NODE_TYPE_DIVIDE:
   {
     this->type = Expression::ExpressionType::DIVIDE;
-    auto value = std::make_unique<Expression::BinaryOpData>();
-    value->left = std::make_unique<Expression>();
-    value->right = std::make_unique<Expression>();
-    value->left->populateFromAST(currentNamespace, currentScope, node->value.sides.left);
-    value->right->populateFromAST(currentNamespace, currentScope, node->value.sides.right);
-    this->value = std::move(value);
+    Expression::BinaryOpData value;
+    value.left = std::make_unique<Expression>();
+    value.right = std::make_unique<Expression>();
+    value.left->populateFromAST(currentNamespace, currentScope, node->value.sides.left);
+    value.right->populateFromAST(currentNamespace, currentScope, node->value.sides.right);
+    this->value = value;
     break;
   }
   case MUL_NODE_TYPE_TIMES:
   {
     this->type = Expression::ExpressionType::TIMES;
-    auto value = std::make_unique<Expression::BinaryOpData>();
-    value->left = std::make_unique<Expression>();
-    value->right = std::make_unique<Expression>();
-    value->left->populateFromAST(currentNamespace, currentScope, node->value.sides.left);
-    value->right->populateFromAST(currentNamespace, currentScope, node->value.sides.right);
-    this->value = std::move(value);
+    Expression::BinaryOpData value;
+    value.left = std::make_unique<Expression>();
+    value.right = std::make_unique<Expression>();
+    value.left->populateFromAST(currentNamespace, currentScope, node->value.sides.left);
+    value.right->populateFromAST(currentNamespace, currentScope, node->value.sides.right);
+    this->value = value;
     break;
   }
   case MUL_NODE_TYPE_FUNCTION_CALL:
   {
     this->type = Expression::ExpressionType::FUNCTION_CALL;
-    auto value = std::make_unique<Expression::FunctionCallData>();
-    value->function = Function::localizeFromAST(currentNamespace, currentScope, node->value.functionCall->functionIdentifier);
+    Expression::FunctionCallData value;
+    value.function = Function::localizeFromAST(currentNamespace, currentScope, node->value.functionCall->functionIdentifier);
     auto currentArg = node->value.functionCall->arguments;
     while (currentArg != nullptr)
     {
-      auto argument = std::make_unique<Expression>();
+      auto argument = std::make_shared<Expression>();
       argument->populateFromAST(currentNamespace, currentScope, currentArg->expression);
-      value->arguments.push_back(std::move(argument));
+      value.arguments.push_back(argument);
       currentArg = currentArg->next;
     }
-    this->value = std::move(value);
+    this->value = value;
     break;
   }
   case MUL_NODE_TYPE_IDENTIFIER:
@@ -616,96 +612,97 @@ void Expression::populateFromAST(std::shared_ptr<Namespace> currentNamespace, Sc
   case BOOL_NODE_TYPE_EQ:
   {
     this->type = Expression::ExpressionType::EQ;
-    auto value = std::make_unique<Expression::BinaryOpData>();
-    value->left = std::make_unique<Expression>();
-    value->right = std::make_unique<Expression>();
-    value->left->populateFromAST(currentNamespace, currentScope, node->value.children.left);
-    value->right->populateFromAST(currentNamespace, currentScope, node->value.children.right);
-    this->value = std::move(value);
+    Expression::BinaryOpData value;
+    value.left = std::make_unique<Expression>();
+    value.right = std::make_unique<Expression>();
+    value.left->populateFromAST(currentNamespace, currentScope, node->value.children.left);
+    value.right->populateFromAST(currentNamespace, currentScope, node->value.children.right);
+    this->value = value;
     break;
   }
   case BOOL_NODE_TYPE_NEQ:
   {
     this->type = Expression::ExpressionType::NEQ;
-    auto value = std::make_unique<Expression::BinaryOpData>();
-    value->left = std::make_unique<Expression>();
-    value->right = std::make_unique<Expression>();
-    value->left->populateFromAST(currentNamespace, currentScope, node->value.children.left);
-    value->right->populateFromAST(currentNamespace, currentScope, node->value.children.right);
-    this->value = std::move(value);
+    Expression::BinaryOpData value;
+    value.left = std::make_unique<Expression>();
+    value.right = std::make_unique<Expression>();
+    value.left->populateFromAST(currentNamespace, currentScope, node->value.children.left);
+    value.right->populateFromAST(currentNamespace, currentScope, node->value.children.right);
+    this->value = value;
     break;
   }
   case BOOL_NODE_TYPE_GT:
   {
     this->type = Expression::ExpressionType::GT;
-    auto value = std::make_unique<Expression::BinaryOpData>();
-    value->left = std::make_unique<Expression>();
-    value->right = std::make_unique<Expression>();
-    value->left->populateFromAST(currentNamespace, currentScope, node->value.children.left);
-    value->right->populateFromAST(currentNamespace, currentScope, node->value.children.right);
-    this->value = std::move(value);
+    Expression::BinaryOpData value;
+    value.left = std::make_unique<Expression>();
+    value.right = std::make_unique<Expression>();
+    value.left->populateFromAST(currentNamespace, currentScope, node->value.children.left);
+    value.right->populateFromAST(currentNamespace, currentScope, node->value.children.right);
+    this->value = value;
     break;
   }
   case BOOL_NODE_TYPE_GE:
   {
     this->type = Expression::ExpressionType::GE;
-    auto value = std::make_unique<Expression::BinaryOpData>();
-    value->left = std::make_unique<Expression>();
-    value->right = std::make_unique<Expression>();
-    value->left->populateFromAST(currentNamespace, currentScope, node->value.children.left);
-    value->right->populateFromAST(currentNamespace, currentScope, node->value.children.right);
-    this->value = std::move(value);
+    Expression::BinaryOpData value;
+    value.left = std::make_unique<Expression>();
+    value.right = std::make_unique<Expression>();
+    value.left->populateFromAST(currentNamespace, currentScope, node->value.children.left);
+    value.right->populateFromAST(currentNamespace, currentScope, node->value.children.right);
+    this->value = value;
     break;
   }
   case BOOL_NODE_TYPE_LT:
   {
     this->type = Expression::ExpressionType::LT;
-    auto value = std::make_unique<Expression::BinaryOpData>();
-    value->left = std::make_unique<Expression>();
-    value->right = std::make_unique<Expression>();
-    value->left->populateFromAST(currentNamespace, currentScope, node->value.children.left);
-    value->right->populateFromAST(currentNamespace, currentScope, node->value.children.right);
-    this->value = std::move(value);
+    Expression::BinaryOpData value;
+    value.left = std::make_unique<Expression>();
+    value.right = std::make_unique<Expression>();
+    value.left->populateFromAST(currentNamespace, currentScope, node->value.children.left);
+    value.right->populateFromAST(currentNamespace, currentScope, node->value.children.right);
+    this->value = value;
     break;
   }
   case BOOL_NODE_TYPE_LE:
   {
     this->type = Expression::ExpressionType::LE;
-    auto value = std::make_unique<Expression::BinaryOpData>();
-    value->left = std::make_unique<Expression>();
-    value->right = std::make_unique<Expression>();
-    value->left->populateFromAST(currentNamespace, currentScope, node->value.children.left);
-    value->right->populateFromAST(currentNamespace, currentScope, node->value.children.right);
-    this->value = std::move(value);
+    Expression::BinaryOpData value;
+    value.left = std::make_unique<Expression>();
+    value.right = std::make_unique<Expression>();
+    value.left->populateFromAST(currentNamespace, currentScope, node->value.children.left);
+    value.right->populateFromAST(currentNamespace, currentScope, node->value.children.right);
+    this->value = value;
     break;
   }
   case BOOL_NODE_TYPE_AND:
   {
     this->type = Expression::ExpressionType::AND;
-    auto value = std::make_unique<Expression::BinaryOpData>();
-    value->left = std::make_unique<Expression>();
-    value->right = std::make_unique<Expression>();
-    value->left->populateFromAST(currentNamespace, currentScope, node->value.children.left);
-    value->right->populateFromAST(currentNamespace, currentScope, node->value.children.right);
-    this->value = std::move(value);
+    Expression::BinaryOpData value;
+    value.left = std::make_unique<Expression>();
+    value.right = std::make_unique<Expression>();
+    value.left->populateFromAST(currentNamespace, currentScope, node->value.children.left);
+    value.right->populateFromAST(currentNamespace, currentScope, node->value.children.right);
+    this->value = value;
     break;
   }
   case BOOL_NODE_TYPE_OR:
   {
     this->type = Expression::ExpressionType::OR;
-    auto value = std::make_unique<Expression::BinaryOpData>();
-    value->left = std::make_unique<Expression>();
-    value->right = std::make_unique<Expression>();
-    value->left->populateFromAST(currentNamespace, currentScope, node->value.children.left);
-    value->right->populateFromAST(currentNamespace, currentScope, node->value.children.right);
-    this->value = std::move(value);
+    Expression::BinaryOpData value;
+    value.left = std::make_unique<Expression>();
+    value.right = std::make_unique<Expression>();
+    value.left->populateFromAST(currentNamespace, currentScope, node->value.children.left);
+    value.right->populateFromAST(currentNamespace, currentScope, node->value.children.right);
+    this->value = value;
     break;
   }
   case BOOL_NODE_TYPE_NOT:
   {
     this->type = Expression::ExpressionType::NOT;
-    this->value = std::make_unique<Expression>();
-    std::get<std::unique_ptr<Expression>>(this->value)->populateFromAST(currentNamespace, currentScope, node->value.child);
+    auto value = std::make_shared<Expression>();
+    value->populateFromAST(currentNamespace, currentScope, node->value.child);
+    this->value = value;
     break;
   }
   case BOOL_NODE_TYPE_IDENTIFIER:
