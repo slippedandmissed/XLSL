@@ -171,7 +171,6 @@ namespace ConcreteTree
     std::string toString(int indent) const;
     void populateFromAST(std::shared_ptr<Namespace>, Scope &, BodyNode *);
     std::vector<std::shared_ptr<Statement>> statements;
-    std::unique_ptr<Block> next;
   };
 
   struct Program
