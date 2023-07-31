@@ -95,8 +95,8 @@ identifier: identifierText {{ $$=(struct IdentifierNode *)malloc(sizeof(struct I
   | SELF {{ $$=(struct IdentifierNode *)malloc(sizeof(struct IdentifierNode)); $$->type=ID_NODE_TYPE_SELF; $$->text=NULL; }}
   ;
 
-imports: IMPORT identifier SEMICOLON { $$=(struct ImportsNode *)malloc(sizeof(struct ImportsNode)); $$->identifier=$2; $$->next=NULL; }
-  | IMPORT identifier SEMICOLON imports { $$=(struct ImportsNode *)malloc(sizeof(struct ImportsNode)); $$->identifier=$2; $$->next=$4; }
+imports: IMPORT stringLiteral SEMICOLON { $$=(struct ImportsNode *)malloc(sizeof(struct ImportsNode)); $$->path=$2; $$->next=NULL; }
+  | IMPORT stringLiteral SEMICOLON imports { $$=(struct ImportsNode *)malloc(sizeof(struct ImportsNode)); $$->path=$2; $$->next=$4; }
   ;
 
 multiplyExpression: NUMBER { $$=(struct MultiplyExpressionNode *)malloc(sizeof(struct MultiplyExpressionNode)); $$->type = MUL_NODE_TYPE_LITERAL; $$->value.literalValue=malloc(strlen($1)+1); strcpy($$->value.literalValue, $1); }

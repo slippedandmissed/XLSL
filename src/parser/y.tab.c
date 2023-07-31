@@ -562,7 +562,7 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  69
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   450
+#define YYLAST   439
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  41
@@ -680,20 +680,20 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-     248,    17,    17,     1,   -70,   -70,   -70,   -70,   -70,   -70,
-     -70,   299,   -70,   -70,   -70,     4,   327,   327,   327,   -70,
-     -13,   282,    31,   373,     2,    30,   -70,   -70,   -70,   -70,
-     -70,   -70,   -70,   -70,   -70,   282,   -70,    57,    32,    22,
-      23,   -70,    19,   385,    47,   421,   421,    29,   343,   -27,
-      94,   327,   -70,    11,    11,   327,   327,   327,   327,   327,
-     327,   327,   327,   327,   327,   -70,   327,   -21,   -70,   -70,
-      63,   136,     3,   -70,   -70,   -70,   -70,   -70,   -70,   409,
-      35,    34,    11,    38,    31,    31,   421,   421,   421,   421,
-     421,   421,   421,   421,   421,   421,   360,   327,    21,   -70,
-     -70,    36,   -70,   -70,    51,   109,    37,   327,   -70,   -70,
-      29,   327,   397,    41,    52,    43,   -70,    60,   -70,   -70,
-     -70,   421,   -70,   173,    64,    56,   -70,   -70,    59,   109,
-     210,   -70,   -70,   -70,    66,   -70
+     248,    48,     1,    -8,   -70,   -70,   -70,   -70,   -70,   -70,
+     -70,   101,   -70,   -70,   -70,   -32,   316,   316,   316,   -70,
+      -7,   282,    45,   362,    -2,     5,   -70,   -70,   -70,   -70,
+     -70,   -70,   -70,   -70,   -70,   282,   -70,    27,    15,    -1,
+      16,   -70,    10,   374,    40,   410,   410,    -4,   332,    21,
+     299,   316,   -70,    44,    44,   316,   316,   316,   316,   316,
+     316,   316,   316,   316,   316,   -70,   316,     6,   -70,   -70,
+      64,   136,     2,   -70,   -70,   -70,   -70,   -70,   -70,   398,
+      30,    33,    44,    37,    45,    45,   410,   410,   410,   410,
+     410,   410,   410,   410,   410,   410,   349,   316,    14,   -70,
+     -70,    35,   -70,   -70,    53,   148,    36,   316,   -70,   -70,
+      -4,   316,   386,    38,    63,    55,   -70,    62,   -70,   -70,
+     -70,   410,   -70,   173,    65,    57,   -70,   -70,    59,   148,
+     210,   -70,   -70,   -70,    60,   -70
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -720,9 +720,9 @@ static const yytype_int8 yydefact[] =
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -70,    53,     0,    33,   -12,    28,    86,   -69,   -70,   -70,
-     -17,   -70,   -44,   -70,    12,   -70,   -70,   -70,   -70,   -70,
-     -70,   -70,   -16,   -70
+     -70,    58,     0,    31,   -13,    28,    86,   -69,   -70,   -70,
+     -23,   -70,   -45,   -70,     7,   -70,   -70,   110,   -70,   -70,
+     -70,   -70,   -20,   -70
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
@@ -738,23 +738,23 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int16 yytable[] =
 {
-      20,    38,    39,   104,   -40,    52,    47,    81,    66,     4,
-      97,    77,     7,     8,     9,    10,    98,     4,    40,    68,
-      15,    20,   -25,     4,    50,    12,    51,     4,    15,   114,
-       7,     8,     9,    10,    15,    20,   104,    66,    15,    43,
-      44,    84,    85,   102,    45,    46,    48,    67,    82,    53,
-      54,    53,    54,    83,    83,   101,    50,    69,    51,   113,
-     114,    71,    72,   120,    15,    70,     1,    75,   117,   124,
-     110,    20,   103,   108,   109,    50,   116,   119,    79,    79,
-     123,   125,    83,    86,    87,    88,    89,    90,    91,    92,
-      93,    94,    95,   126,    96,   130,   129,    74,   103,   131,
-       4,     5,     6,    99,    49,   103,   135,   128,    12,    13,
-      14,    15,   132,    16,   134,     4,     0,   118,     7,     8,
-       9,    10,     0,    20,    17,   112,    15,     0,     0,   103,
-      20,    18,    78,     0,     0,    79,     0,     0,     0,   121,
+      20,    52,    39,   104,    44,    47,    81,     4,     4,    40,
+     -40,     7,     8,     9,    10,    68,    53,    54,    15,    15,
+       4,    20,    67,     7,     8,     9,    10,    69,   -25,   114,
+      50,    15,    51,    66,    75,    20,   104,    97,    71,    43,
+      84,    85,   102,    98,    45,    46,    48,    50,    70,    51,
+       4,   101,   113,    83,    83,    72,    66,    15,    12,    77,
+     114,    15,   120,    13,    14,    53,    54,     1,   108,   110,
+     117,    20,   103,   109,    50,   116,   119,   123,    79,    79,
+     124,    82,    83,    86,    87,    88,    89,    90,    91,    92,
+      93,    94,    95,   125,    96,   126,   130,   129,   103,   131,
+     135,    99,    74,   128,    49,   103,   132,     4,     5,     6,
+     134,    38,   118,     0,     0,    12,    13,    14,    15,     0,
+      16,     0,     0,    20,     0,   112,     0,     0,     0,   103,
+      20,    17,     0,     0,    41,    79,     0,     0,    18,   121,
        2,     3,     4,     5,     6,     7,     8,     9,    10,    11,
-      12,    13,    14,    15,     0,    16,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,    17,     0,     0,     0,
+      12,    13,    14,    15,     4,    16,     0,     7,     8,     9,
+      10,     0,     0,     0,     0,    15,    17,     0,     0,     0,
        0,     0,     0,    18,     0,     0,   100,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,     0,    16,     0,     0,     0,     0,     0,     0,     0,
@@ -770,41 +770,39 @@ static const yytype_int16 yytable[] =
        6,     7,     8,     9,    10,    11,    12,    13,    14,    15,
        0,    16,     0,     0,     0,     4,     5,     6,     0,     0,
        0,     0,    17,    12,    13,    14,    15,     0,    16,    18,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,    17,
-       0,     0,    41,     4,     5,     6,    18,     0,     0,     0,
-       0,    12,    13,    14,    15,     0,    16,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,    17,     0,     0,
-       0,    55,    56,     0,    18,    57,    58,    59,    60,    61,
-      62,    63,    64,     0,     0,     0,     0,     0,    55,    56,
-       0,    76,    57,    58,    59,    60,    61,    62,    63,    64,
-       0,    55,    56,     0,   111,    57,    58,    59,    60,    61,
-      62,    63,    64,    55,    56,     0,    65,    57,    58,    59,
-      60,    61,    62,    63,    64,    55,    56,     0,    73,    57,
-      58,    59,    60,    61,    62,    63,    64,    55,    56,     0,
-     122,    57,    58,    59,    60,    61,    62,    63,    64,    55,
-      56,   107,     0,    57,    58,    59,    60,    61,    62,    63,
-      64
+       0,     0,     4,     5,     6,     0,     0,     0,     0,    17,
+      12,    13,    14,    15,     0,    16,    18,    78,     0,     0,
+       0,     0,     0,     0,     0,     0,    17,     0,     0,     0,
+      55,    56,     0,    18,    57,    58,    59,    60,    61,    62,
+      63,    64,     0,     0,     0,     0,     0,    55,    56,     0,
+      76,    57,    58,    59,    60,    61,    62,    63,    64,     0,
+      55,    56,     0,   111,    57,    58,    59,    60,    61,    62,
+      63,    64,    55,    56,     0,    65,    57,    58,    59,    60,
+      61,    62,    63,    64,    55,    56,     0,    73,    57,    58,
+      59,    60,    61,    62,    63,    64,    55,    56,     0,   122,
+      57,    58,    59,    60,    61,    62,    63,    64,    55,    56,
+     107,     0,    57,    58,    59,    60,    61,    62,    63,    64
 };
 
 static const yytype_int16 yycheck[] =
 {
-       0,     1,     2,    72,    17,    21,    18,    51,    35,     6,
-      31,    38,     9,    10,    11,    12,    37,     6,    17,    35,
-      17,    21,    35,     6,    37,    14,    39,     6,    17,    98,
-       9,    10,    11,    12,    17,    35,   105,    35,    17,    11,
-      36,    53,    54,    40,    16,    17,    18,    17,    37,    20,
-      21,    20,    21,    53,    54,    71,    37,     0,    39,    38,
-     129,    39,    39,   107,    17,    33,     3,    38,    17,    17,
-      82,    71,    72,    38,    40,    37,    40,    40,    50,    51,
-      39,    38,    82,    55,    56,    57,    58,    59,    60,    61,
-      62,    63,    64,    33,    66,    39,    32,    44,    98,    40,
-       6,     7,     8,    70,    18,   105,    40,   123,    14,    15,
-      16,    17,   129,    19,   130,     6,    -1,   105,     9,    10,
-      11,    12,    -1,   123,    30,    97,    17,    -1,    -1,   129,
-     130,    37,    38,    -1,    -1,   107,    -1,    -1,    -1,   111,
+       0,    21,     2,    72,    36,    18,    51,     6,     6,    17,
+      17,     9,    10,    11,    12,    35,    20,    21,    17,    17,
+       6,    21,    17,     9,    10,    11,    12,     0,    35,    98,
+      37,    17,    39,    35,    38,    35,   105,    31,    39,    11,
+      53,    54,    40,    37,    16,    17,    18,    37,    33,    39,
+       6,    71,    38,    53,    54,    39,    35,    17,    14,    38,
+     129,    17,   107,    15,    16,    20,    21,     3,    38,    82,
+      17,    71,    72,    40,    37,    40,    40,    39,    50,    51,
+      17,    37,    82,    55,    56,    57,    58,    59,    60,    61,
+      62,    63,    64,    38,    66,    33,    39,    32,    98,    40,
+      40,    70,    44,   123,    18,   105,   129,     6,     7,     8,
+     130,     1,   105,    -1,    -1,    14,    15,    16,    17,    -1,
+      19,    -1,    -1,   123,    -1,    97,    -1,    -1,    -1,   129,
+     130,    30,    -1,    -1,    33,   107,    -1,    -1,    37,   111,
        4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
-      14,    15,    16,    17,    -1,    19,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    30,    -1,    -1,    -1,
+      14,    15,    16,    17,     6,    19,    -1,     9,    10,    11,
+      12,    -1,    -1,    -1,    -1,    17,    30,    -1,    -1,    -1,
       -1,    -1,    -1,    37,    -1,    -1,    40,     4,     5,     6,
        7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
       17,    -1,    19,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
@@ -820,20 +818,18 @@ static const yytype_int16 yycheck[] =
        8,     9,    10,    11,    12,    13,    14,    15,    16,    17,
       -1,    19,    -1,    -1,    -1,     6,     7,     8,    -1,    -1,
       -1,    -1,    30,    14,    15,    16,    17,    -1,    19,    37,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    30,
-      -1,    -1,    33,     6,     7,     8,    37,    -1,    -1,    -1,
-      -1,    14,    15,    16,    17,    -1,    19,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    30,    -1,    -1,
-      -1,    18,    19,    -1,    37,    22,    23,    24,    25,    26,
-      27,    28,    29,    -1,    -1,    -1,    -1,    -1,    18,    19,
-      -1,    38,    22,    23,    24,    25,    26,    27,    28,    29,
-      -1,    18,    19,    -1,    34,    22,    23,    24,    25,    26,
-      27,    28,    29,    18,    19,    -1,    33,    22,    23,    24,
-      25,    26,    27,    28,    29,    18,    19,    -1,    33,    22,
-      23,    24,    25,    26,    27,    28,    29,    18,    19,    -1,
-      33,    22,    23,    24,    25,    26,    27,    28,    29,    18,
-      19,    32,    -1,    22,    23,    24,    25,    26,    27,    28,
-      29
+      -1,    -1,     6,     7,     8,    -1,    -1,    -1,    -1,    30,
+      14,    15,    16,    17,    -1,    19,    37,    38,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    30,    -1,    -1,    -1,
+      18,    19,    -1,    37,    22,    23,    24,    25,    26,    27,
+      28,    29,    -1,    -1,    -1,    -1,    -1,    18,    19,    -1,
+      38,    22,    23,    24,    25,    26,    27,    28,    29,    -1,
+      18,    19,    -1,    34,    22,    23,    24,    25,    26,    27,
+      28,    29,    18,    19,    -1,    33,    22,    23,    24,    25,
+      26,    27,    28,    29,    18,    19,    -1,    33,    22,    23,
+      24,    25,    26,    27,    28,    29,    18,    19,    -1,    33,
+      22,    23,    24,    25,    26,    27,    28,    29,    18,    19,
+      32,    -1,    22,    23,    24,    25,    26,    27,    28,    29
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -843,7 +839,7 @@ static const yytype_int8 yystos[] =
        0,     3,     4,     5,     6,     7,     8,     9,    10,    11,
       12,    13,    14,    15,    16,    17,    19,    30,    37,    42,
       43,    44,    45,    46,    47,    48,    50,    52,    54,    56,
-      57,    58,    59,    60,    61,    62,    63,    64,    43,    43,
+      57,    58,    59,    60,    61,    62,    63,    64,    58,    43,
       17,    33,    43,    46,    36,    46,    46,    45,    46,    47,
       37,    39,    63,    20,    21,    18,    19,    22,    23,    24,
       25,    26,    27,    28,    29,    33,    35,    17,    63,     0,
@@ -1577,455 +1573,455 @@ yyreduce:
   case 2:
 #line 90 "parser.y"
                    { (yyval.identifierText)=(struct IdentifierTextNode *)malloc(sizeof(struct IdentifierTextNode)); (yyval.identifierText)->text=malloc(strlen((yyvsp[0].tokenText))+1); strcpy((yyval.identifierText)->text, (yyvsp[0].tokenText)); (yyval.identifierText)->next = NULL; }
-#line 1581 "y.tab.c"
+#line 1577 "y.tab.c"
     break;
 
   case 3:
 #line 91 "parser.y"
                           { (yyval.identifierText)=(struct IdentifierTextNode *)malloc(sizeof(struct IdentifierTextNode)); (yyval.identifierText)->text=malloc(strlen((yyvsp[-2].tokenText))+1); strcpy((yyval.identifierText)->text, (yyvsp[-2].tokenText)); (yyval.identifierText)->next = (yyvsp[0].identifierText); }
-#line 1587 "y.tab.c"
+#line 1583 "y.tab.c"
     break;
 
   case 4:
 #line 94 "parser.y"
                            {{ (yyval.identifier)=(struct IdentifierNode *)malloc(sizeof(struct IdentifierNode)); (yyval.identifier)->type=ID_NODE_TYPE_TEXT; (yyval.identifier)->text=(yyvsp[0].identifierText); }}
-#line 1593 "y.tab.c"
+#line 1589 "y.tab.c"
     break;
 
   case 5:
 #line 95 "parser.y"
          {{ (yyval.identifier)=(struct IdentifierNode *)malloc(sizeof(struct IdentifierNode)); (yyval.identifier)->type=ID_NODE_TYPE_SELF; (yyval.identifier)->text=NULL; }}
-#line 1599 "y.tab.c"
+#line 1595 "y.tab.c"
     break;
 
   case 6:
 #line 98 "parser.y"
-                                     { (yyval.imports)=(struct ImportsNode *)malloc(sizeof(struct ImportsNode)); (yyval.imports)->identifier=(yyvsp[-1].identifier); (yyval.imports)->next=NULL; }
-#line 1605 "y.tab.c"
+                                        { (yyval.imports)=(struct ImportsNode *)malloc(sizeof(struct ImportsNode)); (yyval.imports)->path=(yyvsp[-1].stringLiteral); (yyval.imports)->next=NULL; }
+#line 1601 "y.tab.c"
     break;
 
   case 7:
 #line 99 "parser.y"
-                                        { (yyval.imports)=(struct ImportsNode *)malloc(sizeof(struct ImportsNode)); (yyval.imports)->identifier=(yyvsp[-2].identifier); (yyval.imports)->next=(yyvsp[0].imports); }
-#line 1611 "y.tab.c"
+                                           { (yyval.imports)=(struct ImportsNode *)malloc(sizeof(struct ImportsNode)); (yyval.imports)->path=(yyvsp[-2].stringLiteral); (yyval.imports)->next=(yyvsp[0].imports); }
+#line 1607 "y.tab.c"
     break;
 
   case 8:
 #line 102 "parser.y"
                            { (yyval.multiplyExpression)=(struct MultiplyExpressionNode *)malloc(sizeof(struct MultiplyExpressionNode)); (yyval.multiplyExpression)->type = MUL_NODE_TYPE_LITERAL; (yyval.multiplyExpression)->value.literalValue=malloc(strlen((yyvsp[0].tokenText))+1); strcpy((yyval.multiplyExpression)->value.literalValue, (yyvsp[0].tokenText)); }
-#line 1617 "y.tab.c"
+#line 1613 "y.tab.c"
     break;
 
   case 9:
 #line 103 "parser.y"
                { (yyval.multiplyExpression)=(struct MultiplyExpressionNode *)malloc(sizeof(struct MultiplyExpressionNode)); (yyval.multiplyExpression)->type = MUL_NODE_TYPE_IDENTIFIER; (yyval.multiplyExpression)->value.identifier = (yyvsp[0].identifier); }
-#line 1623 "y.tab.c"
+#line 1619 "y.tab.c"
     break;
 
   case 10:
 #line 104 "parser.y"
                  { (yyval.multiplyExpression)=(struct MultiplyExpressionNode *)malloc(sizeof(struct MultiplyExpressionNode)); (yyval.multiplyExpression)->type = MUL_NODE_TYPE_FUNCTION_CALL; (yyval.multiplyExpression)->value.functionCall = (yyvsp[0].functionCall); }
-#line 1629 "y.tab.c"
+#line 1625 "y.tab.c"
     break;
 
   case 11:
 #line 105 "parser.y"
                                             { (yyval.multiplyExpression) = (yyvsp[-1].multiplyExpression); }
-#line 1635 "y.tab.c"
+#line 1631 "y.tab.c"
     break;
 
   case 12:
 #line 106 "parser.y"
                                                 { (yyval.multiplyExpression)=(struct MultiplyExpressionNode *)malloc(sizeof(struct MultiplyExpressionNode)); (yyval.multiplyExpression)->type = MUL_NODE_TYPE_TIMES; (yyval.multiplyExpression)->value.sides.left = (yyvsp[-2].multiplyExpression); (yyval.multiplyExpression)->value.sides.right = (yyvsp[0].multiplyExpression); }
-#line 1641 "y.tab.c"
+#line 1637 "y.tab.c"
     break;
 
   case 13:
 #line 107 "parser.y"
                                                  { (yyval.multiplyExpression)=(struct MultiplyExpressionNode *)malloc(sizeof(struct MultiplyExpressionNode)); (yyval.multiplyExpression)->type = MUL_NODE_TYPE_DIVIDE; (yyval.multiplyExpression)->value.sides.left = (yyvsp[-2].multiplyExpression); (yyval.multiplyExpression)->value.sides.right = (yyvsp[0].multiplyExpression); }
-#line 1647 "y.tab.c"
+#line 1643 "y.tab.c"
     break;
 
   case 14:
 #line 110 "parser.y"
                                { (yyval.expression)=(struct ExpressionNode *)malloc(sizeof(struct ExpressionNode)); (yyval.expression)->type = EXPR_NODE_TYPE_MULTIPLY_EXPRESSION; (yyval.expression)->value.multiplyExpression = (yyvsp[0].multiplyExpression); }
-#line 1653 "y.tab.c"
+#line 1649 "y.tab.c"
     break;
 
   case 15:
 #line 111 "parser.y"
                                { (yyval.expression)=(struct ExpressionNode *)malloc(sizeof(struct ExpressionNode)); (yyval.expression)->type = EXPR_NODE_TYPE_PLUS; (yyval.expression)->value.sides.left = (yyvsp[-2].expression); (yyval.expression)->value.sides.right = (yyvsp[0].expression); }
-#line 1659 "y.tab.c"
+#line 1655 "y.tab.c"
     break;
 
   case 16:
 #line 112 "parser.y"
                                 { (yyval.expression)=(struct ExpressionNode *)malloc(sizeof(struct ExpressionNode)); (yyval.expression)->type = EXPR_NODE_TYPE_MINUS; (yyval.expression)->value.sides.left = (yyvsp[-2].expression); (yyval.expression)->value.sides.right = (yyvsp[0].expression); }
-#line 1665 "y.tab.c"
+#line 1661 "y.tab.c"
     break;
 
   case 17:
 #line 113 "parser.y"
                      { (yyval.expression)=(struct ExpressionNode *)malloc(sizeof(struct ExpressionNode)); (yyval.expression)->type = EXPR_NODE_TYPE_MINUS; (yyval.expression)->value.sides.left=makeZeroExpressionNode(); (yyval.expression)->value.sides.right = (yyvsp[0].expression); }
-#line 1671 "y.tab.c"
+#line 1667 "y.tab.c"
     break;
 
   case 18:
 #line 114 "parser.y"
                       {{ (yyval.expression)=(struct ExpressionNode *)malloc(sizeof(struct ExpressionNode)); (yyval.expression)->type=EXPR_NODE_TYPE_BOOLEAN; (yyval.expression)->value.booleanExpression=(yyvsp[0].booleanExpression); }}
-#line 1677 "y.tab.c"
+#line 1673 "y.tab.c"
     break;
 
   case 19:
 #line 115 "parser.y"
                         {{ (yyval.expression)=(struct ExpressionNode *)malloc(sizeof(struct ExpressionNode)); (yyval.expression)->type=EXPR_NODE_TYPE_STRUCT_INSTANTIATION; (yyval.expression)->value.structInstantiation=(yyvsp[0].structInstantiation); }}
-#line 1683 "y.tab.c"
+#line 1679 "y.tab.c"
     break;
 
   case 20:
 #line 116 "parser.y"
                   {{ (yyval.expression)=(struct ExpressionNode *)malloc(sizeof(struct ExpressionNode)); (yyval.expression)->type=EXPR_NODE_TYPE_STRING_LITERAL; (yyval.expression)->value.stringLiteral=(yyvsp[0].stringLiteral); }}
-#line 1689 "y.tab.c"
+#line 1685 "y.tab.c"
     break;
 
   case 21:
 #line 117 "parser.y"
             {{ (yyval.expression)=(struct ExpressionNode *)malloc(sizeof(struct ExpressionNode)); (yyval.expression)->type=EXPR_NODE_TYPE_TERNARY; (yyval.expression)->value.ternary=(yyvsp[0].ternary); }}
-#line 1695 "y.tab.c"
+#line 1691 "y.tab.c"
     break;
 
   case 22:
 #line 118 "parser.y"
                                     { (yyval.expression) = (yyvsp[-1].expression); }
-#line 1701 "y.tab.c"
+#line 1697 "y.tab.c"
     break;
 
   case 23:
 #line 121 "parser.y"
                         { (yyval.booleanExpression)=(struct BooleanExpressionNode *)malloc(sizeof(struct BooleanExpressionNode)); (yyval.booleanExpression)->type = BOOL_NODE_TYPE_TRUE; }
-#line 1707 "y.tab.c"
+#line 1703 "y.tab.c"
     break;
 
   case 24:
 #line 122 "parser.y"
           { (yyval.booleanExpression)=(struct BooleanExpressionNode *)malloc(sizeof(struct BooleanExpressionNode)); (yyval.booleanExpression)->type = BOOL_NODE_TYPE_FALSE; }
-#line 1713 "y.tab.c"
+#line 1709 "y.tab.c"
     break;
 
   case 25:
 #line 123 "parser.y"
                { (yyval.booleanExpression)=(struct BooleanExpressionNode *)malloc(sizeof(struct BooleanExpressionNode)); (yyval.booleanExpression)->type = BOOL_NODE_TYPE_IDENTIFIER; (yyval.booleanExpression)->value.identifier = (yyvsp[0].identifier); }
-#line 1719 "y.tab.c"
+#line 1715 "y.tab.c"
     break;
 
   case 26:
 #line 124 "parser.y"
                                            { (yyval.booleanExpression) = (yyvsp[-1].booleanExpression); }
-#line 1725 "y.tab.c"
+#line 1721 "y.tab.c"
     break;
 
   case 27:
 #line 125 "parser.y"
                              { (yyval.booleanExpression)=(struct BooleanExpressionNode *)malloc(sizeof(struct BooleanExpressionNode)); (yyval.booleanExpression)->type = BOOL_NODE_TYPE_EQ; (yyval.booleanExpression)->value.children.left = (yyvsp[-2].expression); (yyval.booleanExpression)->value.children.right = (yyvsp[0].expression); }
-#line 1731 "y.tab.c"
+#line 1727 "y.tab.c"
     break;
 
   case 28:
 #line 126 "parser.y"
                               { (yyval.booleanExpression)=(struct BooleanExpressionNode *)malloc(sizeof(struct BooleanExpressionNode)); (yyval.booleanExpression)->type = BOOL_NODE_TYPE_NEQ; (yyval.booleanExpression)->value.children.left = (yyvsp[-2].expression); (yyval.booleanExpression)->value.children.right = (yyvsp[0].expression); }
-#line 1737 "y.tab.c"
+#line 1733 "y.tab.c"
     break;
 
   case 29:
 #line 127 "parser.y"
                              { (yyval.booleanExpression)=(struct BooleanExpressionNode *)malloc(sizeof(struct BooleanExpressionNode)); (yyval.booleanExpression)->type = BOOL_NODE_TYPE_LT; (yyval.booleanExpression)->value.children.left = (yyvsp[-2].expression); (yyval.booleanExpression)->value.children.right = (yyvsp[0].expression); }
-#line 1743 "y.tab.c"
+#line 1739 "y.tab.c"
     break;
 
   case 30:
 #line 128 "parser.y"
                              { (yyval.booleanExpression)=(struct BooleanExpressionNode *)malloc(sizeof(struct BooleanExpressionNode)); (yyval.booleanExpression)->type = BOOL_NODE_TYPE_GT; (yyval.booleanExpression)->value.children.left = (yyvsp[-2].expression); (yyval.booleanExpression)->value.children.right = (yyvsp[0].expression); }
-#line 1749 "y.tab.c"
+#line 1745 "y.tab.c"
     break;
 
   case 31:
 #line 129 "parser.y"
                              { (yyval.booleanExpression)=(struct BooleanExpressionNode *)malloc(sizeof(struct BooleanExpressionNode)); (yyval.booleanExpression)->type = BOOL_NODE_TYPE_LE; (yyval.booleanExpression)->value.children.left = (yyvsp[-2].expression); (yyval.booleanExpression)->value.children.right = (yyvsp[0].expression); }
-#line 1755 "y.tab.c"
+#line 1751 "y.tab.c"
     break;
 
   case 32:
 #line 130 "parser.y"
                              { (yyval.booleanExpression)=(struct BooleanExpressionNode *)malloc(sizeof(struct BooleanExpressionNode)); (yyval.booleanExpression)->type = BOOL_NODE_TYPE_GE; (yyval.booleanExpression)->value.children.left = (yyvsp[-2].expression); (yyval.booleanExpression)->value.children.right = (yyvsp[0].expression); }
-#line 1761 "y.tab.c"
+#line 1757 "y.tab.c"
     break;
 
   case 33:
 #line 131 "parser.y"
                    { (yyval.booleanExpression)=(struct BooleanExpressionNode *)malloc(sizeof(struct BooleanExpressionNode)); (yyval.booleanExpression)->type = BOOL_NODE_TYPE_NOT; (yyval.booleanExpression)->value.child = (yyvsp[0].expression); }
-#line 1767 "y.tab.c"
+#line 1763 "y.tab.c"
     break;
 
   case 34:
 #line 132 "parser.y"
                               { (yyval.booleanExpression)=(struct BooleanExpressionNode *)malloc(sizeof(struct BooleanExpressionNode)); (yyval.booleanExpression)->type = BOOL_NODE_TYPE_AND; (yyval.booleanExpression)->value.children.left = (yyvsp[-2].expression); (yyval.booleanExpression)->value.children.right = (yyvsp[0].expression); }
-#line 1773 "y.tab.c"
+#line 1769 "y.tab.c"
     break;
 
   case 35:
 #line 133 "parser.y"
                              { (yyval.booleanExpression)=(struct BooleanExpressionNode *)malloc(sizeof(struct BooleanExpressionNode)); (yyval.booleanExpression)->type = BOOL_NODE_TYPE_OR; (yyval.booleanExpression)->value.children.left = (yyvsp[-2].expression); (yyval.booleanExpression)->value.children.right = (yyvsp[0].expression); }
-#line 1779 "y.tab.c"
+#line 1775 "y.tab.c"
     break;
 
   case 36:
 #line 136 "parser.y"
            { (yyval.type)=(struct TypeNode *)malloc(sizeof(struct TypeNode)); (yyval.type)->type = TYPE_NODE_TYPE_TEXT; }
-#line 1785 "y.tab.c"
+#line 1781 "y.tab.c"
     break;
 
   case 37:
 #line 137 "parser.y"
                 { (yyval.type)=(struct TypeNode *)malloc(sizeof(struct TypeNode)); (yyval.type)->type = TYPE_NODE_TYPE_NUMBER; }
-#line 1791 "y.tab.c"
+#line 1787 "y.tab.c"
     break;
 
   case 38:
 #line 138 "parser.y"
             { (yyval.type)=(struct TypeNode *)malloc(sizeof(struct TypeNode)); (yyval.type)->type = TYPE_NODE_TYPE_LOGICAL; }
-#line 1797 "y.tab.c"
+#line 1793 "y.tab.c"
     break;
 
   case 39:
 #line 139 "parser.y"
          { (yyval.type)=(struct TypeNode *)malloc(sizeof(struct TypeNode)); (yyval.type)->type = TYPE_NODE_TYPE_VOID; }
-#line 1803 "y.tab.c"
+#line 1799 "y.tab.c"
     break;
 
   case 40:
 #line 140 "parser.y"
                { (yyval.type)=(struct TypeNode *)malloc(sizeof(struct TypeNode)); (yyval.type)->type = TYPE_NODE_TYPE_IDENTIFIER; (yyval.type)->identifier = (yyvsp[0].identifier); }
-#line 1809 "y.tab.c"
+#line 1805 "y.tab.c"
     break;
 
   case 41:
 #line 143 "parser.y"
                                        { (yyval.variableDeclaration)=(struct VariableDeclarationNode *)malloc(sizeof(struct VariableDeclarationNode)); (yyval.variableDeclaration)->variableType=(yyvsp[-2].type); (yyval.variableDeclaration)->name=malloc(strlen((yyvsp[-1].tokenText))+1); strcpy((yyval.variableDeclaration)->name, (yyvsp[-1].tokenText)); }
-#line 1815 "y.tab.c"
+#line 1811 "y.tab.c"
     break;
 
   case 42:
 #line 146 "parser.y"
                                                         {{ (yyval.variableDefinition)=(struct VariableDefinitionNode *)malloc(sizeof(struct VariableDefinitionNode)); (yyval.variableDefinition)->variableType=(yyvsp[-4].type); (yyval.variableDefinition)->name=malloc(strlen((yyvsp[-3].tokenText))+1); strcpy((yyval.variableDefinition)->name, (yyvsp[-3].tokenText)); (yyval.variableDefinition)->expression=(yyvsp[-1].expression); }}
-#line 1821 "y.tab.c"
+#line 1817 "y.tab.c"
     break;
 
   case 43:
 #line 149 "parser.y"
                  { (yyval.argList)=(struct ArgListNode *)malloc(sizeof(struct ArgListNode)); (yyval.argList)->argumentType=(yyvsp[-1].type); (yyval.argList)->argumentName=malloc(strlen((yyvsp[0].tokenText))+1); strcpy((yyval.argList)->argumentName, (yyvsp[0].tokenText)); (yyval.argList)->next=NULL; }
-#line 1827 "y.tab.c"
+#line 1823 "y.tab.c"
     break;
 
   case 44:
 #line 150 "parser.y"
                           { (yyval.argList)=(struct ArgListNode *)malloc(sizeof(struct ArgListNode)); (yyval.argList)->argumentType=(yyvsp[-3].type); (yyval.argList)->argumentName=malloc(strlen((yyvsp[-2].tokenText))+1); strcpy((yyval.argList)->argumentName, (yyvsp[-2].tokenText)); (yyval.argList)->next=(yyvsp[0].argList); }
-#line 1833 "y.tab.c"
+#line 1829 "y.tab.c"
     break;
 
   case 45:
 #line 153 "parser.y"
                                                                             { (yyval.functionDeclaration)=(struct FunctionDeclarationNode *)malloc(sizeof(struct FunctionDeclarationNode)); (yyval.functionDeclaration)->returnType=(yyvsp[-6].type); (yyval.functionDeclaration)->name=malloc(strlen((yyvsp[-5].tokenText))+1); strcpy((yyval.functionDeclaration)->name, (yyvsp[-5].tokenText)); (yyval.functionDeclaration)->argList=NULL; (yyval.functionDeclaration)->body=(yyvsp[-1].body); }
-#line 1839 "y.tab.c"
+#line 1835 "y.tab.c"
     break;
 
   case 46:
 #line 154 "parser.y"
                                                       { (yyval.functionDeclaration)=(struct FunctionDeclarationNode *)malloc(sizeof(struct FunctionDeclarationNode)); (yyval.functionDeclaration)->returnType=(yyvsp[-5].type); (yyval.functionDeclaration)->name=malloc(strlen((yyvsp[-4].tokenText))+1); strcpy((yyval.functionDeclaration)->name, (yyvsp[-4].tokenText)); (yyval.functionDeclaration)->argList=NULL; (yyval.functionDeclaration)->body=NULL; }
-#line 1845 "y.tab.c"
+#line 1841 "y.tab.c"
     break;
 
   case 47:
 #line 155 "parser.y"
                                                                    { (yyval.functionDeclaration)=(struct FunctionDeclarationNode *)malloc(sizeof(struct FunctionDeclarationNode)); (yyval.functionDeclaration)->returnType=(yyvsp[-7].type); (yyval.functionDeclaration)->name=malloc(strlen((yyvsp[-6].tokenText))+1); strcpy((yyval.functionDeclaration)->name, (yyvsp[-6].tokenText)); (yyval.functionDeclaration)->argList=(yyvsp[-4].argList); (yyval.functionDeclaration)->body=(yyvsp[-1].body); }
-#line 1851 "y.tab.c"
+#line 1847 "y.tab.c"
     break;
 
   case 48:
 #line 156 "parser.y"
                                                               { (yyval.functionDeclaration)=(struct FunctionDeclarationNode *)malloc(sizeof(struct FunctionDeclarationNode)); (yyval.functionDeclaration)->returnType=(yyvsp[-6].type); (yyval.functionDeclaration)->name=malloc(strlen((yyvsp[-5].tokenText))+1); strcpy((yyval.functionDeclaration)->name, (yyvsp[-5].tokenText)); (yyval.functionDeclaration)->argList=(yyvsp[-3].argList); (yyval.functionDeclaration)->body=NULL; }
-#line 1857 "y.tab.c"
+#line 1853 "y.tab.c"
     break;
 
   case 49:
 #line 159 "parser.y"
                      {{ (yyval.exprList)=(struct ExpressionListNode *)malloc(sizeof(struct ExpressionListNode)); (yyval.exprList)->expression=(yyvsp[0].expression); (yyval.exprList)->next=NULL; }}
-#line 1863 "y.tab.c"
+#line 1859 "y.tab.c"
     break;
 
   case 50:
 #line 160 "parser.y"
                               {{ (yyval.exprList)=(struct ExpressionListNode *)malloc(sizeof(struct ExpressionListNode)); (yyval.exprList)->expression=(yyvsp[-2].expression); (yyval.exprList)->next=(yyvsp[0].exprList); }}
-#line 1869 "y.tab.c"
+#line 1865 "y.tab.c"
     break;
 
   case 51:
 #line 163 "parser.y"
                                               {{ (yyval.functionCall)=(struct FunctionCallNode *)malloc(sizeof(struct FunctionCallNode)); (yyval.functionCall)->functionIdentifier=(yyvsp[-2].identifier); (yyval.functionCall)->arguments=NULL; }}
-#line 1875 "y.tab.c"
+#line 1871 "y.tab.c"
     break;
 
   case 52:
 #line 164 "parser.y"
                                              {{ (yyval.functionCall)=(struct FunctionCallNode *)malloc(sizeof(struct FunctionCallNode)); (yyval.functionCall)->functionIdentifier=(yyvsp[-3].identifier); (yyval.functionCall)->arguments=(yyvsp[-1].exprList); }}
-#line 1881 "y.tab.c"
+#line 1877 "y.tab.c"
     break;
 
   case 53:
 #line 167 "parser.y"
                                              {{ (yyval.variableDeclarationList)=(struct VariableDeclarationListNode *)malloc(sizeof(struct VariableDeclarationListNode)); (yyval.variableDeclarationList)->current=(yyvsp[0].variableDeclaration); (yyval.variableDeclarationList)->next=NULL; }}
-#line 1887 "y.tab.c"
+#line 1883 "y.tab.c"
     break;
 
   case 54:
 #line 168 "parser.y"
                                                 {{ (yyval.variableDeclarationList)=(struct VariableDeclarationListNode *)malloc(sizeof(struct VariableDeclarationListNode)); (yyval.variableDeclarationList)->current=(yyvsp[-1].variableDeclaration); (yyval.variableDeclarationList)->next=(yyvsp[0].variableDeclarationList); }}
-#line 1893 "y.tab.c"
+#line 1889 "y.tab.c"
     break;
 
   case 55:
 #line 171 "parser.y"
                                                                           {{ (yyval.structDeclaration)=(struct StructDeclarationNode *)malloc(sizeof(struct StructDeclarationNode)); (yyval.structDeclaration)->name=malloc(strlen((yyvsp[-3].tokenText))+1); strcpy((yyval.structDeclaration)->name,(yyvsp[-3].tokenText)); (yyval.structDeclaration)->declarations=(yyvsp[-1].variableDeclarationList); }}
-#line 1899 "y.tab.c"
+#line 1895 "y.tab.c"
     break;
 
   case 56:
 #line 172 "parser.y"
                                    {{ (yyval.structDeclaration)=(struct StructDeclarationNode *)malloc(sizeof(struct StructDeclarationNode)); (yyval.structDeclaration)->name=malloc(strlen((yyvsp[-2].tokenText))+1); strcpy((yyval.structDeclaration)->name,(yyvsp[-2].tokenText)); (yyval.structDeclaration)->declarations=NULL; }}
-#line 1905 "y.tab.c"
+#line 1901 "y.tab.c"
     break;
 
   case 57:
 #line 175 "parser.y"
                                                               {{ (yyval.structInstantiation)=(struct StructInstantiationNode *)malloc(sizeof(struct StructInstantiationNode)); (yyval.structInstantiation)->identifier=(yyvsp[-3].identifier); (yyval.structInstantiation)->arguments=(yyvsp[-1].exprList); }}
-#line 1911 "y.tab.c"
+#line 1907 "y.tab.c"
     break;
 
   case 58:
 #line 178 "parser.y"
                                   {{ (yyval.stringLiteral)=(struct StringLiteralNode *)malloc(sizeof(struct StringLiteralNode)); (yyval.stringLiteral)->value=malloc(strlen((yyvsp[0].tokenText))+1); strcpy((yyval.stringLiteral)->value, (yyvsp[0].tokenText)); }}
-#line 1917 "y.tab.c"
+#line 1913 "y.tab.c"
     break;
 
   case 59:
 #line 179 "parser.y"
                        {{ (yyval.stringLiteral)=(struct StringLiteralNode *)malloc(sizeof(struct StringLiteralNode)); (yyval.stringLiteral)->value=malloc(strlen((yyvsp[0].tokenText))+1); strcpy((yyval.stringLiteral)->value, (yyvsp[0].tokenText)); }}
-#line 1923 "y.tab.c"
+#line 1919 "y.tab.c"
     break;
 
   case 60:
 #line 182 "parser.y"
                                                                 {{ (yyval.ternary)=(struct TernaryNode *)malloc(sizeof(struct TernaryNode)); (yyval.ternary)->condition=(yyvsp[-4].booleanExpression); (yyval.ternary)->ifTrue=(yyvsp[-2].expression); (yyval.ternary)->ifFalse=(yyvsp[0].expression); }}
-#line 1929 "y.tab.c"
+#line 1925 "y.tab.c"
     break;
 
   case 61:
 #line 185 "parser.y"
                                                                      {{ (yyval.namespaceDeclaration)=(struct NamespaceDeclarationNode *)malloc(sizeof(struct NamespaceDeclarationNode)); (yyval.namespaceDeclaration)->identifier=(yyvsp[-3].identifier); (yyval.namespaceDeclaration)->body=(yyvsp[-1].body); }}
-#line 1935 "y.tab.c"
+#line 1931 "y.tab.c"
     break;
 
   case 62:
 #line 186 "parser.y"
                                               {{ (yyval.namespaceDeclaration)=(struct NamespaceDeclarationNode *)malloc(sizeof(struct NamespaceDeclarationNode)); (yyval.namespaceDeclaration)->identifier=(yyvsp[-2].identifier); (yyval.namespaceDeclaration)->body=NULL; }}
-#line 1941 "y.tab.c"
+#line 1937 "y.tab.c"
     break;
 
   case 63:
 #line 189 "parser.y"
                          {{ (yyval.returnStatement)=(struct ReturnStatementNode *)malloc(sizeof(struct ReturnStatementNode)); (yyval.returnStatement)->value=NULL; }}
-#line 1947 "y.tab.c"
+#line 1943 "y.tab.c"
     break;
 
   case 64:
 #line 190 "parser.y"
                                 {{ (yyval.returnStatement)=(struct ReturnStatementNode *)malloc(sizeof(struct ReturnStatementNode)); (yyval.returnStatement)->value=(yyvsp[-1].expression); }}
-#line 1953 "y.tab.c"
+#line 1949 "y.tab.c"
     break;
 
   case 65:
 #line 193 "parser.y"
                               {{ (yyval.statement)=(struct StatementNode *)malloc(sizeof(struct StatementNode)); (yyval.statement)->type=STMT_NODE_TYPE_VAR_DEFINITION; (yyval.statement)->value.varDefinition=(yyvsp[0].variableDefinition); }}
-#line 1959 "y.tab.c"
+#line 1955 "y.tab.c"
     break;
 
   case 66:
 #line 194 "parser.y"
                       {{ (yyval.statement)=(struct StatementNode *)malloc(sizeof(struct StatementNode)); (yyval.statement)->type=STMT_NODE_TYPE_STRUCT_DECLARATION; (yyval.statement)->value.structDeclaration=(yyvsp[0].structDeclaration); }}
-#line 1965 "y.tab.c"
+#line 1961 "y.tab.c"
     break;
 
   case 67:
 #line 195 "parser.y"
                          {{ (yyval.statement)=(struct StatementNode *)malloc(sizeof(struct StatementNode)); (yyval.statement)->type=STMT_NODE_TYPE_NAMESPACE_DECLARATION; (yyval.statement)->value.namespaceDeclaration=(yyvsp[0].namespaceDeclaration); }}
-#line 1971 "y.tab.c"
+#line 1967 "y.tab.c"
     break;
 
   case 68:
 #line 196 "parser.y"
                          {{ (yyval.statement)=(struct StatementNode *)malloc(sizeof(struct StatementNode)); (yyval.statement)->type=STMT_NODE_TYPE_EXPRESSION; (yyval.statement)->value.expression=(yyvsp[-1].expression); }}
-#line 1977 "y.tab.c"
+#line 1973 "y.tab.c"
     break;
 
   case 69:
 #line 197 "parser.y"
                         {{ (yyval.statement)=(struct StatementNode *)malloc(sizeof(struct StatementNode)); (yyval.statement)->type=STMT_NODE_TYPE_FUNCTION_DECLARATION; (yyval.statement)->value.functionDeclaration=(yyvsp[0].functionDeclaration); }}
-#line 1983 "y.tab.c"
+#line 1979 "y.tab.c"
     break;
 
   case 70:
 #line 198 "parser.y"
            {{ (yyval.statement)=(struct StatementNode *)malloc(sizeof(struct StatementNode)); (yyval.statement)->type=STMT_NODE_TYPE_RETURN_STATEMENT; (yyval.statement)->value.returnStatement=(yyvsp[0].returnStatement); }}
-#line 1989 "y.tab.c"
+#line 1985 "y.tab.c"
     break;
 
   case 71:
 #line 201 "parser.y"
                 {{ (yyval.body)=(struct BodyNode *)malloc(sizeof(struct BodyNode)); (yyval.body)->current=(yyvsp[0].statement); (yyval.body)->next=NULL; }}
-#line 1995 "y.tab.c"
+#line 1991 "y.tab.c"
     break;
 
   case 72:
 #line 202 "parser.y"
                    {{ (yyval.body)=(struct BodyNode *)malloc(sizeof(struct BodyNode)); (yyval.body)->current=(yyvsp[-1].statement); (yyval.body)->next=(yyvsp[0].body); }}
-#line 2001 "y.tab.c"
+#line 1997 "y.tab.c"
     break;
 
   case 73:
 #line 205 "parser.y"
          {{ (yyval.program)=(struct ProgramNode *)malloc(sizeof(struct ProgramNode)); (yyval.program)->imports=NULL; (yyval.program)->body=NULL; head=(yyval.program); }}
-#line 2007 "y.tab.c"
+#line 2003 "y.tab.c"
     break;
 
   case 74:
 #line 206 "parser.y"
          {{ (yyval.program)=(struct ProgramNode *)malloc(sizeof(struct ProgramNode)); (yyval.program)->imports=NULL; (yyval.program)->body=(yyvsp[0].body); head=(yyval.program); }}
-#line 2013 "y.tab.c"
+#line 2009 "y.tab.c"
     break;
 
   case 75:
 #line 207 "parser.y"
             {{ (yyval.program)=(struct ProgramNode *)malloc(sizeof(struct ProgramNode)); (yyval.program)->imports=(yyvsp[0].imports); (yyval.program)->body=NULL; head=(yyval.program); }}
-#line 2019 "y.tab.c"
+#line 2015 "y.tab.c"
     break;
 
   case 76:
 #line 208 "parser.y"
                  {{ (yyval.program)=(struct ProgramNode *)malloc(sizeof(struct ProgramNode)); (yyval.program)->imports=(yyvsp[-1].imports); (yyval.program)->body=(yyvsp[0].body); head=(yyval.program); }}
-#line 2025 "y.tab.c"
+#line 2021 "y.tab.c"
     break;
 
 
-#line 2029 "y.tab.c"
+#line 2025 "y.tab.c"
 
       default: break;
     }

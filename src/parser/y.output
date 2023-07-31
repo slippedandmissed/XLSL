@@ -30,8 +30,8 @@ Grammar
     3 identifier: identifierText
     4           | SELF
 
-    5 imports: IMPORT identifier SEMICOLON
-    6        | IMPORT identifier SEMICOLON imports
+    5 imports: IMPORT stringLiteral SEMICOLON
+    6        | IMPORT stringLiteral SEMICOLON imports
 
     7 multiplyExpression: NUMBER
     8                   | identifier
@@ -176,7 +176,7 @@ Nonterminals, with rules where they appear
         on right: 2 3
     identifier <identifier> (43)
         on left: 3 4
-        on right: 5 6 8 24 39 50 51 56 60 61
+        on right: 8 24 39 50 51 56 60 61
     imports <imports> (44)
         on left: 5 6
         on right: 6 74 75
@@ -221,7 +221,7 @@ Nonterminals, with rules where they appear
         on right: 18
     stringLiteral <stringLiteral> (58)
         on left: 57 58
-        on right: 19
+        on right: 5 6 19
     ternary <ternary> (59)
         on left: 59
         on right: 20
@@ -290,14 +290,13 @@ State 0
 
 State 1
 
-    5 imports: IMPORT . identifier SEMICOLON
-    6        | IMPORT . identifier SEMICOLON imports
+    5 imports: IMPORT . stringLiteral SEMICOLON
+    6        | IMPORT . stringLiteral SEMICOLON imports
 
-    SELF  shift, and go to state 4
-    ID    shift, and go to state 15
+    SINGLEQUOTEDSTRING  shift, and go to state 13
+    DOUBLEQUOTEDSTRING  shift, and go to state 14
 
-    identifierText  go to state 19
-    identifier      go to state 38
+    stringLiteral  go to state 38
 
 
 State 2
@@ -782,8 +781,8 @@ State 37
 
 State 38
 
-    5 imports: IMPORT identifier . SEMICOLON
-    6        | IMPORT identifier . SEMICOLON imports
+    5 imports: IMPORT stringLiteral . SEMICOLON
+    6        | IMPORT stringLiteral . SEMICOLON imports
 
     SEMICOLON  shift, and go to state 70
 
@@ -1438,8 +1437,8 @@ State 69
 
 State 70
 
-    5 imports: IMPORT identifier SEMICOLON .
-    6        | IMPORT identifier SEMICOLON . imports
+    5 imports: IMPORT stringLiteral SEMICOLON .
+    6        | IMPORT stringLiteral SEMICOLON . imports
 
     IMPORT  shift, and go to state 1
 
@@ -2107,7 +2106,7 @@ State 98
 
 State 99
 
-    6 imports: IMPORT identifier SEMICOLON imports .
+    6 imports: IMPORT stringLiteral SEMICOLON imports .
 
     $default  reduce using rule 6 (imports)
 

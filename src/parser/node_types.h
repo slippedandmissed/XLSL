@@ -17,7 +17,7 @@ struct IdentifierNode {
 };
 
 struct ImportsNode {
-  struct IdentifierNode *identifier;
+  struct StringLiteralNode *path;
   struct ImportsNode *next;
 };
 

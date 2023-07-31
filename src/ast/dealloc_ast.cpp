@@ -26,7 +26,7 @@ void AST::deallocTree(IdentifierNode *node)
 
 void AST::deallocTree(ImportsNode *node)
 {
-  AST::deallocTree(node->identifier);
+  AST::deallocTree(node->path);
   if (node->next != nullptr)
   {
     AST::deallocTree(node->next);
