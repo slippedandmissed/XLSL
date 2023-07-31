@@ -27,7 +27,7 @@ enum MultiplyExpressionType {
   MUL_NODE_TYPE_IDENTIFIER,
   MUL_NODE_TYPE_FUNCTION_CALL,
   MUL_NODE_TYPE_TIMES,
-  MUL_NODE_TYPE_DIVIDE
+  MUL_NODE_TYPE_DIVIDE,
 };
 
 struct MultiplyExpressionNode {
@@ -140,6 +140,7 @@ struct ExpressionListNode {
 struct FunctionCallNode {
   struct IdentifierNode *functionIdentifier;
   struct ExpressionListNode *arguments; 
+  unsigned char isDirectFormula;
 };
 
 struct VariableDeclarationListNode {

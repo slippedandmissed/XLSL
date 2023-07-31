@@ -115,6 +115,7 @@ namespace ConcreteTree
       NOT,
       STRUCT_INSTANTIATION,
       TERNARY,
+      DIRECT_FORMULA_ACCESS,
     };
     void populateFromAST(std::shared_ptr<Namespace>, Scope const &, ExpressionNode *);
     void populateFromAST(std::shared_ptr<Namespace>, Scope const &, MultiplyExpressionNode *);
@@ -124,6 +125,11 @@ namespace ConcreteTree
     struct FunctionCallData
     {
       std::shared_ptr<Function> function;
+      std::vector<std::shared_ptr<Expression>> arguments;
+    };
+    struct DirectFormulaAccessData
+    {
+      std::string formulaName;
       std::vector<std::shared_ptr<Expression>> arguments;
     };
     struct BinaryOpData
@@ -147,6 +153,7 @@ namespace ConcreteTree
         std::string,
         std::shared_ptr<Variable>,
         FunctionCallData,
+        DirectFormulaAccessData,
         BinaryOpData,
         std::shared_ptr<Expression>,
         StructInstantiationData,

@@ -84,10 +84,11 @@ extern int yydebug;
     COLON = 290,
     QUESTION = 291,
     DOT = 292,
-    OPENPAREN = 293,
-    CLOSEPAREN = 294,
-    OPENCURLY = 295,
-    CLOSECURLY = 296
+    DOLLAR = 293,
+    OPENPAREN = 294,
+    CLOSEPAREN = 295,
+    OPENCURLY = 296,
+    CLOSECURLY = 297
   };
 #endif
 /* Tokens.  */
@@ -126,10 +127,11 @@ extern int yydebug;
 #define COLON 290
 #define QUESTION 291
 #define DOT 292
-#define OPENPAREN 293
-#define CLOSEPAREN 294
-#define OPENCURLY 295
-#define CLOSECURLY 296
+#define DOLLAR 293
+#define OPENPAREN 294
+#define CLOSEPAREN 295
+#define OPENCURLY 296
+#define CLOSECURLY 297
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -163,7 +165,7 @@ union YYSTYPE
   struct BodyNode *body;
   struct ProgramNode *program;
 
-#line 167 "y.tab.h"
+#line 169 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

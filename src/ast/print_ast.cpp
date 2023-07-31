@@ -238,6 +238,9 @@ std::string AST::nodeToString(ExpressionListNode const &node, int indent)
 std::string AST::nodeToString(FunctionCallNode const &node, int indent)
 {
   auto stringVal = std::string(indent, ' ') + "FunctionCallNode";
+  if (node.isDirectFormula) {
+    stringVal += "\n" + std::string(indent+2, ' ') + "DIRECT FORMULA ACCESS";
+  }
   ADD_NODE(*node.functionIdentifier)
   if (node.arguments != nullptr) {
     ADD_NODE(*node.arguments)

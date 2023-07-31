@@ -211,6 +211,25 @@ std::string Expression::toString(int indent) const
     }
     break;
   }
+    case Expression::ExpressionType::DIRECT_FORMULA_ACCESS:
+  {
+    strValue += "DIRECT FORMULA ACCESS";
+    auto data = std::get<Expression::DirectFormulaAccessData>(this->value);
+    strValue += "\n" + std::string(indent + 4, ' ') + "FORMULA: " + data.formulaName;
+    strValue += "\n" + std::string(indent + 4, ' ') + "ARGUMENTS";
+    if (data.arguments.size() == 0)
+    {
+      strValue += "\n" + std::string(indent + 6, ' ') + "(Empty)";
+    }
+    else
+    {
+      for (auto arg : data.arguments)
+      {
+        strValue += "\n" + arg->toString(indent + 6);
+      }
+    }
+    break;
+  }
   case Expression::ExpressionType::STRUCT_INSTANTIATION:
   {
     strValue += "STRUCT INSTANTIATION";

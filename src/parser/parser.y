@@ -55,7 +55,7 @@
 %token <tokenText> EQ NEQ LT GT LE GE
 %token <tokenText> AND OR NOT
 %token <tokenText> ASSIGN
-%token <tokenText> COMMA SEMICOLON COLON QUESTION DOT
+%token <tokenText> COMMA SEMICOLON COLON QUESTION DOT DOLLAR
 %token <tokenText> OPENPAREN CLOSEPAREN
 %token <tokenText> OPENCURLY CLOSECURLY
 
@@ -160,8 +160,10 @@ exprList: expression {{ $$=(struct ExpressionListNode *)malloc(sizeof(struct Exp
   | expression COMMA exprList {{ $$=(struct ExpressionListNode *)malloc(sizeof(struct ExpressionListNode)); $$->expression=$1; $$->next=$3; }}
   ;
 
-functionCall: identifier OPENPAREN CLOSEPAREN {{ $$=(struct FunctionCallNode *)malloc(sizeof(struct FunctionCallNode)); $$->functionIdentifier=$1; $$->arguments=NULL; }}
-  | identifier OPENPAREN exprList CLOSEPAREN {{ $$=(struct FunctionCallNode *)malloc(sizeof(struct FunctionCallNode)); $$->functionIdentifier=$1; $$->arguments=$3; }}
+functionCall: identifier OPENPAREN CLOSEPAREN {{ $$=(struct FunctionCallNode *)malloc(sizeof(struct FunctionCallNode)); $$->functionIdentifier=$1; $$->arguments=NULL; $$->isDirectFormula=0; }}
+  | identifier OPENPAREN exprList CLOSEPAREN {{ $$=(struct FunctionCallNode *)malloc(sizeof(struct FunctionCallNode)); $$->functionIdentifier=$1; $$->arguments=$3; $$->isDirectFormula=0; }}
+  | DOLLAR identifier OPENPAREN CLOSEPAREN {{ $$=(struct FunctionCallNode *)malloc(sizeof(struct FunctionCallNode)); $$->functionIdentifier=$2; $$->arguments=NULL; $$->isDirectFormula=1; }}
+  | DOLLAR identifier OPENPAREN exprList CLOSEPAREN {{ $$=(struct FunctionCallNode *)malloc(sizeof(struct FunctionCallNode)); $$->functionIdentifier=$2; $$->arguments=$4; $$->isDirectFormula=1; }}
   ;
 
 variableDeclarationList: variableDeclaration {{ $$=(struct VariableDeclarationListNode *)malloc(sizeof(struct VariableDeclarationListNode)); $$->current=$1; $$->next=NULL; }}

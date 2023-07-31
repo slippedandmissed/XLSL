@@ -21,12 +21,14 @@ std::unique_ptr<Program> Program::fromAST(std::string srcPath, ProgramNode *node
 
   std::vector<std::pair<std::string, std::string>> importData;
   auto currentImport = node->imports;
-  while (currentImport != nullptr) {
+  while (currentImport != nullptr)
+  {
     importData.push_back(std::pair<std::string, std::string>(unescapeString(currentImport->path->value), currentImport->alias));
     currentImport = currentImport->next;
   }
 
-  for (auto importDatum : importData) {
+  for (auto importDatum : importData)
+  {
     auto importPath = resolvePath(importDatum.first, srcPath);
     auto importAlias = importDatum.second;
     auto importHead = AST::generateFromFile(importPath);
@@ -582,18 +584,56 @@ void Expression::populateFromAST(std::shared_ptr<Namespace> currentNamespace, Sc
   }
   case MUL_NODE_TYPE_FUNCTION_CALL:
   {
-    this->type = Expression::ExpressionType::FUNCTION_CALL;
-    Expression::FunctionCallData value;
-    value.function = Function::localizeFromAST(currentNamespace, currentScope, node->value.functionCall->functionIdentifier);
-    auto currentArg = node->value.functionCall->arguments;
-    while (currentArg != nullptr)
+    if (node->value.functionCall->isDirectFormula)
     {
-      auto argument = std::make_shared<Expression>();
-      argument->populateFromAST(currentNamespace, currentScope, currentArg->expression);
-      value.arguments.push_back(argument);
-      currentArg = currentArg->next;
+      this->type = Expression::ExpressionType::DIRECT_FORMULA_ACCESS;
+      Expression::DirectFormulaAccessData value;
+      switch (node->value.functionCall->functionIdentifier->type)
+      {
+      case ID_NODE_TYPE_SELF:
+        value.formulaName = "self";
+        break;
+      case ID_NODE_TYPE_TEXT:
+      {
+
+        value.formulaName = "";
+        auto currentIdentifierNode = node->value.functionCall->functionIdentifier->text;
+        while (currentIdentifierNode != nullptr)
+        {
+          value.formulaName += currentIdentifierNode->text;
+          if (currentIdentifierNode->next != nullptr)
+          {
+            value.formulaName += ".";
+          }
+          currentIdentifierNode = currentIdentifierNode->next;
+        }
+      }
+      }
+      auto currentArg = node->value.functionCall->arguments;
+      while (currentArg != nullptr)
+      {
+        auto argument = std::make_shared<Expression>();
+        argument->populateFromAST(currentNamespace, currentScope, currentArg->expression);
+        value.arguments.push_back(argument);
+        currentArg = currentArg->next;
+      }
+      this->value = value;
     }
-    this->value = value;
+    else
+    {
+      this->type = Expression::ExpressionType::FUNCTION_CALL;
+      Expression::FunctionCallData value;
+      value.function = Function::localizeFromAST(currentNamespace, currentScope, node->value.functionCall->functionIdentifier);
+      auto currentArg = node->value.functionCall->arguments;
+      while (currentArg != nullptr)
+      {
+        auto argument = std::make_shared<Expression>();
+        argument->populateFromAST(currentNamespace, currentScope, currentArg->expression);
+        value.arguments.push_back(argument);
+        currentArg = currentArg->next;
+      }
+      this->value = value;
+    }
     break;
   }
   case MUL_NODE_TYPE_IDENTIFIER:
@@ -730,7 +770,8 @@ void Expression::populateFromAST(std::shared_ptr<Namespace> currentNamespace, Sc
   }
 }
 
-void Scope::addAll(Scope const &other) {
+void Scope::addAll(Scope const &other)
+{
   this->functions.insert(this->functions.end(), other.functions.begin(), other.functions.end());
   this->structs.insert(this->structs.end(), other.structs.begin(), other.structs.end());
   this->variables.insert(this->variables.end(), other.variables.begin(), other.variables.end());
@@ -742,8 +783,8 @@ std::string unescapeString(std::string escapedString)
   return escapedString;
 }
 
-
-std::string resolvePath(std::string path, std::string relativeToFile) {
+std::string resolvePath(std::string path, std::string relativeToFile)
+{
   auto findingPath = std::filesystem::path(path);
   auto srcPath = std::filesystem::path(relativeToFile);
   auto resolved = srcPath.parent_path();
