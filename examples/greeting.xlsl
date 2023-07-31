@@ -1,3 +1,22 @@
-text main(text name) {
-  return "Hi, " + name + "!";
+text numberToText(number x) {
+  return $TEXT(x, "#");
+  /*
+    "$" indicates that we're using the built-in excel formula "TEXT()".
+
+    This has to be in its own function because the compiler can't tell
+    the return type, so it has to be inferred from the function return type.
+
+    In reality this sort of function would be in a standard library.
+  */                        
+}
+
+struct UserInfo {
+  text name;
+  number age;
+}
+
+text main(UserInfo userInfo) {
+  number yearsToAdd = 10;
+  number ageAfter = userInfo.age + yearsToAdd;
+  return "Hi, " + userInfo.name + "! In " + numberToText(yearsToAdd) + " years you will be " + numberToText(ageAfter) + " years old :)";
 }
