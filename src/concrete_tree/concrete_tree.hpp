@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <variant>
+#include <optional>
 #include "../parser/node_types.h"
 
 namespace ConcreteTree
@@ -11,6 +12,7 @@ namespace ConcreteTree
   struct Scope;
   struct Struct;
   struct Block;
+  struct Expression;
 
   struct Namespace
   {
@@ -49,15 +51,21 @@ namespace ConcreteTree
   {
     std::string toString(int indent) const;
     static std::shared_ptr<Variable> localizeFromAST(std::shared_ptr<Namespace>, Scope const &, IdentifierNode *);
-    void populateChildrenFromStruct();
+    void populateChildrenFromStruct(std::shared_ptr<Variable> self);
     std::shared_ptr<Namespace> namespace_;
     Type type;
     std::string name;
     std::vector<std::shared_ptr<Variable>> children;
+    std::shared_ptr<Variable> parent;
   };
 
   struct Function
   {
+  private:
+    std::optional<std::string> m_excelFormula;
+
+  public:
+    std::string getExcelFormula();
     inline std::string toString(int indent) const { return this->toString(indent, false); }
     std::string toString(int indent, bool brief) const;
     static std::shared_ptr<Function> localizeFromAST(std::shared_ptr<Namespace>, Scope const &, IdentifierNode *);
@@ -85,12 +93,20 @@ namespace ConcreteTree
     std::string toString(int indent) const;
     std::vector<std::shared_ptr<Function>> functions;
     std::vector<std::shared_ptr<Struct>> structs;
-    std::vector<std::shared_ptr<Variable>> variables;
+    std::vector<std::pair<std::shared_ptr<Variable>, std::shared_ptr<Expression>>> variables;
     std::shared_ptr<Function> context;
   };
 
   struct Expression
   {
+  private:
+    std::optional<Type> m_type;
+    std::optional<std::string> m_excelFormula;
+
+  public:
+    Type getType();
+    Scope scope;
+    std::string getExcelFormula();
     std::string toString(int indent) const;
     enum ExpressionType
     {
@@ -172,7 +188,7 @@ namespace ConcreteTree
     void populateFromAST(std::shared_ptr<Namespace>, Scope const &, ExpressionNode *);
     void populateFromAST(std::shared_ptr<Namespace>, Scope const &, ReturnStatementNode *);
     StatementType type;
-    std::unique_ptr<Expression> expression;
+    std::shared_ptr<Expression> expression;
   };
 
   struct Block
@@ -184,6 +200,11 @@ namespace ConcreteTree
 
   struct Program
   {
+  private:
+    std::optional<std::string> m_mainMethodFormula;
+
+  public:
+    std::string getMainMethodFormula();
     std::string toString(int indent) const;
     std::shared_ptr<Namespace> globalNamespace;
     std::unique_ptr<Block> block;

@@ -18,8 +18,10 @@ int main(int argc, char *argv[])
   AST::deallocTree(ast);
 
   std::cout << "Concrete Tree:" << std::endl
-            << *program << std::endl;
-  std::cout << std::endl;
+            << *program << std::endl << std::endl;
+
+  auto formula = program->getMainMethodFormula();
+  std::cout << formula << std::endl;
 
   return 0;
 }

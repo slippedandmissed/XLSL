@@ -97,8 +97,11 @@ void Block::populateFromAST(std::shared_ptr<Namespace> currentNamespace, Scope &
       variable->namespace_ = currentNamespace;
       variable->name = stmtNode->value.varDefinition->name;
       variable->type.populateFromAST(currentNamespace, currentScope, stmtNode->value.varDefinition->variableType);
-      variable->populateChildrenFromStruct();
-      currentScope.variables.push_back(variable);
+      variable->populateChildrenFromStruct(variable);
+      auto expression = std::make_shared<Expression>();
+      expression->populateFromAST(currentNamespace, currentScope, stmtNode->value.varDefinition->expression);
+      currentScope.variables.push_back(std::make_pair(variable, expression));
+      break;
     }
     case STMT_NODE_TYPE_EXPRESSION:
     {
@@ -120,7 +123,7 @@ void Block::populateFromAST(std::shared_ptr<Namespace> currentNamespace, Scope &
   }
 }
 
-void Variable::populateChildrenFromStruct()
+void Variable::populateChildrenFromStruct(std::shared_ptr<Variable> self)
 {
   if (this->type.type == Type::TypeType::CUSTOM_STRUCT)
   {
@@ -130,7 +133,8 @@ void Variable::populateChildrenFromStruct()
       child->namespace_ = nullptr;
       child->name = member.name;
       child->type = member.type;
-      child->populateChildrenFromStruct();
+      child->parent = self;
+      child->populateChildrenFromStruct(child);
       this->children.push_back(child);
     }
   }
@@ -255,19 +259,20 @@ std::shared_ptr<Variable> Variable::localizeFromAST(std::shared_ptr<Namespace> c
     std::cerr << "Tried to use variable with keyword identifier" << std::endl;
     exit(1);
   }
-  auto current = node->text;
-  while (current->next != nullptr)
-  {
-    current = current->next;
-  }
-  std::string variableName = current->text;
   std::shared_ptr<Variable> found = nullptr;
   auto checkingNode = cloneIdentifierTextNode(node->text);
   std::vector<std::string> assumedStructMembers;
   while (true)
   {
-    for (auto variable : currentScope.variables)
+    auto current = checkingNode;
+    while (current->next != nullptr)
     {
+      current = current->next;
+    }
+    std::string variableName = current->text;
+    for (auto variableDefinition : currentScope.variables)
+    {
+      auto variable = variableDefinition.first;
       if (variable->name == variableName && (variable->namespace_ == nullptr || variable->namespace_->matchesFromAST(currentNamespace, checkingNode)))
       {
         found = variable;
@@ -284,7 +289,7 @@ std::shared_ptr<Variable> Variable::localizeFromAST(std::shared_ptr<Namespace> c
     }
     auto newCheckingNode = cloneIdentifierTextNode(checkingNode);
     AST::deallocTree(checkingNode);
-    auto current = newCheckingNode;
+    current = newCheckingNode;
     while (current->next->next != nullptr)
     {
       current = current->next;
@@ -432,9 +437,9 @@ void Function::populateFromAST(Scope currentScope, FunctionDeclarationNode *node
     argument->namespace_ = nullptr;
     argument->name = currentArg->argumentName;
     argument->type.populateFromAST(this->namespace_, currentScope, currentArg->argumentType);
-    argument->populateChildrenFromStruct();
+    argument->populateChildrenFromStruct(argument);
     this->arguments.push_back(argument);
-    currentScope.variables.push_back(argument);
+    currentScope.variables.push_back(std::make_pair(argument, nullptr));
     currentArg = currentArg->next;
   }
   this->block = std::make_unique<Block>();
@@ -454,7 +459,7 @@ void Struct::populateFromAST(Scope const &currentScope, StructDeclarationNode *n
     member.namespace_ = nullptr;
     member.name = currentDeclaration->current->name;
     member.type.populateFromAST(this->namespace_, currentScope, currentDeclaration->current->variableType);
-    member.populateChildrenFromStruct();
+    member.populateChildrenFromStruct(nullptr); // X?
     this->members.push_back(member);
     currentDeclaration = currentDeclaration->next;
   }
@@ -463,7 +468,7 @@ void Struct::populateFromAST(Scope const &currentScope, StructDeclarationNode *n
 void Statement::populateFromAST(std::shared_ptr<Namespace> currentNamespace, Scope const &currentScope, ExpressionNode *node)
 {
   this->type = Statement::StatementType::EXPRESSION;
-  this->expression = std::make_unique<Expression>();
+  this->expression = std::make_shared<Expression>();
   this->expression->populateFromAST(currentNamespace, currentScope, node);
 }
 
@@ -476,13 +481,14 @@ void Statement::populateFromAST(std::shared_ptr<Namespace> currentNamespace, Sco
   }
   else
   {
-    this->expression = std::make_unique<Expression>();
+    this->expression = std::make_shared<Expression>();
     this->expression->populateFromAST(currentNamespace, currentScope, node->value);
   }
 }
 
 void Expression::populateFromAST(std::shared_ptr<Namespace> currentNamespace, Scope const &currentScope, ExpressionNode *node)
 {
+  this->scope = currentScope;
   switch (node->type)
   {
   case EXPR_NODE_TYPE_BOOLEAN:
@@ -558,6 +564,7 @@ void Expression::populateFromAST(std::shared_ptr<Namespace> currentNamespace, Sc
 
 void Expression::populateFromAST(std::shared_ptr<Namespace> currentNamespace, Scope const &currentScope, MultiplyExpressionNode *node)
 {
+  this->scope = currentScope;
   switch (node->type)
   {
   case MUL_NODE_TYPE_DIVIDE:
@@ -653,6 +660,7 @@ void Expression::populateFromAST(std::shared_ptr<Namespace> currentNamespace, Sc
 
 void Expression::populateFromAST(std::shared_ptr<Namespace> currentNamespace, Scope const &currentScope, BooleanExpressionNode *node)
 {
+  this->scope = currentScope;
   switch (node->type)
   {
   case BOOL_NODE_TYPE_TRUE:

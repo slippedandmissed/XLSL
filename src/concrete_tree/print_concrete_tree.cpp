@@ -149,9 +149,20 @@ std::string Scope::toString(int indent) const
     {
       strValue += "\n" + struct_->toString(indent + 2);
     }
-    for (auto variable : this->variables)
+    for (auto variableDefinition : this->variables)
     {
-      strValue += "\n" + variable->toString(indent + 2);
+      strValue += "\n" + std::string(indent + 2, ' ') + "VARIABLE DEFINITION";
+      auto variable = variableDefinition.first;
+      strValue += "\n" + variable->toString(indent + 4);
+      auto expression = variableDefinition.second;
+      if (expression == nullptr)
+      {
+        strValue += "\n" + std::string(indent + 2, ' ') + "(Undefined)";
+      }
+      else
+      {
+        strValue += "\n" + expression->toString(indent + 4);
+      }
     }
   }
   return strValue;
@@ -211,7 +222,7 @@ std::string Expression::toString(int indent) const
     }
     break;
   }
-    case Expression::ExpressionType::DIRECT_FORMULA_ACCESS:
+  case Expression::ExpressionType::DIRECT_FORMULA_ACCESS:
   {
     strValue += "DIRECT FORMULA ACCESS";
     auto data = std::get<Expression::DirectFormulaAccessData>(this->value);

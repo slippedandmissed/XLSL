@@ -4,9 +4,11 @@ struct Color {
   number b;
 }
 
-Color main() {
+number main() {
   number rValue = 102; // Rebecca purple
   number gValue = 51;
   number bValue = 153;
-  return Color { rValue, gValue, bValue };
+  Color color = Color { rValue, gValue, bValue };
+  number rValue2 = color.r;
+  return rValue2;
 }
