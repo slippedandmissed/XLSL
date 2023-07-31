@@ -9,6 +9,7 @@ digit [0-9]
 %%
 
 "import"                    { return IMPORT; }
+"as"                        { return AS; }
 "namespace"                 { return NAMESPACE; }
 "struct"                    { return STRUCT; }
 "self"                      { return SELF; }

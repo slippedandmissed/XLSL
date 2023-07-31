@@ -17,7 +17,7 @@ State 92 conflicts: 10 shift/reduce
 State 93 conflicts: 10 shift/reduce
 State 94 conflicts: 10 shift/reduce
 State 95 conflicts: 10 shift/reduce
-State 121 conflicts: 10 shift/reduce
+State 122 conflicts: 10 shift/reduce
 
 
 Grammar
@@ -30,8 +30,8 @@ Grammar
     3 identifier: identifierText
     4           | SELF
 
-    5 imports: IMPORT stringLiteral SEMICOLON
-    6        | IMPORT stringLiteral SEMICOLON imports
+    5 imports: IMPORT stringLiteral AS ID SEMICOLON
+    6        | IMPORT stringLiteral AS ID SEMICOLON imports
 
     7 multiplyExpression: NUMBER
     8                   | identifier
@@ -128,116 +128,117 @@ Terminals, with rules where they appear
     $end (0) 0
     error (256)
     IMPORT <tokenText> (258) 5 6
-    NAMESPACE <tokenText> (259) 60 61
-    STRUCT <tokenText> (260) 54 55
-    SELF <tokenText> (261) 4
-    TRUE <tokenText> (262) 22
-    FALSE <tokenText> (263) 23
-    TEXT <tokenText> (264) 35
-    LOGICAL <tokenText> (265) 37
-    NUMBERTOKEN <tokenText> (266) 36
-    VOID <tokenText> (267) 38
-    RETURN <tokenText> (268) 62 63
-    NUMBER <tokenText> (269) 7
-    SINGLEQUOTEDSTRING <tokenText> (270) 58
-    DOUBLEQUOTEDSTRING <tokenText> (271) 57
-    ID <tokenText> (272) 1 2 40 41 42 43 44 45 46 47 54 55
-    PLUS <tokenText> (273) 14
-    MINUS <tokenText> (274) 15 16
-    TIMES <tokenText> (275) 11
-    DIVIDE <tokenText> (276) 12
-    EQ <tokenText> (277) 26
-    NEQ <tokenText> (278) 27
-    LT <tokenText> (279) 28
-    GT <tokenText> (280) 29
-    LE <tokenText> (281) 30
-    GE <tokenText> (282) 31
-    AND <tokenText> (283) 33
-    OR <tokenText> (284) 34
-    NOT <tokenText> (285) 32
-    ASSIGN <tokenText> (286) 41
-    COMMA <tokenText> (287) 43 49
-    SEMICOLON <tokenText> (288) 5 6 40 41 62 63 67
-    COLON <tokenText> (289) 59
-    QUESTION <tokenText> (290) 59
-    DOT <tokenText> (291) 2
-    OPENPAREN <tokenText> (292) 10 21 25 44 45 46 47 50 51
-    CLOSEPAREN <tokenText> (293) 10 21 25 44 45 46 47 50 51
-    OPENCURLY <tokenText> (294) 44 45 46 47 54 55 56 60 61
-    CLOSECURLY <tokenText> (295) 44 45 46 47 54 55 56 60 61
+    AS <tokenText> (259) 5 6
+    NAMESPACE <tokenText> (260) 60 61
+    STRUCT <tokenText> (261) 54 55
+    SELF <tokenText> (262) 4
+    TRUE <tokenText> (263) 22
+    FALSE <tokenText> (264) 23
+    TEXT <tokenText> (265) 35
+    LOGICAL <tokenText> (266) 37
+    NUMBERTOKEN <tokenText> (267) 36
+    VOID <tokenText> (268) 38
+    RETURN <tokenText> (269) 62 63
+    NUMBER <tokenText> (270) 7
+    SINGLEQUOTEDSTRING <tokenText> (271) 58
+    DOUBLEQUOTEDSTRING <tokenText> (272) 57
+    ID <tokenText> (273) 1 2 5 6 40 41 42 43 44 45 46 47 54 55
+    PLUS <tokenText> (274) 14
+    MINUS <tokenText> (275) 15 16
+    TIMES <tokenText> (276) 11
+    DIVIDE <tokenText> (277) 12
+    EQ <tokenText> (278) 26
+    NEQ <tokenText> (279) 27
+    LT <tokenText> (280) 28
+    GT <tokenText> (281) 29
+    LE <tokenText> (282) 30
+    GE <tokenText> (283) 31
+    AND <tokenText> (284) 33
+    OR <tokenText> (285) 34
+    NOT <tokenText> (286) 32
+    ASSIGN <tokenText> (287) 41
+    COMMA <tokenText> (288) 43 49
+    SEMICOLON <tokenText> (289) 5 6 40 41 62 63 67
+    COLON <tokenText> (290) 59
+    QUESTION <tokenText> (291) 59
+    DOT <tokenText> (292) 2
+    OPENPAREN <tokenText> (293) 10 21 25 44 45 46 47 50 51
+    CLOSEPAREN <tokenText> (294) 10 21 25 44 45 46 47 50 51
+    OPENCURLY <tokenText> (295) 44 45 46 47 54 55 56 60 61
+    CLOSECURLY <tokenText> (296) 44 45 46 47 54 55 56 60 61
 
 
 Nonterminals, with rules where they appear
 
-    $accept (41)
+    $accept (42)
         on left: 0
-    identifierText <identifierText> (42)
+    identifierText <identifierText> (43)
         on left: 1 2
         on right: 2 3
-    identifier <identifier> (43)
+    identifier <identifier> (44)
         on left: 3 4
         on right: 8 24 39 50 51 56 60 61
-    imports <imports> (44)
+    imports <imports> (45)
         on left: 5 6
         on right: 6 74 75
-    multiplyExpression <multiplyExpression> (45)
+    multiplyExpression <multiplyExpression> (46)
         on left: 7 8 9 10 11 12
         on right: 10 11 12 13
-    expression <expression> (46)
+    expression <expression> (47)
         on left: 13 14 15 16 17 18 19 20 21
         on right: 14 15 16 21 26 27 28 29 30 31 32 33 34 41 48 49 59 63 67
-    booleanExpression <booleanExpression> (47)
+    booleanExpression <booleanExpression> (48)
         on left: 22 23 24 25 26 27 28 29 30 31 32 33 34
         on right: 17 25 59
-    type <type> (48)
+    type <type> (49)
         on left: 35 36 37 38 39
         on right: 40 41 42 43 44 45 46 47
-    variableDeclaration <variableDeclaration> (49)
+    variableDeclaration <variableDeclaration> (50)
         on left: 40
         on right: 52 53
-    variableDefinition <variableDefinition> (50)
+    variableDefinition <variableDefinition> (51)
         on left: 41
         on right: 64
-    argList <argList> (51)
+    argList <argList> (52)
         on left: 42 43
         on right: 43 46 47
-    functionDeclaration <functionDeclaration> (52)
+    functionDeclaration <functionDeclaration> (53)
         on left: 44 45 46 47
         on right: 68
-    exprList <exprList> (53)
+    exprList <exprList> (54)
         on left: 48 49
         on right: 49 51 56
-    functionCall <functionCall> (54)
+    functionCall <functionCall> (55)
         on left: 50 51
         on right: 9
-    variableDeclarationList <variableDeclarationList> (55)
+    variableDeclarationList <variableDeclarationList> (56)
         on left: 52 53
         on right: 53 54
-    structDeclaration <structDeclaration> (56)
+    structDeclaration <structDeclaration> (57)
         on left: 54 55
         on right: 65
-    structInstantiation <structInstantiation> (57)
+    structInstantiation <structInstantiation> (58)
         on left: 56
         on right: 18
-    stringLiteral <stringLiteral> (58)
+    stringLiteral <stringLiteral> (59)
         on left: 57 58
         on right: 5 6 19
-    ternary <ternary> (59)
+    ternary <ternary> (60)
         on left: 59
         on right: 20
-    namespaceDeclaration <namespaceDeclaration> (60)
+    namespaceDeclaration <namespaceDeclaration> (61)
         on left: 60 61
         on right: 66
-    return <returnStatement> (61)
+    return <returnStatement> (62)
         on left: 62 63
         on right: 69
-    statement <statement> (62)
+    statement <statement> (63)
         on left: 64 65 66 67 68 69
         on right: 70 71
-    body <body> (63)
+    body <body> (64)
         on left: 70 71
         on right: 44 46 60 71 73 75
-    program <program> (64)
+    program <program> (65)
         on left: 72 73 74 75
         on right: 0
 
@@ -290,8 +291,8 @@ State 0
 
 State 1
 
-    5 imports: IMPORT . stringLiteral SEMICOLON
-    6        | IMPORT . stringLiteral SEMICOLON imports
+    5 imports: IMPORT . stringLiteral AS ID SEMICOLON
+    6        | IMPORT . stringLiteral AS ID SEMICOLON imports
 
     SINGLEQUOTEDSTRING  shift, and go to state 13
     DOUBLEQUOTEDSTRING  shift, and go to state 14
@@ -781,10 +782,10 @@ State 37
 
 State 38
 
-    5 imports: IMPORT stringLiteral . SEMICOLON
-    6        | IMPORT stringLiteral . SEMICOLON imports
+    5 imports: IMPORT stringLiteral . AS ID SEMICOLON
+    6        | IMPORT stringLiteral . AS ID SEMICOLON imports
 
-    SEMICOLON  shift, and go to state 70
+    AS  shift, and go to state 70
 
 
 State 39
@@ -1437,14 +1438,10 @@ State 69
 
 State 70
 
-    5 imports: IMPORT stringLiteral SEMICOLON .
-    6        | IMPORT stringLiteral SEMICOLON . imports
+    5 imports: IMPORT stringLiteral AS . ID SEMICOLON
+    6        | IMPORT stringLiteral AS . ID SEMICOLON imports
 
-    IMPORT  shift, and go to state 1
-
-    $default  reduce using rule 5 (imports)
-
-    imports  go to state 99
+    ID  shift, and go to state 99
 
 
 State 71
@@ -2106,9 +2103,10 @@ State 98
 
 State 99
 
-    6 imports: IMPORT stringLiteral SEMICOLON imports .
+    5 imports: IMPORT stringLiteral AS ID . SEMICOLON
+    6        | IMPORT stringLiteral AS ID . SEMICOLON imports
 
-    $default  reduce using rule 6 (imports)
+    SEMICOLON  shift, and go to state 116
 
 
 State 100
@@ -2122,7 +2120,7 @@ State 101
 
    60 namespaceDeclaration: NAMESPACE identifier OPENCURLY body . CLOSECURLY
 
-    CLOSECURLY  shift, and go to state 116
+    CLOSECURLY  shift, and go to state 117
 
 
 State 102
@@ -2143,7 +2141,7 @@ State 104
 
    40 variableDeclaration: type . ID SEMICOLON
 
-    ID  shift, and go to state 117
+    ID  shift, and go to state 118
 
 
 State 105
@@ -2164,14 +2162,14 @@ State 105
     identifier               go to state 103
     type                     go to state 104
     variableDeclaration      go to state 105
-    variableDeclarationList  go to state 118
+    variableDeclarationList  go to state 119
 
 
 State 106
 
    54 structDeclaration: STRUCT ID OPENCURLY variableDeclarationList . CLOSECURLY
 
-    CLOSECURLY  shift, and go to state 119
+    CLOSECURLY  shift, and go to state 120
 
 
 State 107
@@ -2194,7 +2192,7 @@ State 107
     multiplyExpression   go to state 22
     expression           go to state 79
     booleanExpression    go to state 24
-    exprList             go to state 120
+    exprList             go to state 121
     functionCall         go to state 28
     structInstantiation  go to state 30
     stringLiteral        go to state 31
@@ -2244,7 +2242,7 @@ State 111
     identifierText       go to state 19
     identifier           go to state 42
     multiplyExpression   go to state 22
-    expression           go to state 121
+    expression           go to state 122
     booleanExpression    go to state 24
     functionCall         go to state 28
     structInstantiation  go to state 30
@@ -2276,7 +2274,7 @@ State 112
     GE         shift, and go to state 62
     AND        shift, and go to state 63
     OR         shift, and go to state 64
-    SEMICOLON  shift, and go to state 122
+    SEMICOLON  shift, and go to state 123
 
 
 State 113
@@ -2284,7 +2282,7 @@ State 113
    44 functionDeclaration: type ID OPENPAREN CLOSEPAREN . OPENCURLY body CLOSECURLY
    45                    | type ID OPENPAREN CLOSEPAREN . OPENCURLY CLOSECURLY
 
-    OPENCURLY  shift, and go to state 123
+    OPENCURLY  shift, and go to state 124
 
 
 State 114
@@ -2292,7 +2290,7 @@ State 114
    42 argList: type . ID
    43        | type . ID COMMA argList
 
-    ID  shift, and go to state 124
+    ID  shift, and go to state 125
 
 
 State 115
@@ -2300,45 +2298,57 @@ State 115
    46 functionDeclaration: type ID OPENPAREN argList . CLOSEPAREN OPENCURLY body CLOSECURLY
    47                    | type ID OPENPAREN argList . CLOSEPAREN OPENCURLY CLOSECURLY
 
-    CLOSEPAREN  shift, and go to state 125
+    CLOSEPAREN  shift, and go to state 126
 
 
 State 116
+
+    5 imports: IMPORT stringLiteral AS ID SEMICOLON .
+    6        | IMPORT stringLiteral AS ID SEMICOLON . imports
+
+    IMPORT  shift, and go to state 1
+
+    $default  reduce using rule 5 (imports)
+
+    imports  go to state 127
+
+
+State 117
 
    60 namespaceDeclaration: NAMESPACE identifier OPENCURLY body CLOSECURLY .
 
     $default  reduce using rule 60 (namespaceDeclaration)
 
 
-State 117
+State 118
 
    40 variableDeclaration: type ID . SEMICOLON
 
-    SEMICOLON  shift, and go to state 126
+    SEMICOLON  shift, and go to state 128
 
 
-State 118
+State 119
 
    53 variableDeclarationList: variableDeclaration variableDeclarationList .
 
     $default  reduce using rule 53 (variableDeclarationList)
 
 
-State 119
+State 120
 
    54 structDeclaration: STRUCT ID OPENCURLY variableDeclarationList CLOSECURLY .
 
     $default  reduce using rule 54 (structDeclaration)
 
 
-State 120
+State 121
 
    49 exprList: expression COMMA exprList .
 
     $default  reduce using rule 49 (exprList)
 
 
-State 121
+State 122
 
    14 expression: expression . PLUS expression
    15           | expression . MINUS expression
@@ -2376,14 +2386,14 @@ State 121
     $default  reduce using rule 59 (ternary)
 
 
-State 122
+State 123
 
    41 variableDefinition: type ID ASSIGN expression SEMICOLON .
 
     $default  reduce using rule 41 (variableDefinition)
 
 
-State 123
+State 124
 
    44 functionDeclaration: type ID OPENPAREN CLOSEPAREN OPENCURLY . body CLOSECURLY
    45                    | type ID OPENPAREN CLOSEPAREN OPENCURLY . CLOSECURLY
@@ -2405,7 +2415,7 @@ State 123
     MINUS               shift, and go to state 16
     NOT                 shift, and go to state 17
     OPENPAREN           shift, and go to state 18
-    CLOSECURLY          shift, and go to state 127
+    CLOSECURLY          shift, and go to state 129
 
     identifierText        go to state 19
     identifier            go to state 20
@@ -2423,49 +2433,56 @@ State 123
     namespaceDeclaration  go to state 33
     return                go to state 34
     statement             go to state 35
-    body                  go to state 128
-
-
-State 124
-
-   42 argList: type ID .
-   43        | type ID . COMMA argList
-
-    COMMA  shift, and go to state 129
-
-    $default  reduce using rule 42 (argList)
+    body                  go to state 130
 
 
 State 125
 
-   46 functionDeclaration: type ID OPENPAREN argList CLOSEPAREN . OPENCURLY body CLOSECURLY
-   47                    | type ID OPENPAREN argList CLOSEPAREN . OPENCURLY CLOSECURLY
+   42 argList: type ID .
+   43        | type ID . COMMA argList
 
-    OPENCURLY  shift, and go to state 130
+    COMMA  shift, and go to state 131
+
+    $default  reduce using rule 42 (argList)
 
 
 State 126
+
+   46 functionDeclaration: type ID OPENPAREN argList CLOSEPAREN . OPENCURLY body CLOSECURLY
+   47                    | type ID OPENPAREN argList CLOSEPAREN . OPENCURLY CLOSECURLY
+
+    OPENCURLY  shift, and go to state 132
+
+
+State 127
+
+    6 imports: IMPORT stringLiteral AS ID SEMICOLON imports .
+
+    $default  reduce using rule 6 (imports)
+
+
+State 128
 
    40 variableDeclaration: type ID SEMICOLON .
 
     $default  reduce using rule 40 (variableDeclaration)
 
 
-State 127
+State 129
 
    45 functionDeclaration: type ID OPENPAREN CLOSEPAREN OPENCURLY CLOSECURLY .
 
     $default  reduce using rule 45 (functionDeclaration)
 
 
-State 128
+State 130
 
    44 functionDeclaration: type ID OPENPAREN CLOSEPAREN OPENCURLY body . CLOSECURLY
 
-    CLOSECURLY  shift, and go to state 131
+    CLOSECURLY  shift, and go to state 133
 
 
-State 129
+State 131
 
    43 argList: type ID COMMA . argList
 
@@ -2479,10 +2496,10 @@ State 129
     identifierText  go to state 19
     identifier      go to state 103
     type            go to state 114
-    argList         go to state 132
+    argList         go to state 134
 
 
-State 130
+State 132
 
    46 functionDeclaration: type ID OPENPAREN argList CLOSEPAREN OPENCURLY . body CLOSECURLY
    47                    | type ID OPENPAREN argList CLOSEPAREN OPENCURLY . CLOSECURLY
@@ -2504,7 +2521,7 @@ State 130
     MINUS               shift, and go to state 16
     NOT                 shift, and go to state 17
     OPENPAREN           shift, and go to state 18
-    CLOSECURLY          shift, and go to state 133
+    CLOSECURLY          shift, and go to state 135
 
     identifierText        go to state 19
     identifier            go to state 20
@@ -2522,38 +2539,38 @@ State 130
     namespaceDeclaration  go to state 33
     return                go to state 34
     statement             go to state 35
-    body                  go to state 134
+    body                  go to state 136
 
 
-State 131
+State 133
 
    44 functionDeclaration: type ID OPENPAREN CLOSEPAREN OPENCURLY body CLOSECURLY .
 
     $default  reduce using rule 44 (functionDeclaration)
 
 
-State 132
+State 134
 
    43 argList: type ID COMMA argList .
 
     $default  reduce using rule 43 (argList)
 
 
-State 133
+State 135
 
    47 functionDeclaration: type ID OPENPAREN argList CLOSEPAREN OPENCURLY CLOSECURLY .
 
     $default  reduce using rule 47 (functionDeclaration)
 
 
-State 134
+State 136
 
    46 functionDeclaration: type ID OPENPAREN argList CLOSEPAREN OPENCURLY body . CLOSECURLY
 
-    CLOSECURLY  shift, and go to state 135
+    CLOSECURLY  shift, and go to state 137
 
 
-State 135
+State 137
 
    46 functionDeclaration: type ID OPENPAREN argList CLOSEPAREN OPENCURLY body CLOSECURLY .
 

@@ -1,4 +1,4 @@
-import "stdlib.xlsx";
+import "stdlib.xlsl" as std;
 
 namespace Math {
 
@@ -9,5 +9,7 @@ namespace Math {
 }
 
 number main() {
-  return Math.factorial(5);
+  number x = Math.factorial(5);
+  std.print(x);
+  return x;
 }

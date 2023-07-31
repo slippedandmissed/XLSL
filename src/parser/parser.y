@@ -44,7 +44,7 @@
 }
 
 
-%token <tokenText> IMPORT NAMESPACE STRUCT
+%token <tokenText> IMPORT AS NAMESPACE STRUCT
 %token <tokenText> SELF
 %token <tokenText> TRUE FALSE
 %token <tokenText> TEXT LOGICAL NUMBERTOKEN VOID
@@ -95,8 +95,8 @@ identifier: identifierText {{ $$=(struct IdentifierNode *)malloc(sizeof(struct I
   | SELF {{ $$=(struct IdentifierNode *)malloc(sizeof(struct IdentifierNode)); $$->type=ID_NODE_TYPE_SELF; $$->text=NULL; }}
   ;
 
-imports: IMPORT stringLiteral SEMICOLON { $$=(struct ImportsNode *)malloc(sizeof(struct ImportsNode)); $$->path=$2; $$->next=NULL; }
-  | IMPORT stringLiteral SEMICOLON imports { $$=(struct ImportsNode *)malloc(sizeof(struct ImportsNode)); $$->path=$2; $$->next=$4; }
+imports: IMPORT stringLiteral AS ID SEMICOLON { $$=(struct ImportsNode *)malloc(sizeof(struct ImportsNode)); $$->path=$2; $$->alias=malloc(strlen($4)+1); strcpy($$->alias, $4); $$->next=NULL; }
+  | IMPORT stringLiteral AS ID SEMICOLON imports { $$=(struct ImportsNode *)malloc(sizeof(struct ImportsNode)); $$->path=$2; $$->alias=malloc(strlen($4)+1); strcpy($$->alias, $4); $$->next=$6; }
   ;
 
 multiplyExpression: NUMBER { $$=(struct MultiplyExpressionNode *)malloc(sizeof(struct MultiplyExpressionNode)); $$->type = MUL_NODE_TYPE_LITERAL; $$->value.literalValue=malloc(strlen($1)+1); strcpy($$->value.literalValue, $1); }

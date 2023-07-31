@@ -18,6 +18,7 @@ struct IdentifierNode {
 
 struct ImportsNode {
   struct StringLiteralNode *path;
+  char *alias;
   struct ImportsNode *next;
 };
 

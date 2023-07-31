@@ -81,6 +81,7 @@ namespace ConcreteTree
 
   struct Scope
   {
+    void addAll(Scope const &);
     std::string toString(int indent) const;
     std::vector<std::shared_ptr<Function>> functions;
     std::vector<std::shared_ptr<Struct>> structs;
@@ -180,7 +181,7 @@ namespace ConcreteTree
     std::shared_ptr<Namespace> globalNamespace;
     std::unique_ptr<Block> block;
     Scope scope;
-    static std::unique_ptr<Program> fromAST(ProgramNode *);
+    static std::unique_ptr<Program> fromAST(std::string srcPath, ProgramNode *);
   };
 
 }

@@ -31,6 +31,7 @@ void AST::deallocTree(ImportsNode *node)
   {
     AST::deallocTree(node->next);
   }
+  free(node->alias);
   free(node);
 }
 

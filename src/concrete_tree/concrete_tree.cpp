@@ -1,26 +1,42 @@
 #include <iostream>
 #include <algorithm>
+#include <filesystem>
 #include <string.h>
 #include "concrete_tree.hpp"
 #include "../ast/print_ast.hpp"
 #include "../ast/dealloc_ast.hpp"
+#include "../ast/generate_ast.hpp"
 
 using namespace ConcreteTree;
 
-std::string unescapeString(char *escapedString)
-{
-  // TODO: implement
-  return escapedString;
-}
+std::string unescapeString(std::string);
+std::string resolvePath(std::string path, std::string relativeToFile);
 
-std::unique_ptr<Program> Program::fromAST(ProgramNode *node)
+std::unique_ptr<Program> Program::fromAST(std::string srcPath, ProgramNode *node)
 {
   auto program = std::make_unique<Program>();
   program->globalNamespace = std::make_shared<Namespace>();
   program->globalNamespace->name = "(GLOBAL)";
   program->globalNamespace->parent = nullptr;
 
-  // TODO: support imports
+  std::vector<std::pair<std::string, std::string>> importData;
+  auto currentImport = node->imports;
+  while (currentImport != nullptr) {
+    importData.push_back(std::pair<std::string, std::string>(unescapeString(currentImport->path->value), currentImport->alias));
+    currentImport = currentImport->next;
+  }
+
+  for (auto importDatum : importData) {
+    auto importPath = resolvePath(importDatum.first, srcPath);
+    auto importAlias = importDatum.second;
+    auto importHead = AST::generateFromFile(importPath);
+    auto importProgram = Program::fromAST(importPath, importHead);
+    AST::deallocTree(importHead);
+    importProgram->globalNamespace->name = importAlias;
+    importProgram->globalNamespace->parent = program->globalNamespace;
+    program->globalNamespace->children.push_back(importProgram->globalNamespace);
+    program->scope.addAll(importProgram->scope);
+  }
 
   program->block = std::make_unique<Block>();
 
@@ -712,4 +728,25 @@ void Expression::populateFromAST(std::shared_ptr<Namespace> currentNamespace, Sc
     break;
   }
   }
+}
+
+void Scope::addAll(Scope const &other) {
+  this->functions.insert(this->functions.end(), other.functions.begin(), other.functions.end());
+  this->structs.insert(this->structs.end(), other.structs.begin(), other.structs.end());
+  this->variables.insert(this->variables.end(), other.variables.begin(), other.variables.end());
+}
+
+std::string unescapeString(std::string escapedString)
+{
+  // TODO: implement
+  return escapedString;
+}
+
+
+std::string resolvePath(std::string path, std::string relativeToFile) {
+  auto findingPath = std::filesystem::path(path);
+  auto srcPath = std::filesystem::path(relativeToFile);
+  auto resolved = srcPath.parent_path();
+  resolved /= findingPath;
+  return resolved;
 }

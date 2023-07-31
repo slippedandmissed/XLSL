@@ -30,7 +30,7 @@ std::string AST::nodeToString(IdentifierNode const &node, int indent)
 
 std::string AST::nodeToString(ImportsNode const &node, int indent)
 {
-  auto stringVal = std::string(indent, ' ') + "ImportsNode";
+  auto stringVal = std::string(indent, ' ') + "ImportsNode (" + node.alias + ")";
   ADD_NODE(*node.path);
   if (node.next != nullptr)
   {
