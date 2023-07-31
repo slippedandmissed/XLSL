@@ -526,7 +526,7 @@ void Expression::populateFromAST(std::shared_ptr<Namespace> currentNamespace, Sc
   case EXPR_NODE_TYPE_STRING_LITERAL:
   {
     this->type = Expression::ExpressionType::STRING_LITERAL;
-    this->value = unescapeString(node->value.stringLiteral->value);
+    this->value = node->value.stringLiteral->value;
     break;
   }
   case EXPR_NODE_TYPE_STRUCT_INSTANTIATION:
@@ -787,8 +787,8 @@ void Scope::addAll(Scope const &other)
 
 std::string unescapeString(std::string escapedString)
 {
-  // TODO: implement
-  return escapedString;
+  // TODO: implement this properly
+  return escapedString.substr(1, escapedString.size()-2);
 }
 
 std::string resolvePath(std::string path, std::string relativeToFile)

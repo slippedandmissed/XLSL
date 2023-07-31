@@ -30,13 +30,9 @@ std::string Expression::getExcelFormula()
   switch (this->type)
   {
   case Expression::ExpressionType::NUMBER_LITERAL:
-  {
-    formula = std::get<std::string>(this->value);
-    break;
-  }
   case Expression::ExpressionType::STRING_LITERAL:
   {
-    formula = "\"" + std::get<std::string>(this->value) + "\"";
+    formula = std::get<std::string>(this->value);
     break;
   }
   case Expression::ExpressionType::TRUE_LITERAL:

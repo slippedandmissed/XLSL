@@ -46,8 +46,8 @@ digit [0-9]
 \/\*([^\*](([^\*]|\*[^\/])*\n)*([^\*]|\*[^\/])*)?\*\/   { ; } 
 [ \t]*                                                  { ; }
 "\n"                                                    { ; }
-\"(\\.|[^\\"])*\"                                       { yylval.tokenText = malloc(strlen(yytext)); strcpy(yylval.tokenText, yytext+1); yylval.tokenText[strlen(yytext)-2]=0; return DOUBLEQUOTEDSTRING; }
-\'(\\.|[^\\'])*\'                                       { yylval.tokenText = malloc(strlen(yytext)); strcpy(yylval.tokenText, yytext+1); yylval.tokenText[strlen(yytext)-2]=0; return SINGLEQUOTEDSTRING; }
+\"(\\.|[^\\"])*\"                                       { yylval.tokenText = malloc(strlen(yytext)+1); strcpy(yylval.tokenText, yytext); return DOUBLEQUOTEDSTRING; }
+\'(\\.|[^\\'])*\'                                       { yylval.tokenText = malloc(strlen(yytext)+1); strcpy(yylval.tokenText, yytext); return SINGLEQUOTEDSTRING; }
 "("                                                     { return OPENPAREN; }
 ")"                                                     { return CLOSEPAREN; }
 "{"                                                     { return OPENCURLY; }

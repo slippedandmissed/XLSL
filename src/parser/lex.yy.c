@@ -998,13 +998,13 @@ case 39:
 /* rule 39 can match eol */
 YY_RULE_SETUP
 #line 49 "lexer.l"
-{ yylval.tokenText = malloc(strlen(yytext)); strcpy(yylval.tokenText, yytext+1); yylval.tokenText[strlen(yytext)-2]=0; return DOUBLEQUOTEDSTRING; }
+{ yylval.tokenText = malloc(strlen(yytext)+1); strcpy(yylval.tokenText, yytext); return DOUBLEQUOTEDSTRING; }
 	YY_BREAK
 case 40:
 /* rule 40 can match eol */
 YY_RULE_SETUP
 #line 50 "lexer.l"
-{ yylval.tokenText = malloc(strlen(yytext)); strcpy(yylval.tokenText, yytext+1); yylval.tokenText[strlen(yytext)-2]=0; return SINGLEQUOTEDSTRING; }
+{ yylval.tokenText = malloc(strlen(yytext)+1); strcpy(yylval.tokenText, yytext); return SINGLEQUOTEDSTRING; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP

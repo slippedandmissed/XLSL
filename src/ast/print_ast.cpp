@@ -279,8 +279,7 @@ std::string AST::nodeToString(StructInstantiationNode const &node, int indent)
 
 std::string AST::nodeToString(StringLiteralNode const &node, int indent)
 {
-  auto stringVal = std::string(indent, ' ') + "StringLiteralNode: \""+node.value;
-  stringVal += "\"";
+  auto stringVal = std::string(indent, ' ') + "StringLiteralNode: "+node.value;
   return stringVal;
 }
 

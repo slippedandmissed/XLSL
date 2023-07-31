@@ -183,7 +183,7 @@ std::string Expression::toString(int indent) const
   case Expression::ExpressionType::STRING_LITERAL:
   {
     strValue += "STRING LITERAL";
-    strValue += "\n" + std::string(indent + 4, ' ') + "\"" + std::get<std::string>(this->value) + "\"";
+    strValue += "\n" + std::string(indent + 4, ' ') + std::get<std::string>(this->value);
     break;
   }
   case Expression::ExpressionType::TRUE_LITERAL:
