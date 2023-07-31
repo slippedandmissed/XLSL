@@ -64,7 +64,7 @@ namespace ConcreteTree
     std::shared_ptr<Namespace> namespace_;
     Type returnType;
     std::string name;
-    std::vector<Variable> arguments;
+    std::vector<std::shared_ptr<Variable>> arguments;
     std::unique_ptr<Block> block;
   };
 

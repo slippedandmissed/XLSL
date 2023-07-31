@@ -19,7 +19,7 @@ std::unique_ptr<Program> Program::fromAST(ProgramNode *node)
   program->globalNamespace = std::make_shared<Namespace>();
   program->globalNamespace->name = "(GLOBAL)";
   program->globalNamespace->parent = nullptr;
-  
+
   // TODO: support imports
 
   if (node->body != nullptr)
@@ -113,6 +113,7 @@ void Variable::populateChildrenFromStruct()
     for (auto member : this->type.struct_->members)
     {
       auto child = std::make_shared<Variable>();
+      child->namespace_ = nullptr;
       child->name = member.name;
       child->type = member.type;
       child->populateChildrenFromStruct();
@@ -220,7 +221,7 @@ IdentifierTextNode *cloneIdentifierTextNode(IdentifierTextNode *src)
   // NOTE: we use `malloc` here rather than `new` because `deallocTree` uses `free` rather than `delete`
   // Idk whether this actually makes a difference but we move
   auto newNode = (IdentifierTextNode *)malloc(sizeof(IdentifierTextNode));
-  newNode->text = (char *)malloc(strlen(src->text)+1);
+  newNode->text = (char *)malloc(strlen(src->text) + 1);
   strcpy(newNode->text, src->text);
   if (src->next == nullptr)
   {
@@ -245,7 +246,7 @@ std::shared_ptr<Variable> Variable::localizeFromAST(std::shared_ptr<Namespace> c
   {
     current = current->next;
   }
-  std::string structName = current->text;
+  std::string variableName = current->text;
   std::shared_ptr<Variable> found = nullptr;
   auto checkingNode = cloneIdentifierTextNode(node->text);
   std::vector<std::string> assumedStructMembers;
@@ -253,7 +254,7 @@ std::shared_ptr<Variable> Variable::localizeFromAST(std::shared_ptr<Namespace> c
   {
     for (auto variable : currentScope.variables)
     {
-      if (variable->name == structName && variable->namespace_->matchesFromAST(currentNamespace, checkingNode))
+      if (variable->name == variableName && (variable->namespace_ == nullptr || variable->namespace_->matchesFromAST(currentNamespace, checkingNode)))
       {
         found = variable;
         break;
@@ -361,11 +362,11 @@ std::shared_ptr<Function> Function::localizeFromAST(std::shared_ptr<Namespace> c
   {
     current = current->next;
   }
-  std::string structName = current->text;
+  std::string functionName = current->text;
   std::shared_ptr<Function> found = nullptr;
   for (auto function : currentScope.functions)
   {
-    if (function->name == structName && function->namespace_->matchesFromAST(currentNamespace, node->text))
+    if (function->name == functionName && function->namespace_->matchesFromAST(currentNamespace, node->text))
     {
       found = function;
       break;
@@ -413,10 +414,13 @@ void Function::populateFromAST(Scope currentScope, FunctionDeclarationNode *node
   auto currentArg = node->argList;
   while (currentArg != nullptr)
   {
-    Variable argument;
-    argument.name = currentArg->argumentName;
-    argument.type.populateFromAST(this->namespace_, currentScope, currentArg->argumentType);
-    argument.populateChildrenFromStruct();
+    auto argument = std::make_shared<Variable>();
+    argument->namespace_ = nullptr;
+    argument->name = currentArg->argumentName;
+    argument->type.populateFromAST(this->namespace_, currentScope, currentArg->argumentType);
+    argument->populateChildrenFromStruct();
+    this->arguments.push_back(argument);
+    currentScope.variables.push_back(argument);
     currentArg = currentArg->next;
   }
   if (node->body == nullptr)
@@ -437,6 +441,7 @@ void Struct::populateFromAST(Scope const &currentScope, StructDeclarationNode *n
   while (currentDeclaration != nullptr)
   {
     Variable member;
+    member.namespace_ = nullptr;
     member.name = currentDeclaration->current->name;
     member.type.populateFromAST(this->namespace_, currentScope, currentDeclaration->current->variableType);
     member.populateChildrenFromStruct();
