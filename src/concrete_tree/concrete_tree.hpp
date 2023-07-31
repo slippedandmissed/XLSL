@@ -178,6 +178,7 @@ namespace ConcreteTree
     std::string toString(int indent) const;
     std::shared_ptr<Namespace> globalNamespace;
     std::unique_ptr<Block> block;
+    Scope scope;
     static std::unique_ptr<Program> fromAST(ProgramNode *);
   };
 

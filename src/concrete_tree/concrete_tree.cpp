@@ -22,16 +22,12 @@ std::unique_ptr<Program> Program::fromAST(ProgramNode *node)
 
   // TODO: support imports
 
+  program->block = std::make_unique<Block>();
+
   if (node->body != nullptr)
   {
-    program->block = std::make_unique<Block>();
-    Scope scope;
-    scope.context = nullptr;
-    program->block->populateFromAST(program->globalNamespace, scope, node->body);
-  }
-  else
-  {
-    program->block = nullptr;
+    program->scope.context = nullptr;
+    program->block->populateFromAST(program->globalNamespace, program->scope, node->body);
   }
   return program;
 }
