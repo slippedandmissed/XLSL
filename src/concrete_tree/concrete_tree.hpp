@@ -65,7 +65,7 @@ namespace ConcreteTree
     std::optional<std::string> m_excelFormula;
 
   public:
-    std::string getExcelFormula();
+    std::string getExcelFormula(bool shouldUseExcelHeaders, std::vector<std::pair<std::string, std::string>> &formulaDefinitions);
     inline std::string toString(int indent) const { return this->toString(indent, false); }
     std::string toString(int indent, bool brief) const;
     static std::shared_ptr<Function> localizeFromAST(std::shared_ptr<Namespace>, Scope const &, IdentifierNode *);
@@ -107,7 +107,7 @@ namespace ConcreteTree
   public:
     Type getType();
     Scope scope;
-    std::string getExcelFormula();
+    std::string getExcelFormula(bool shouldUseExcelHeaders, std::vector<std::pair<std::string, std::string>> &formulaDefinitions);
     std::string toString(int indent) const;
     enum ExpressionType
     {
@@ -206,7 +206,7 @@ namespace ConcreteTree
     std::optional<std::shared_ptr<Function>> m_mainMethod;
 
   public:
-    std::string getMainMethodFormula();
+    std::string getMainMethodFormula(bool shouldUseExcelHeaders, std::vector<std::pair<std::string, std::string>> &formulaDefinitions);
     std::shared_ptr<Function> getMainMethod();
     std::string toString(int indent) const;
     std::shared_ptr<Namespace> globalNamespace;

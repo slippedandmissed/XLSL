@@ -23,11 +23,13 @@ void addAllArgumentLabels(std::string header, const ConcreteTree::Variable &argu
 int main(int argc, char *argv[])
 {
 
-  if (argc < 2)
+  if (argc < 3 || (std::string(argv[2]) != "y" && std::string(argv[2]) != "n"))
   {
-    std::cerr << "Usage: " << (argc == 0 ? "compile" : argv[0]) << " [input_file.xlsl] [Input cell addr 1] [Input cell addr 2] ..." << std::endl;
+    std::cerr << "Usage: " << (argc == 0 ? "compile" : argv[0]) << " [input_file.xlsl] [should_use_excel_headers(y/n)] [Input cell addr 1] [Input cell addr 2] ..." << std::endl;
     exit(1);
   }
+
+  bool shouldUseExcelHeaders = std::string(argv[2]) == "y";
 
   auto ast = AST::generateFromFile(argv[1]);
   auto program = ConcreteTree::Program::fromAST(argv[1], ast);
@@ -36,7 +38,7 @@ int main(int argc, char *argv[])
   auto mainMethod = program->getMainMethod();
 
   std::vector<std::string> inputCells;
-  for (int i = 2; i < argc; i++)
+  for (int i = 3; i < argc; i++)
   {
     inputCells.push_back(argv[i]);
   }
@@ -61,7 +63,9 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
-  auto formula = program->getMainMethodFormula() + "(";
+  std::vector<std::pair<std::string, std::string>> formulaDefinitions;
+
+  auto formula = program->getMainMethodFormula(shouldUseExcelHeaders, formulaDefinitions) + "(";
   for (std::size_t i = 0; i < inputCells.size(); i++)
   {
     formula += inputCells[i];
@@ -73,10 +77,16 @@ int main(int argc, char *argv[])
   formula += ")";
 
   std::cout << argumentLabels.size() << std::endl;
-  for (auto argumentLabel : argumentLabels) {
+  for (auto argumentLabel : argumentLabels)
+  {
     std::cout << argumentLabel << std::endl;
   }
   std::cout << formula << std::endl;
+  std::cout << formulaDefinitions.size() << std::endl;
+  for (auto formula : formulaDefinitions)
+  {
+    std::cout << formula.first << std::endl << formula.second << std::endl;
+  }
 
   return 0;
 }

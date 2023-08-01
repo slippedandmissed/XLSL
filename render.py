@@ -6,10 +6,12 @@ import sys
 import os
 from openpyxl.utils.cell import coordinate_from_string, column_index_from_string
 from openpyxl.utils import get_column_letter
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
+from openpyxl.workbook.defined_name import DefinedName
 
-# https://stackoverflow.com/a/60750535
+
 class EnumAction(argparse.Action):
+    # https://stackoverflow.com/a/60750535
     """
     Argparse action for handling Enums
     """
@@ -58,6 +60,8 @@ parser.add_argument("-l", "--input-labels", type=InputLabelSpacing, default=Inpu
                     action=EnumAction, help="The positioning of input labels next to the input cells")
 parser.add_argument("-o", "--output_file", type=str,
                     help="The name of the output Excel spreadsheet")
+parser.add_argument("-t", "--template_file", type=str,
+                    help="The name of a template Excel spreadsheet. If one is not provided, a blank workbook is created")
 
 args = parser.parse_args()
 
@@ -93,7 +97,12 @@ output_cells = parse_cell_lists(args.output_cells)
 
 bin_path = "./build/compile"
 
-proc = subprocess.run([bin_path, src_file, *input_cells],
+cmdlineArgs = [bin_path, src_file, "y"]
+for i in input_cells:
+    cmdlineArgs.append(f"'Sheet'!{i}")
+
+print(" ".join(cmdlineArgs))
+proc = subprocess.run(cmdlineArgs,
                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 if (len(proc.stderr) > 0):
@@ -109,17 +118,26 @@ input_labels = []
 for i in range(num_inputs):
     input_labels.append(response[i+1])
 
-formula = response[-1]
+formula = "="+response[num_inputs+1]
+print(formula)
+num_functions = int(response[num_inputs+2])
+functions = []
+for i in range(num_functions):
+    functions.append((response[num_inputs+3+i*2],response[num_inputs+4+i*2]))
+
+for function_name, function_formula in functions:
+    print(f"{function_name}: {function_formula}", end="\n\n")
+
 
 output_file = args.output_file
 if output_file is None:
     output_file = os.path.basename(os.path.splitext(src_file)[0]) + ".xlsx"
 
-wb = Workbook()
+wb = Workbook() if args.template_file is None else load_workbook(args.template_file)
 ws = wb.active
 
 for cell in output_cells:
-    ws[cell] = f"={formula}"
+    ws[cell] = formula
 
 for cell, label in zip(input_cells, input_labels):
     label_x, label_y = col_row(cell)
@@ -134,5 +152,9 @@ for cell, label in zip(input_cells, input_labels):
     else:
         continue
     ws[addr(label_x, label_y)] = label
+
+for function_name, function_formula in functions[::-1]:
+    defn = DefinedName(function_name, attr_text=function_formula)
+    wb.defined_names[function_name] = defn
 
 wb.save(output_file)

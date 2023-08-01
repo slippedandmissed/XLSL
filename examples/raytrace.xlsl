@@ -1,0 +1,111 @@
+import "stdlib.xlsl" as Std;
+
+struct Vector3 {
+  number x;
+  number y;
+  number z;
+
+  // serialize {
+  //   return Std.Typing.numberToText(x) + "," + Std.Typing.numberToText(y) + "," + Std.Typing.numberToText(x); 
+  // }
+
+  // deserialize {
+  //   number x = Std.Typing.textToNumber(Std.Split.head(serialized, ","));
+  //   number y = Std.Typing.textToNumber(Std.Split.nth(serialized, ",", 1));
+  //   number z = Std.Typing.textToNumber(Std.Split.nth(serialized, ",", 2));
+  //   return Vector3 { x, y, z };
+  // }
+}
+
+struct Sphere {
+  number centerX;
+  number centerY;
+  number centerZ;
+  number radius;
+  number brightness;
+}
+
+struct CameraSettings {
+  number screenPixelsX;
+  number screenPixelsY;
+  number screenWorldSpaceWidth;
+  number focalLength;
+}
+
+number dot(Vector3 a, Vector3 b) {
+  return (a.x*b.x) + (a.y*b.y) + (a.z*b.z);
+}
+
+
+number getD(number tca, Vector3 L) {
+  return Std.Math.sqrt(dot(L, L) - (tca * tca));
+}
+
+number getThc(number d, number radius) {
+    return Std.Math.sqrt((radius*radius) - (d*d));
+}
+
+number getT0(number tca, number thc) {
+  logical err = Std.isError(thc);
+  return (err == true) ? -1 : (tca-thc);
+}
+
+number distanceToSphere(Vector3 origin, Vector3 ray, Sphere sphere) {
+  // https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-sphere-intersection.html
+  
+  Vector3 L = Vector3 {
+    sphere.centerX - origin.x,
+    sphere.centerY - origin.y,
+    sphere.centerZ - origin.z
+  };
+  number tca = dot(L, ray);
+
+  number d = getD(tca, L);
+  number thc = getThc(d, sphere.radius);
+  return getT0(tca, thc);
+}
+
+number distToSphereInCamera(CameraSettings cameraSettings, Sphere sphere) {
+  number screenWorldSpaceHeight = (cameraSettings.screenPixelsY / cameraSettings.screenPixelsX) * cameraSettings.screenWorldSpaceWidth;
+  number pixelX = Std.CurrentCell.column()-1;
+  number pixelY = Std.CurrentCell.row()-1;
+
+  number pixelU = (pixelX / cameraSettings.screenPixelsX) - 0.5;
+  number pixelV = (pixelY / cameraSettings.screenPixelsY) - 0.5;
+  Vector3 pixelPos = Vector3 {
+    (pixelU * cameraSettings.screenWorldSpaceWidth),
+    (pixelV * screenWorldSpaceHeight),
+    0
+  };
+
+  Vector3 cameraPos = Vector3 { 0, 0, -cameraSettings.focalLength };
+
+  Vector3 unnormalizedRay = Vector3 {
+    pixelPos.x - cameraPos.x,
+    pixelPos.y - cameraPos.y,
+    pixelPos.z - cameraPos.z
+  };
+
+  number rayLength = Std.Math.sqrt(dot(unnormalizedRay, unnormalizedRay));
+
+  Vector3 ray = Vector3 {
+    unnormalizedRay.x/rayLength,
+    unnormalizedRay.y/rayLength,
+    unnormalizedRay.z/rayLength
+  };
+
+  return distanceToSphere(cameraPos, ray, sphere);
+}
+
+number main(CameraSettings cameraSettings, Sphere sphere1, Sphere sphere2) {
+  number distToSphere1 = distToSphereInCamera(cameraSettings, sphere1);
+  number distToSphere2 = distToSphereInCamera(cameraSettings, sphere2);
+
+  logical hitSphere1 = distToSphere1 >= 0;
+  logical hitSphere2 = distToSphere2 >= 0;
+
+  number hitFirst = hitSphere1 && hitSphere2 ? (distToSphere1 < distToSphere2 ? 1 : 2) : ((hitSphere1 == true) ? 1 : ((hitSphere2 == true) ? 2 : 0));
+  number brightness = hitFirst == 1 ? sphere1.brightness : (hitFirst == 2 ? sphere2.brightness : 0);
+
+  return brightness;
+}

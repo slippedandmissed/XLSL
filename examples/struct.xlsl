@@ -6,7 +6,7 @@ struct Color {
   number b;
 
   serialize {
-    return Std.numberToText(r) + ":" + Std.numberToText(g) + ":" + Std.numberToText(b);
+    return Std.Typing.numberToText(r) + ":" + Std.Typing.numberToText(g) + ":" + Std.Typing.numberToText(b);
   }
   
   deserialize {
@@ -14,9 +14,9 @@ struct Color {
     text g = Std.Split.nth(serialized, ":", 1);
     text b = Std.Split.nth(serialized, ":", 2);
     return Color {
-      Std.textToNumber(r),
-      Std.textToNumber(g),
-      Std.textToNumber(b)
+      Std.Typing.textToNumber(r),
+      Std.Typing.textToNumber(g),
+      Std.Typing.textToNumber(b)
     };
   }
 }

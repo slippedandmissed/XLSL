@@ -1,26 +1,31 @@
-void print(text message) {
-  // Do something here
+namespace CurrentCell {
+
+  number row() {
+    return $ROW();
+  }
+  
+  number column() {
+    return $COLUMN();
+  }
+  
+  text address(number row, number col) {
+    return $ADDRESS(row, col);
+  }
+
 }
 
-number row() {
-  return $ROW();
+namespace Typing {
+
+  text numberToText(number x) {
+    return $TEXT(x, "#");
+  }
+  
+  number textToNumber(text x) {
+    return $NUMBERVALUE(x);
+  }
+
 }
 
-number column() {
-  return $COL();
-}
-
-text address(number row, number col) {
-  return $ADDRESS(row, col);
-}
-
-text numberToText(number x) {
-  return $TEXT(x, "#");
-}
-
-number textToNumber(text x) {
-  return $NUMBERVALUE(x);
-}
 
 namespace Split {
 
@@ -33,8 +38,19 @@ namespace Split {
   }
 
   text nth(text query, text delimiter, number n) {
-    // I'm sure there's a better way to do this lol
-    return n == 0 ? head(query, delimiter) : self(query, tail(query, delimiter), n-1);
+    return $TRIM($MID($SUBSTITUTE(query,delimiter,$REPT(" ",999)),n*999+1,999));
+  }
+
+}
+
+logical isError(number val) {
+  return $ISERROR(val);
+}
+
+namespace Math {
+
+  number sqrt(number x) {
+    return $SQRT(x);
   }
 
 }
