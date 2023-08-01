@@ -13,3 +13,28 @@ number column() {
 text address(number row, number col) {
   return $ADDRESS(row, col);
 }
+
+text numberToText(number x) {
+  return $TEXT(x, "#");
+}
+
+number textToNumber(text x) {
+  return $NUMBERVALUE(x);
+}
+
+namespace Split {
+
+  text head(text query, text delimiter) {
+    return $LEFT(query, $FIND(delimiter, query)-1);
+  }
+
+  text tail(text query, text delimiter) {
+    return $RIGHT(query, $LEN(query)-$FIND(delimiter, query));
+  }
+
+  text nth(text query, text delimiter, number n) {
+    // I'm sure there's a better way to do this lol
+    return n == 0 ? head(query, delimiter) : self(query, tail(query, delimiter), n-1);
+  }
+
+}

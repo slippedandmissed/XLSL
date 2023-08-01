@@ -35,6 +35,17 @@ void AST::deallocTree(ImportsNode *node)
   free(node);
 }
 
+void AST::deallocTree(StructSerializeNode *node)
+{
+  AST::deallocTree(node->expression);
+}
+
+void AST::deallocTree(StructDeserializeNode *node)
+{
+  AST::deallocTree(node->structIdentifier);
+  AST::deallocTree(node->expression);
+}
+
 void AST::deallocTree(MultiplyExpressionNode *node)
 {
   switch (node->type)
@@ -52,6 +63,9 @@ void AST::deallocTree(MultiplyExpressionNode *node)
     break;
   case MUL_NODE_TYPE_LITERAL:
     free(node->value.literalValue);
+    break;
+  case MUL_NODE_TYPE_STRUCT_SERIALIZE:
+    AST::deallocTree(node->value.structSerialize);
     break;
   }
   free(node);
@@ -77,6 +91,9 @@ void AST::deallocTree(ExpressionNode *node)
     break;
   case EXPR_NODE_TYPE_STRUCT_INSTANTIATION:
     AST::deallocTree(node->value.structInstantiation);
+    break;
+  case EXPR_NODE_TYPE_STRUCT_DESERIALIZE:
+    AST::deallocTree(node->value.structDeserialize);
     break;
   case EXPR_NODE_TYPE_TERNARY:
     AST::deallocTree(node->value.ternary);
@@ -157,10 +174,12 @@ void AST::deallocTree(ArgListNode *node)
 
 void AST::deallocTree(FunctionDeclarationNode *node)
 {
-  if (node->returnType != nullptr) {
+  if (node->returnType != nullptr)
+  {
     AST::deallocTree(node->returnType);
   }
-  if (node->name != nullptr) {
+  if (node->name != nullptr)
+  {
     free(node->name);
   }
   if (node->argList != nullptr)
@@ -177,7 +196,8 @@ void AST::deallocTree(FunctionDeclarationNode *node)
 void AST::deallocTree(ExpressionListNode *node)
 {
   AST::deallocTree(node->expression);
-  if (node->next != nullptr) {
+  if (node->next != nullptr)
+  {
     AST::deallocTree(node->next);
   }
   free(node);
@@ -186,7 +206,8 @@ void AST::deallocTree(ExpressionListNode *node)
 void AST::deallocTree(FunctionCallNode *node)
 {
   AST::deallocTree(node->functionIdentifier);
-  if (node->arguments != nullptr) {
+  if (node->arguments != nullptr)
+  {
     AST::deallocTree(node->arguments);
   }
   free(node);
@@ -195,7 +216,8 @@ void AST::deallocTree(FunctionCallNode *node)
 void AST::deallocTree(VariableDeclarationListNode *node)
 {
   AST::deallocTree(node->current);
-  if (node->next != nullptr) {
+  if (node->next != nullptr)
+  {
     AST::deallocTree(node->next);
   }
   free(node);
@@ -204,10 +226,12 @@ void AST::deallocTree(VariableDeclarationListNode *node)
 void AST::deallocTree(StructDeclarationNode *node)
 {
   free(node->name);
-  if (node->declarations != nullptr) {
+  if (node->declarations != nullptr)
+  {
     AST::deallocTree(node->declarations);
   }
-  if (node->serialize != nullptr) {
+  if (node->serialize != nullptr)
+  {
     AST::deallocTree(node->serialize);
     AST::deallocTree(node->deserialize);
   }
@@ -217,7 +241,8 @@ void AST::deallocTree(StructDeclarationNode *node)
 void AST::deallocTree(StructInstantiationNode *node)
 {
   AST::deallocTree(node->identifier);
-  if (node->arguments != nullptr) {
+  if (node->arguments != nullptr)
+  {
     AST::deallocTree(node->arguments);
   }
   free(node);

@@ -449,7 +449,8 @@ void Struct::populateFromAST(std::shared_ptr<Struct> self, std::shared_ptr<Names
   if (node->serialize != nullptr)
   {
     auto serializer = std::make_shared<Function>();
-    for (auto member : this->members) {
+    for (auto member : this->members)
+    {
       auto variable = std::make_shared<Variable>();
       variable->name = member.name;
       variable->type = member.type;
@@ -458,34 +459,43 @@ void Struct::populateFromAST(std::shared_ptr<Struct> self, std::shared_ptr<Names
       serializer->arguments.push_back(variable);
     }
     serializer->namespace_ = currentNamespace;
-    serializer->name = "";
+    serializer->name = this->name + "\\serialize";
     serializer->returnType.type = Type::TypeType::TEXT;
     serializer->block = std::make_unique<Block>();
-    
+
     auto copyScope = currentScope;
     copyScope.structs.push_back(self);
 
     auto newScope = copyScope;
+    newScope.context = serializer;
+    for (auto arg : serializer->arguments) {
+      newScope.variables.push_back(std::make_pair(arg, nullptr));
+    }
     serializer->block->populateFromAST(currentNamespace, newScope, node->serialize->body);
     std::vector<std::shared_ptr<Function>> deserializers;
-    for (auto member : this->members) {
+    for (auto member : this->members)
+    {
       auto deserializer = std::make_shared<Function>();
       auto arg = std::make_shared<Variable>();
       arg->name = "serialized";
       arg->type.type = Type::TypeType::TEXT;
       deserializer->arguments.push_back(arg);
       deserializer->namespace_ = currentNamespace;
-      deserializer->name = "";
+      deserializer->name = this->name + "\\deserialize";
       deserializer->returnType = member.type;
       deserializer->block = std::make_unique<Block>();
       Scope newScope = copyScope;
+      newScope.context = deserializer;
+      newScope.variables.push_back(std::make_pair(arg, nullptr));
       auto bodyNode = AST::cloneTree(node->deserialize->body);
       auto currentBodyNode = bodyNode;
       BodyNode *lastBodyNode = nullptr;
       auto extraVariableName = std::string("&return").c_str();
-      while (currentBodyNode != nullptr) {
+      while (currentBodyNode != nullptr)
+      {
         auto stmtNode = currentBodyNode->current;
-        if (stmtNode->type == STMT_NODE_TYPE_RETURN_STATEMENT && stmtNode->value.returnStatement->value != nullptr) {
+        if (stmtNode->type == STMT_NODE_TYPE_RETURN_STATEMENT && stmtNode->value.returnStatement->value != nullptr)
+        {
 
           auto exprNode = stmtNode->value.returnStatement->value;
 
@@ -496,18 +506,18 @@ void Struct::populateFromAST(std::shared_ptr<Struct> self, std::shared_ptr<Names
           auto newVarTypeId = (IdentifierNode *)malloc(sizeof(IdentifierNode));
           auto newVarTypeIdText = (IdentifierTextNode *)malloc(sizeof(IdentifierTextNode));
 
-          newVarTypeIdText->text = (char *)malloc(this->name.size()+1);
+          newVarTypeIdText->text = (char *)malloc(this->name.size() + 1);
           strcpy(newVarTypeIdText->text, this->name.c_str());
           newVarTypeIdText->next = nullptr;
 
           newVarTypeId->text = newVarTypeIdText;
           newVarTypeId->type = ID_NODE_TYPE_TEXT;
-          
+
           newVarType->type = TYPE_NODE_TYPE_IDENTIFIER;
           newVarType->identifier = newVarTypeId;
 
           newVarDefinition->expression = exprNode;
-          newVarDefinition->name = (char *)malloc(strlen(extraVariableName)+1);
+          newVarDefinition->name = (char *)malloc(strlen(extraVariableName) + 1);
           strcpy(newVarDefinition->name, extraVariableName);
           newVarDefinition->variableType = newVarType;
 
@@ -527,13 +537,13 @@ void Struct::populateFromAST(std::shared_ptr<Struct> self, std::shared_ptr<Names
           strcpy(newExprIdTextNode2->text, member.name.c_str());
           newExprIdTextNode2->next = nullptr;
 
-          newExprIdTextNode1->text = (char *)malloc(strlen(extraVariableName)+1);
+          newExprIdTextNode1->text = (char *)malloc(strlen(extraVariableName) + 1);
           strcpy(newExprIdTextNode1->text, extraVariableName);
           newExprIdTextNode1->next = newExprIdTextNode2;
 
           newExprIdNode->type = ID_NODE_TYPE_TEXT;
           newExprIdNode->text = newExprIdTextNode1;
-          
+
           newMulExprNode->type = MUL_NODE_TYPE_IDENTIFIER;
           newMulExprNode->value.identifier = newExprIdNode;
 
@@ -542,9 +552,12 @@ void Struct::populateFromAST(std::shared_ptr<Struct> self, std::shared_ptr<Names
 
           stmtNode->value.returnStatement->value = newExprNode;
 
-          if (lastBodyNode == nullptr) {
+          if (lastBodyNode == nullptr)
+          {
             bodyNode = newBodyNode;
-          } else {
+          }
+          else
+          {
             lastBodyNode->next = newBodyNode;
           }
           break;
@@ -638,6 +651,45 @@ void Expression::populateFromAST(std::shared_ptr<Namespace> currentNamespace, Sc
       currentArg = currentArg->next;
     }
     this->value = value;
+    break;
+  }
+  case EXPR_NODE_TYPE_STRUCT_DESERIALIZE:
+  {
+    this->type = Expression::ExpressionType::STRUCT_INSTANTIATION;
+    auto struct_ = Struct::localizeFromAST(currentNamespace, currentScope, node->value.structDeserialize->structIdentifier);
+    if (!struct_->serializers.has_value())
+    {
+      std::cout << "Tried to deserialize to \"" << struct_->name << "\" which has no deserializer" << std::endl;
+      exit(1);
+    }
+    auto exprNode = node->value.structDeserialize->expression;
+    auto expr = std::make_shared<Expression>();
+    expr->populateFromAST(currentNamespace, currentScope, exprNode);
+
+    if (expr->getType().type != Type::TypeType::TEXT)
+    {
+      std::cout << "Tried to deserialize a non-text expression" << std::endl;
+      exit(1);
+    }
+
+    std::vector<std::shared_ptr<Expression>> calls;
+    for (auto deserializer : struct_->serializers.value().second) {
+      auto call = std::make_shared<Expression>();
+      call->type = Expression::ExpressionType::FUNCTION_CALL;
+      call->scope = currentScope;
+      Expression::FunctionCallData data;
+      data.function = deserializer;
+      data.arguments.push_back(expr);
+      call->value = data;
+      calls.push_back(call);
+    }
+
+    Expression::StructInstantiationData data;
+    data.struct_ = struct_;
+    data.arguments = calls;
+
+    this->value = data;
+
     break;
   }
   case EXPR_NODE_TYPE_TERNARY:
@@ -748,6 +800,52 @@ void Expression::populateFromAST(std::shared_ptr<Namespace> currentNamespace, Sc
   {
     this->type = Expression::ExpressionType::NUMBER_LITERAL;
     this->value = node->value.literalValue;
+    break;
+  }
+  case MUL_NODE_TYPE_STRUCT_SERIALIZE:
+  {
+    this->type = Expression::ExpressionType::FUNCTION_CALL;
+    Expression::FunctionCallData functionCallData;
+
+    auto exprNode = node->value.structSerialize->expression;
+    auto expr = std::make_shared<Expression>();
+    expr->populateFromAST(currentNamespace, currentScope, exprNode);
+    auto exprType = expr->getType();
+    if (exprType.type != Type::TypeType::CUSTOM_STRUCT)
+    {
+      std::cerr << "Tried to serialize non-struct expression" << std::endl;
+      exit(1);
+    }
+
+    auto struct_ = exprType.struct_;
+
+    if (!struct_->serializers.has_value())
+    {
+      std::cerr << "Tried to serialize instance of \"" << struct_->name << "\" which has no serializer" << std::endl;
+      exit(1);
+    }
+
+    functionCallData.function = struct_->serializers.value().first;
+    std::vector<std::shared_ptr<Expression>> args;
+
+    auto newVariable = std::make_shared<Variable>();
+    newVariable->name = "";
+    newVariable->type = exprType;
+    newVariable->populateChildrenFromStruct(newVariable);
+
+    auto newScope = currentScope;
+    newScope.variables.push_back(std::make_pair(newVariable, expr));
+    for (auto child : newVariable->children)
+    {
+      auto arg = std::make_shared<Expression>();
+      arg->type = Expression::ExpressionType::VARIABLE;
+      arg->scope = newScope;
+      arg->value = child;
+      args.push_back(arg);
+    }
+
+    functionCallData.arguments = args;
+    this->value = functionCallData;
     break;
   }
   }

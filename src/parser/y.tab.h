@@ -161,6 +161,8 @@ union YYSTYPE
   struct VariableDeclarationListNode *variableDeclarationList;
   struct StructDeclarationNode *structDeclaration;
   struct StructInstantiationNode *structInstantiation;
+  struct StructSerializeNode *structSerialize;
+  struct StructDeserializeNode *structDeserialize;
   struct StringLiteralNode *stringLiteral;
   struct NamespaceDeclarationNode *namespaceDeclaration;
   struct ReturnStatementNode *returnStatement;
@@ -169,7 +171,7 @@ union YYSTYPE
   struct BodyNode *body;
   struct ProgramNode *program;
 
-#line 173 "y.tab.h"
+#line 175 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

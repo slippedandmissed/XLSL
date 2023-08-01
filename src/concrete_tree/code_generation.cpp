@@ -279,7 +279,7 @@ std::string Function::getExcelFormula()
 
     if (this->arguments.size() == 0)
     {
-      formula = returnFormula;
+      formula = "LAMBDA(" + returnFormula + ")";
     }
     else
     {

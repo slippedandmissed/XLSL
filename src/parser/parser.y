@@ -34,6 +34,8 @@
   struct VariableDeclarationListNode *variableDeclarationList;
   struct StructDeclarationNode *structDeclaration;
   struct StructInstantiationNode *structInstantiation;
+  struct StructSerializeNode *structSerialize;
+  struct StructDeserializeNode *structDeserialize;
   struct StringLiteralNode *stringLiteral;
   struct NamespaceDeclarationNode *namespaceDeclaration;
   struct ReturnStatementNode *returnStatement;
@@ -75,6 +77,8 @@
 %type <functionCall> functionCall
 %type <variableDeclarationList> variableDeclarationList
 %type <functionDeclaration> serializeBlock deserializeBlock
+%type <structSerialize> structSerialize
+%type <structDeserialize> structDeserialize
 %type <structDeclaration> structDeclaration
 %type <structInstantiation> structInstantiation
 %type <stringLiteral> stringLiteral
@@ -107,6 +111,13 @@ multiplyExpression: NUMBER { $$=(struct MultiplyExpressionNode *)malloc(sizeof(s
   | OPENPAREN multiplyExpression CLOSEPAREN { $$ = $2; }
   | multiplyExpression TIMES multiplyExpression { $$=(struct MultiplyExpressionNode *)malloc(sizeof(struct MultiplyExpressionNode)); $$->type = MUL_NODE_TYPE_TIMES; $$->value.sides.left = $1; $$->value.sides.right = $3; }
   | multiplyExpression DIVIDE multiplyExpression { $$=(struct MultiplyExpressionNode *)malloc(sizeof(struct MultiplyExpressionNode)); $$->type = MUL_NODE_TYPE_DIVIDE; $$->value.sides.left = $1; $$->value.sides.right = $3; }
+  | structSerialize {{ $$=(struct MultiplyExpressionNode *)malloc(sizeof(struct MultiplyExpressionNode)); $$->type=MUL_NODE_TYPE_STRUCT_SERIALIZE; $$->value.structSerialize=$1; }}
+  ;
+
+structSerialize: SERIALIZE OPENPAREN expression CLOSEPAREN {{ $$=(struct StructSerializeNode *)malloc(sizeof(struct StructSerializeNode)); $$->expression=$3; }}
+  ;
+
+structDeserialize: DESERIALIZE LT identifier GT OPENPAREN expression CLOSEPAREN {{ $$=(struct StructDeserializeNode *)malloc(sizeof(struct StructDeserializeNode)); $$->structIdentifier=$3; $$->expression=$6; }}
   ;
 
 expression: multiplyExpression { $$=(struct ExpressionNode *)malloc(sizeof(struct ExpressionNode)); $$->type = EXPR_NODE_TYPE_MULTIPLY_EXPRESSION; $$->value.multiplyExpression = $1; }
@@ -115,6 +126,7 @@ expression: multiplyExpression { $$=(struct ExpressionNode *)malloc(sizeof(struc
   | MINUS expression { $$=(struct ExpressionNode *)malloc(sizeof(struct ExpressionNode)); $$->type = EXPR_NODE_TYPE_MINUS; $$->value.sides.left=makeZeroExpressionNode(); $$->value.sides.right = $2; }
   | booleanExpression {{ $$=(struct ExpressionNode *)malloc(sizeof(struct ExpressionNode)); $$->type=EXPR_NODE_TYPE_BOOLEAN; $$->value.booleanExpression=$1; }}
   | structInstantiation {{ $$=(struct ExpressionNode *)malloc(sizeof(struct ExpressionNode)); $$->type=EXPR_NODE_TYPE_STRUCT_INSTANTIATION; $$->value.structInstantiation=$1; }}
+  | structDeserialize {{ $$=(struct ExpressionNode *)malloc(sizeof(struct ExpressionNode)); $$->type=EXPR_NODE_TYPE_STRUCT_DESERIALIZE; $$->value.structDeserialize=$1; }}
   | stringLiteral {{ $$=(struct ExpressionNode *)malloc(sizeof(struct ExpressionNode)); $$->type=EXPR_NODE_TYPE_STRING_LITERAL; $$->value.stringLiteral=$1; }}
   | ternary {{ $$=(struct ExpressionNode *)malloc(sizeof(struct ExpressionNode)); $$->type=EXPR_NODE_TYPE_TERNARY; $$->value.ternary=$1; }}
   | OPENPAREN expression CLOSEPAREN { $$ = $2; }

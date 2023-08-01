@@ -1,23 +1,34 @@
+import "stdlib.xlsl" as Std;
+
 struct Color {
   number r;
   number g;
   number b;
+
   serialize {
-    return "A";
+    return Std.numberToText(r) + ":" + Std.numberToText(g) + ":" + Std.numberToText(b);
   }
+  
   deserialize {
-    return Color { 1, 2, 3 };
+    text r = Std.Split.nth(serialized, ":", 0);
+    text g = Std.Split.nth(serialized, ":", 1);
+    text b = Std.Split.nth(serialized, ":", 2);
+    return Color {
+      Std.textToNumber(r),
+      Std.textToNumber(g),
+      Std.textToNumber(b)
+    };
   }
 }
 
-Color getColor() {
+text getColor() {
   number rValue = 102; // Rebecca purple
   number gValue = 51;
   number bValue = 153;
-  return Color { rValue, gValue, bValue };
+  return serialize(Color { rValue, gValue, bValue });
 }
 
 number main() {
-  Color color = getColor();
+  Color color = deserialize<Color>(getColor());
   return color.r;
 }

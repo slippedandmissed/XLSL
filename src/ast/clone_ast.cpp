@@ -38,14 +38,32 @@ IdentifierNode *AST::cloneTree(IdentifierNode *src)
 ImportsNode *AST::cloneTree(ImportsNode *src)
 {
   auto newNode = MALLOC_ME(ImportsNode);
-  newNode->alias = (char *)malloc(strlen(src->alias)+1);
+  newNode->alias = (char *)malloc(strlen(src->alias) + 1);
   strcpy(newNode->alias, src->alias);
   newNode->path = AST::cloneTree(src->path);
-  if (src->next != nullptr) {
+  if (src->next != nullptr)
+  {
     newNode->next = AST::cloneTree(src->next);
-  } else {
+  }
+  else
+  {
     newNode->next = nullptr;
   }
+  return newNode;
+}
+
+StructSerializeNode *AST::cloneTree(StructSerializeNode *src)
+{
+  auto newNode = MALLOC_ME(StructSerializeNode);
+  newNode->expression = AST::cloneTree(src->expression);
+  return newNode;
+}
+
+StructDeserializeNode *AST::cloneTree(StructDeserializeNode *src)
+{
+  auto newNode = MALLOC_ME(StructDeserializeNode);
+  newNode->structIdentifier = AST::cloneTree(src->structIdentifier);
+  newNode->expression = AST::cloneTree(src->expression);
   return newNode;
 }
 
@@ -67,8 +85,11 @@ MultiplyExpressionNode *AST::cloneTree(MultiplyExpressionNode *src)
     newNode->value.identifier = AST::cloneTree(src->value.identifier);
     break;
   case MUL_NODE_TYPE_LITERAL:
-    newNode->value.literalValue = (char *)malloc(strlen(src->value.literalValue)+1);
+    newNode->value.literalValue = (char *)malloc(strlen(src->value.literalValue) + 1);
     strcpy(newNode->value.literalValue, src->value.literalValue);
+    break;
+  case MUL_NODE_TYPE_STRUCT_SERIALIZE:
+    newNode->value.structSerialize = AST::cloneTree(src->value.structSerialize);
     break;
   }
   return newNode;
@@ -96,6 +117,9 @@ ExpressionNode *AST::cloneTree(ExpressionNode *src)
     break;
   case EXPR_NODE_TYPE_STRUCT_INSTANTIATION:
     newNode->value.structInstantiation = AST::cloneTree(src->value.structInstantiation);
+    break;
+  case EXPR_NODE_TYPE_STRUCT_DESERIALIZE:
+    newNode->value.structDeserialize = AST::cloneTree(src->value.structDeserialize);
     break;
   case EXPR_NODE_TYPE_TERNARY:
     newNode->value.ternary = AST::cloneTree(src->value.ternary);
@@ -155,7 +179,7 @@ TypeNode *AST::cloneTree(TypeNode *src)
 VariableDeclarationNode *AST::cloneTree(VariableDeclarationNode *src)
 {
   auto newNode = MALLOC_ME(VariableDeclarationNode);
-  newNode->name = (char *)malloc(strlen(src->name)+1);
+  newNode->name = (char *)malloc(strlen(src->name) + 1);
   strcpy(newNode->name, src->name);
   newNode->variableType = AST::cloneTree(src->variableType);
   return newNode;
@@ -164,7 +188,7 @@ VariableDeclarationNode *AST::cloneTree(VariableDeclarationNode *src)
 VariableDefinitionNode *AST::cloneTree(VariableDefinitionNode *src)
 {
   auto newNode = MALLOC_ME(VariableDefinitionNode);
-  newNode->name = (char *)malloc(strlen(src->name)+1);
+  newNode->name = (char *)malloc(strlen(src->name) + 1);
   strcpy(newNode->name, src->name);
   newNode->variableType = AST::cloneTree(src->variableType);
   newNode->expression = AST::cloneTree(src->expression);
@@ -175,12 +199,14 @@ ArgListNode *AST::cloneTree(ArgListNode *src)
 {
   auto newNode = MALLOC_ME(ArgListNode);
   newNode->argumentType = AST::cloneTree(src->argumentType);
-  newNode->argumentName = (char *)malloc(strlen(src->argumentName)+1);
+  newNode->argumentName = (char *)malloc(strlen(src->argumentName) + 1);
   strcpy(newNode->argumentName, src->argumentName);
   if (src->next != nullptr)
   {
     newNode->next = AST::cloneTree(src->next);
-  } else {
+  }
+  else
+  {
     newNode->next = nullptr;
   }
   return newNode;
@@ -189,27 +215,37 @@ ArgListNode *AST::cloneTree(ArgListNode *src)
 FunctionDeclarationNode *AST::cloneTree(FunctionDeclarationNode *src)
 {
   auto newNode = MALLOC_ME(FunctionDeclarationNode);
-  if (src->returnType != nullptr) {
+  if (src->returnType != nullptr)
+  {
     newNode->returnType = AST::cloneTree(src->returnType);
-  } else {
+  }
+  else
+  {
     newNode->returnType = nullptr;
   }
-  if (src->name != nullptr) {
-    newNode->name = (char *)malloc(strlen(src->name)+1);
+  if (src->name != nullptr)
+  {
+    newNode->name = (char *)malloc(strlen(src->name) + 1);
     strcpy(newNode->name, src->name);
-  } else {
+  }
+  else
+  {
     newNode->name = nullptr;
   }
   if (src->argList != nullptr)
   {
     newNode->argList = AST::cloneTree(src->argList);
-  } else {
+  }
+  else
+  {
     newNode->argList = nullptr;
   }
   if (src->body != nullptr)
   {
     newNode->body = AST::cloneTree(src->body);
-  } else {
+  }
+  else
+  {
     newNode->body = nullptr;
   }
   return newNode;
@@ -219,9 +255,12 @@ ExpressionListNode *AST::cloneTree(ExpressionListNode *src)
 {
   auto newNode = MALLOC_ME(ExpressionListNode);
   newNode->expression = AST::cloneTree(src->expression);
-  if (src->next != nullptr) {
+  if (src->next != nullptr)
+  {
     newNode->next = AST::cloneTree(src->next);
-  } else {
+  }
+  else
+  {
     newNode->next = nullptr;
   }
   return newNode;
@@ -231,9 +270,12 @@ FunctionCallNode *AST::cloneTree(FunctionCallNode *src)
 {
   auto newNode = MALLOC_ME(FunctionCallNode);
   newNode->functionIdentifier = AST::cloneTree(src->functionIdentifier);
-  if (src->arguments != nullptr) {
+  if (src->arguments != nullptr)
+  {
     newNode->arguments = AST::cloneTree(src->arguments);
-  } else {
+  }
+  else
+  {
     newNode->arguments = nullptr;
   }
   return newNode;
@@ -243,9 +285,12 @@ VariableDeclarationListNode *AST::cloneTree(VariableDeclarationListNode *src)
 {
   auto newNode = MALLOC_ME(VariableDeclarationListNode);
   newNode->current = AST::cloneTree(src->current);
-  if (src->next != nullptr) {
+  if (src->next != nullptr)
+  {
     newNode->next = AST::cloneTree(src->next);
-  } else {
+  }
+  else
+  {
     newNode->next = nullptr;
   }
   return newNode;
@@ -254,17 +299,23 @@ VariableDeclarationListNode *AST::cloneTree(VariableDeclarationListNode *src)
 StructDeclarationNode *AST::cloneTree(StructDeclarationNode *src)
 {
   auto newNode = MALLOC_ME(StructDeclarationNode);
-  newNode->name = (char *)malloc(strlen(src->name)+1);
+  newNode->name = (char *)malloc(strlen(src->name) + 1);
   strcpy(newNode->name, src->name);
-  if (src->declarations != nullptr) {
+  if (src->declarations != nullptr)
+  {
     newNode->declarations = AST::cloneTree(src->declarations);
-  } else {
+  }
+  else
+  {
     newNode->declarations = nullptr;
   }
-  if (src->serialize != nullptr) {
+  if (src->serialize != nullptr)
+  {
     newNode->serialize = AST::cloneTree(src->serialize);
     newNode->deserialize = AST::cloneTree(src->deserialize);
-  } else {
+  }
+  else
+  {
     newNode->serialize = nullptr;
     newNode->deserialize = nullptr;
   }
@@ -275,9 +326,12 @@ StructInstantiationNode *AST::cloneTree(StructInstantiationNode *src)
 {
   auto newNode = MALLOC_ME(StructInstantiationNode);
   newNode->identifier = AST::cloneTree(src->identifier);
-  if (src->arguments != nullptr) {
+  if (src->arguments != nullptr)
+  {
     newNode->arguments = AST::cloneTree(src->arguments);
-  } else {
+  }
+  else
+  {
     newNode->arguments = nullptr;
   }
   return newNode;
@@ -286,7 +340,7 @@ StructInstantiationNode *AST::cloneTree(StructInstantiationNode *src)
 StringLiteralNode *AST::cloneTree(StringLiteralNode *src)
 {
   auto newNode = MALLOC_ME(StringLiteralNode);
-  newNode->value = (char *)malloc(strlen(src->value)+1);
+  newNode->value = (char *)malloc(strlen(src->value) + 1);
   strcpy(newNode->value, src->value);
   return newNode;
 }
@@ -306,8 +360,10 @@ NamespaceDeclarationNode *AST::cloneTree(NamespaceDeclarationNode *src)
   newNode->identifier = AST::cloneTree(src->identifier);
   if (src->body != nullptr)
   {
-    newNode->body =AST::cloneTree(src->body);
-  } else {
+    newNode->body = AST::cloneTree(src->body);
+  }
+  else
+  {
     newNode->body = nullptr;
   }
   return newNode;
@@ -319,7 +375,9 @@ ReturnStatementNode *AST::cloneTree(ReturnStatementNode *src)
   if (src->value != nullptr)
   {
     newNode->value = AST::cloneTree(src->value);
-  } else {
+  }
+  else
+  {
     newNode->value = nullptr;
   }
   return newNode;
@@ -357,9 +415,12 @@ BodyNode *AST::cloneTree(BodyNode *src)
 {
   auto newNode = MALLOC_ME(BodyNode);
   newNode->current = cloneTree(src->current);
-  if (src->next != nullptr) {
+  if (src->next != nullptr)
+  {
     newNode->next = cloneTree(src->next);
-  } else {
+  }
+  else
+  {
     newNode->next = nullptr;
   }
   return newNode;
@@ -371,13 +432,17 @@ ProgramNode *AST::cloneTree(ProgramNode *src)
   if (src->imports != nullptr)
   {
     newNode->imports = AST::cloneTree(src->imports);
-  } else {
+  }
+  else
+  {
     newNode->imports = nullptr;
   }
   if (src->body != nullptr)
   {
     newNode->body = AST::cloneTree(src->body);
-  } else {
+  }
+  else
+  {
     newNode->body = nullptr;
   }
   return newNode;

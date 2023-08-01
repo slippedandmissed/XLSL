@@ -28,6 +28,7 @@ enum MultiplyExpressionType {
   MUL_NODE_TYPE_FUNCTION_CALL,
   MUL_NODE_TYPE_TIMES,
   MUL_NODE_TYPE_DIVIDE,
+  MUL_NODE_TYPE_STRUCT_SERIALIZE,
 };
 
 struct MultiplyExpressionNode {
@@ -40,6 +41,7 @@ struct MultiplyExpressionNode {
       struct MultiplyExpressionNode *left;
       struct MultiplyExpressionNode *right;
     } sides;
+    struct StructSerializeNode *structSerialize;
   } value;
 };
 
@@ -49,6 +51,7 @@ enum ExpressionNodeType {
   EXPR_NODE_TYPE_MINUS,
   EXPR_NODE_TYPE_BOOLEAN,
   EXPR_NODE_TYPE_STRUCT_INSTANTIATION,
+  EXPR_NODE_TYPE_STRUCT_DESERIALIZE,
   EXPR_NODE_TYPE_STRING_LITERAL,
   EXPR_NODE_TYPE_TERNARY
 };
@@ -59,6 +62,7 @@ struct ExpressionNode {
     struct MultiplyExpressionNode *multiplyExpression;
     struct BooleanExpressionNode *booleanExpression;
     struct StructInstantiationNode *structInstantiation;
+    struct StructDeserializeNode *structDeserialize;
     struct StringLiteralNode *stringLiteral;
     struct TernaryNode *ternary;
     struct {
@@ -155,6 +159,15 @@ struct StructDeclarationNode {
   struct FunctionDeclarationNode *deserialize;
 };
 
+struct StructSerializeNode {
+  struct ExpressionNode *expression;
+};
+
+struct StructDeserializeNode {
+  struct IdentifierNode *structIdentifier;
+  struct ExpressionNode *expression;
+};
+
 struct StructInstantiationNode {
   struct IdentifierNode *identifier;
   struct ExpressionListNode *arguments;
@@ -214,6 +227,8 @@ struct ProgramNode {
   X(IdentifierTextNode) \
   X(IdentifierNode) \
   X(ImportsNode) \
+  X(StructSerializeNode) \
+  X(StructDeserializeNode) \
   X(MultiplyExpressionNode) \
   X(ExpressionNode) \
   X(BooleanExpressionNode) \

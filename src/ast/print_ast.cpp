@@ -39,6 +39,21 @@ std::string AST::nodeToString(ImportsNode const &node, int indent)
   return stringVal;
 }
 
+std::string AST::nodeToString(StructSerializeNode const &node, int indent)
+{
+  auto stringVal = std::string(indent, ' ') + "StructSerialize";
+  ADD_NODE(*node.expression);
+  return stringVal;
+}
+
+std::string AST::nodeToString(StructDeserializeNode const &node, int indent)
+{
+  auto stringVal = std::string(indent, ' ') + "StructDeserialize";
+  ADD_NODE(*node.structIdentifier);
+  ADD_NODE(*node.expression);
+  return stringVal;
+}
+
 std::string AST::nodeToString(MultiplyExpressionNode const &node, int indent)
 {
   auto stringVal = std::string(indent, ' ') + "MultiplyExpressionNode";
@@ -64,6 +79,9 @@ std::string AST::nodeToString(MultiplyExpressionNode const &node, int indent)
     stringVal += ": TIMES";
     ADD_NODE(*node.value.sides.left)
     ADD_NODE(*node.value.sides.right)
+    break;
+  case MUL_NODE_TYPE_STRUCT_SERIALIZE:
+    ADD_NODE(*node.value.structSerialize);
     break;
   }
   return stringVal;
@@ -95,6 +113,9 @@ std::string AST::nodeToString(ExpressionNode const &node, int indent)
     break;
   case EXPR_NODE_TYPE_STRUCT_INSTANTIATION:
     ADD_NODE(*node.value.structInstantiation)
+    break;
+  case EXPR_NODE_TYPE_STRUCT_DESERIALIZE:
+    ADD_NODE(*node.value.structDeserialize);
     break;
   case EXPR_NODE_TYPE_TERNARY:
     ADD_NODE(*node.value.ternary)
@@ -278,10 +299,11 @@ std::string AST::nodeToString(StructDeclarationNode const &node, int indent)
   {
     ADD_NODE(*node.declarations)
   }
-  if (node.serialize != nullptr) {
-    stringVal += "\n" + std::string(indent+2, ' ') + "Serializer";
+  if (node.serialize != nullptr)
+  {
+    stringVal += "\n" + std::string(indent + 2, ' ') + "Serializer";
     ADD_NODE(*node.serialize);
-    stringVal += "\n" + std::string(indent+2, ' ') + "Deserializer";
+    stringVal += "\n" + std::string(indent + 2, ' ') + "Deserializer";
     ADD_NODE(*node.deserialize);
   }
   return stringVal;
