@@ -85,7 +85,7 @@ namespace ConcreteTree
     std::shared_ptr<Namespace> namespace_;
     std::string name;
     std::vector<Variable> members;
-    std::optional<std::pair<std::shared_ptr<Function>,std::vector<std::shared_ptr<Function>>>> serializers;
+    std::optional<std::pair<std::shared_ptr<Function>, std::vector<std::shared_ptr<Function>>>> serializers;
   };
 
   struct Scope
@@ -203,9 +203,11 @@ namespace ConcreteTree
   {
   private:
     std::optional<std::string> m_mainMethodFormula;
+    std::optional<std::shared_ptr<Function>> m_mainMethod;
 
   public:
     std::string getMainMethodFormula();
+    std::shared_ptr<Function> getMainMethod();
     std::string toString(int indent) const;
     std::shared_ptr<Namespace> globalNamespace;
     std::unique_ptr<Block> block;

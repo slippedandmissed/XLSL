@@ -80,12 +80,14 @@ std::string Expression::getExcelFormula()
           }
           else
           {
-            for (std::size_t j=1; j<searchParts.size(); j++)
+            for (std::size_t j = 1; j < searchParts.size(); j++)
             {
               auto exprData = std::get<Expression::StructInstantiationData>(expression->value);
               auto members = exprData.struct_->members;
-              for (std::size_t i=0; i<members.size(); i++) {
-                if (members[i].name == searchParts[j]) {
+              for (std::size_t i = 0; i < members.size(); i++)
+              {
+                if (members[i].name == searchParts[j])
+                {
                   expression = exprData.arguments[i];
                   break;
                 }
@@ -320,22 +322,35 @@ std::string Function::getExcelFormula()
   return formula;
 }
 
+std::shared_ptr<Function> Program::getMainMethod()
+{
+  if (this->m_mainMethod.has_value())
+  {
+    return this->m_mainMethod.value();
+  }
+
+  std::shared_ptr<Function> mainMethod;
+  for (auto func : this->scope.functions)
+  {
+    if (func->name == "main" && func->namespace_ == this->globalNamespace)
+    {
+      mainMethod = func;
+      break;
+    }
+  }
+
+  this->m_mainMethod = std::make_optional(mainMethod);
+  return mainMethod;
+}
+
 std::string Program::getMainMethodFormula()
 {
   if (this->m_mainMethodFormula.has_value())
   {
     return this->m_mainMethodFormula.value();
   }
-  std::string formula;
-  for (auto func : this->scope.functions)
-  {
-    if (func->name == "main" && func->namespace_ == this->globalNamespace)
-    {
-      formula = func->getExcelFormula();
-      break;
-    }
-  }
 
+  auto formula = this->getMainMethod()->getExcelFormula();
   this->m_mainMethodFormula = std::make_optional(formula);
   return formula;
 }
