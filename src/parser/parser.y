@@ -45,6 +45,7 @@
 
 
 %token <tokenText> IMPORT AS NAMESPACE STRUCT
+%token <tokenText> SERIALIZE DESERIALIZE
 %token <tokenText> SELF
 %token <tokenText> TRUE FALSE
 %token <tokenText> TEXT LOGICAL NUMBERTOKEN VOID
@@ -73,6 +74,7 @@
 %type <exprList> exprList
 %type <functionCall> functionCall
 %type <variableDeclarationList> variableDeclarationList
+%type <functionDeclaration> serializeBlock deserializeBlock
 %type <structDeclaration> structDeclaration
 %type <structInstantiation> structInstantiation
 %type <stringLiteral> stringLiteral
@@ -170,8 +172,16 @@ variableDeclarationList: variableDeclaration {{ $$=(struct VariableDeclarationLi
   | variableDeclaration variableDeclarationList {{ $$=(struct VariableDeclarationListNode *)malloc(sizeof(struct VariableDeclarationListNode)); $$->current=$1; $$->next=$2; }}
   ;
 
-structDeclaration: STRUCT ID OPENCURLY variableDeclarationList CLOSECURLY {{ $$=(struct StructDeclarationNode *)malloc(sizeof(struct StructDeclarationNode)); $$->name=malloc(strlen($2)+1); strcpy($$->name,$2); $$->declarations=$4; }}
-  | STRUCT ID OPENCURLY CLOSECURLY {{ $$=(struct StructDeclarationNode *)malloc(sizeof(struct StructDeclarationNode)); $$->name=malloc(strlen($2)+1); strcpy($$->name,$2); $$->declarations=NULL; }}
+serializeBlock: SERIALIZE OPENCURLY body CLOSECURLY {{ $$=(struct FunctionDeclarationNode *)malloc(sizeof(struct FunctionDeclarationNode)); $$->returnType=NULL; $$->name=NULL; $$->argList=NULL; $$->body=$3; }}
+  ;
+
+deserializeBlock: DESERIALIZE OPENCURLY body CLOSECURLY {{ $$=(struct FunctionDeclarationNode *)malloc(sizeof(struct FunctionDeclarationNode)); $$->returnType=NULL; $$->name=NULL; $$->argList=NULL; $$->body=$3; }}
+  ;
+
+structDeclaration: STRUCT ID OPENCURLY variableDeclarationList CLOSECURLY {{ $$=(struct StructDeclarationNode *)malloc(sizeof(struct StructDeclarationNode)); $$->name=malloc(strlen($2)+1); strcpy($$->name,$2); $$->declarations=$4; $$->serialize=NULL; $$->deserialize=NULL; }}
+  | STRUCT ID OPENCURLY CLOSECURLY {{ $$=(struct StructDeclarationNode *)malloc(sizeof(struct StructDeclarationNode)); $$->name=malloc(strlen($2)+1); strcpy($$->name,$2); $$->declarations=NULL; $$->serialize=NULL; $$->deserialize=NULL; }}
+  | STRUCT ID OPENCURLY variableDeclarationList serializeBlock deserializeBlock CLOSECURLY {{ $$=(struct StructDeclarationNode *)malloc(sizeof(struct StructDeclarationNode)); $$->name=malloc(strlen($2)+1); strcpy($$->name,$2); $$->declarations=$4; $$->serialize=$5; $$->deserialize=$6; }}
+  | STRUCT ID OPENCURLY serializeBlock deserializeBlock CLOSECURLY {{ $$=(struct StructDeclarationNode *)malloc(sizeof(struct StructDeclarationNode)); $$->name=malloc(strlen($2)+1); strcpy($$->name,$2); $$->declarations=NULL; $$->serialize=$4; $$->deserialize=$5;  }}
   ;
 
 structInstantiation: identifier OPENCURLY exprList CLOSECURLY {{ $$=(struct StructInstantiationNode *)malloc(sizeof(struct StructInstantiationNode)); $$->identifier=$1; $$->arguments=$3; }}

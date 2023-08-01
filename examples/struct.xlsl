@@ -2,13 +2,22 @@ struct Color {
   number r;
   number g;
   number b;
+  serialize {
+    return "A";
+  }
+  deserialize {
+    return Color { 1, 2, 3 };
+  }
 }
 
-number main() {
+Color getColor() {
   number rValue = 102; // Rebecca purple
   number gValue = 51;
   number bValue = 153;
-  Color color = Color { rValue, gValue, bValue };
-  number rValue2 = color.r;
-  return rValue2;
+  return Color { rValue, gValue, bValue };
+}
+
+number main() {
+  Color color = getColor();
+  return color.r;
 }

@@ -20,6 +20,8 @@ digit [0-9]
 "logical"                                               { return LOGICAL; }
 "void"                                                  { return VOID; }
 "return"                                                { return RETURN; }
+"deserialize"                                           { return DESERIALIZE; }
+"serialize"                                             { return SERIALIZE; }
 {digit}+(\.{digit}*)?                                   { yylval.tokenText = malloc(strlen(yytext)+1); strcpy(yylval.tokenText, yytext); return NUMBER; }
 {alpha}({alpha}|{digit})*                               { yylval.tokenText = malloc(strlen(yytext)+1); strcpy(yylval.tokenText, yytext); return ID; }
 "+"                                                     { return PLUS; }

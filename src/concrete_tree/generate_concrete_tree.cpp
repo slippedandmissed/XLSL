@@ -5,6 +5,7 @@
 #include "concrete_tree.hpp"
 #include "../ast/print_ast.hpp"
 #include "../ast/dealloc_ast.hpp"
+#include "../ast/clone_ast.hpp"
 #include "../ast/generate_ast.hpp"
 
 using namespace ConcreteTree;
@@ -74,7 +75,7 @@ void Block::populateFromAST(std::shared_ptr<Namespace> currentNamespace, Scope &
     {
       auto struct_ = std::make_shared<Struct>();
       struct_->namespace_ = currentNamespace;
-      struct_->populateFromAST(currentScope, stmtNode->value.structDeclaration);
+      struct_->populateFromAST(struct_, currentNamespace, currentScope, stmtNode->value.structDeclaration);
       currentScope.structs.push_back(struct_);
       break;
     }
@@ -234,24 +235,6 @@ bool Namespace::matchesFromAST(std::shared_ptr<Namespace> currentNamespace, Iden
   return false;
 }
 
-IdentifierTextNode *cloneIdentifierTextNode(IdentifierTextNode *src)
-{
-  // NOTE: we use `malloc` here rather than `new` because `deallocTree` uses `free` rather than `delete`
-  // Idk whether this actually makes a difference but we move
-  auto newNode = (IdentifierTextNode *)malloc(sizeof(IdentifierTextNode));
-  newNode->text = (char *)malloc(strlen(src->text) + 1);
-  strcpy(newNode->text, src->text);
-  if (src->next == nullptr)
-  {
-    newNode->next = nullptr;
-  }
-  else
-  {
-    newNode->next = cloneIdentifierTextNode(src->next);
-  }
-  return newNode;
-}
-
 std::shared_ptr<Variable> Variable::localizeFromAST(std::shared_ptr<Namespace> currentNamespace, Scope const &currentScope, IdentifierNode *node)
 {
   if (node->type != ID_NODE_TYPE_TEXT)
@@ -260,7 +243,7 @@ std::shared_ptr<Variable> Variable::localizeFromAST(std::shared_ptr<Namespace> c
     exit(1);
   }
   std::shared_ptr<Variable> found = nullptr;
-  auto checkingNode = cloneIdentifierTextNode(node->text);
+  auto checkingNode = AST::cloneTree(node->text);
   std::vector<std::string> assumedStructMembers;
   while (true)
   {
@@ -287,7 +270,7 @@ std::shared_ptr<Variable> Variable::localizeFromAST(std::shared_ptr<Namespace> c
     {
       break;
     }
-    auto newCheckingNode = cloneIdentifierTextNode(checkingNode);
+    auto newCheckingNode = AST::cloneTree(checkingNode);
     AST::deallocTree(checkingNode);
     current = newCheckingNode;
     while (current->next->next != nullptr)
@@ -449,7 +432,7 @@ void Function::populateFromAST(Scope currentScope, FunctionDeclarationNode *node
   }
 }
 
-void Struct::populateFromAST(Scope const &currentScope, StructDeclarationNode *node)
+void Struct::populateFromAST(std::shared_ptr<Struct> self, std::shared_ptr<Namespace> currentNamespace, Scope const &currentScope, StructDeclarationNode *node)
 {
   this->name = node->name;
   auto currentDeclaration = node->declarations;
@@ -459,9 +442,121 @@ void Struct::populateFromAST(Scope const &currentScope, StructDeclarationNode *n
     member.namespace_ = nullptr;
     member.name = currentDeclaration->current->name;
     member.type.populateFromAST(this->namespace_, currentScope, currentDeclaration->current->variableType);
-    member.populateChildrenFromStruct(nullptr); // X?
+    member.populateChildrenFromStruct(nullptr);
     this->members.push_back(member);
     currentDeclaration = currentDeclaration->next;
+  }
+  if (node->serialize != nullptr)
+  {
+    auto serializer = std::make_shared<Function>();
+    for (auto member : this->members) {
+      auto variable = std::make_shared<Variable>();
+      variable->name = member.name;
+      variable->type = member.type;
+      variable->populateChildrenFromStruct(variable);
+      variable->namespace_ = nullptr;
+      serializer->arguments.push_back(variable);
+    }
+    serializer->namespace_ = currentNamespace;
+    serializer->name = "";
+    serializer->returnType.type = Type::TypeType::TEXT;
+    serializer->block = std::make_unique<Block>();
+    
+    auto copyScope = currentScope;
+    copyScope.structs.push_back(self);
+
+    auto newScope = copyScope;
+    serializer->block->populateFromAST(currentNamespace, newScope, node->serialize->body);
+    std::vector<std::shared_ptr<Function>> deserializers;
+    for (auto member : this->members) {
+      auto deserializer = std::make_shared<Function>();
+      auto arg = std::make_shared<Variable>();
+      arg->name = "serialized";
+      arg->type.type = Type::TypeType::TEXT;
+      deserializer->arguments.push_back(arg);
+      deserializer->namespace_ = currentNamespace;
+      deserializer->name = "";
+      deserializer->returnType = member.type;
+      deserializer->block = std::make_unique<Block>();
+      Scope newScope = copyScope;
+      auto bodyNode = AST::cloneTree(node->deserialize->body);
+      auto currentBodyNode = bodyNode;
+      BodyNode *lastBodyNode = nullptr;
+      auto extraVariableName = std::string("&return").c_str();
+      while (currentBodyNode != nullptr) {
+        auto stmtNode = currentBodyNode->current;
+        if (stmtNode->type == STMT_NODE_TYPE_RETURN_STATEMENT && stmtNode->value.returnStatement->value != nullptr) {
+
+          auto exprNode = stmtNode->value.returnStatement->value;
+
+          auto newBodyNode = (BodyNode *)malloc(sizeof(BodyNode));
+          auto newStatementNode = (StatementNode *)malloc(sizeof(StatementNode));
+          auto newVarDefinition = (VariableDefinitionNode *)malloc(sizeof(VariableDefinitionNode));
+          auto newVarType = (TypeNode *)malloc(sizeof(TypeNode));
+          auto newVarTypeId = (IdentifierNode *)malloc(sizeof(IdentifierNode));
+          auto newVarTypeIdText = (IdentifierTextNode *)malloc(sizeof(IdentifierTextNode));
+
+          newVarTypeIdText->text = (char *)malloc(this->name.size()+1);
+          strcpy(newVarTypeIdText->text, this->name.c_str());
+          newVarTypeIdText->next = nullptr;
+
+          newVarTypeId->text = newVarTypeIdText;
+          newVarTypeId->type = ID_NODE_TYPE_TEXT;
+          
+          newVarType->type = TYPE_NODE_TYPE_IDENTIFIER;
+          newVarType->identifier = newVarTypeId;
+
+          newVarDefinition->expression = exprNode;
+          newVarDefinition->name = (char *)malloc(strlen(extraVariableName)+1);
+          strcpy(newVarDefinition->name, extraVariableName);
+          newVarDefinition->variableType = newVarType;
+
+          newStatementNode->type = STMT_NODE_TYPE_VAR_DEFINITION;
+          newStatementNode->value.varDefinition = newVarDefinition;
+
+          newBodyNode->current = newStatementNode;
+          newBodyNode->next = currentBodyNode;
+
+          auto newExprNode = (ExpressionNode *)malloc(sizeof(ExpressionNode));
+          auto newMulExprNode = (MultiplyExpressionNode *)malloc(sizeof(MultiplyExpressionNode));
+          auto newExprIdNode = (IdentifierNode *)malloc(sizeof(IdentifierNode));
+          auto newExprIdTextNode1 = (IdentifierTextNode *)malloc(sizeof(IdentifierTextNode));
+          auto newExprIdTextNode2 = (IdentifierTextNode *)malloc(sizeof(IdentifierTextNode));
+
+          newExprIdTextNode2->text = (char *)malloc(member.name.size() + 1);
+          strcpy(newExprIdTextNode2->text, member.name.c_str());
+          newExprIdTextNode2->next = nullptr;
+
+          newExprIdTextNode1->text = (char *)malloc(strlen(extraVariableName)+1);
+          strcpy(newExprIdTextNode1->text, extraVariableName);
+          newExprIdTextNode1->next = newExprIdTextNode2;
+
+          newExprIdNode->type = ID_NODE_TYPE_TEXT;
+          newExprIdNode->text = newExprIdTextNode1;
+          
+          newMulExprNode->type = MUL_NODE_TYPE_IDENTIFIER;
+          newMulExprNode->value.identifier = newExprIdNode;
+
+          newExprNode->type = EXPR_NODE_TYPE_MULTIPLY_EXPRESSION;
+          newExprNode->value.multiplyExpression = newMulExprNode;
+
+          stmtNode->value.returnStatement->value = newExprNode;
+
+          if (lastBodyNode == nullptr) {
+            bodyNode = newBodyNode;
+          } else {
+            lastBodyNode->next = newBodyNode;
+          }
+          break;
+        }
+        lastBodyNode = currentBodyNode;
+        currentBodyNode = currentBodyNode->next;
+      }
+      deserializer->block->populateFromAST(currentNamespace, newScope, bodyNode);
+      AST::deallocTree(bodyNode);
+      deserializers.push_back(deserializer);
+    }
+    this->serializers = std::make_optional(std::make_pair(serializer, deserializers));
   }
 }
 
@@ -788,7 +883,7 @@ void Scope::addAll(Scope const &other)
 std::string unescapeString(std::string escapedString)
 {
   // TODO: implement this properly
-  return escapedString.substr(1, escapedString.size()-2);
+  return escapedString.substr(1, escapedString.size() - 2);
 }
 
 std::string resolvePath(std::string path, std::string relativeToFile)

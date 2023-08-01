@@ -5,7 +5,7 @@ SRC_FILES := $(shell find $(SRC_DIR)/ -type f -name '*.cpp')
 
 CC := gcc
 CXX := g++
-CPPFLAGS := -Wall -std=c++17
+CPPFLAGS := -Wall -std=c++17 -g
 
 all: compiler
 

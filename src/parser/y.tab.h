@@ -53,42 +53,44 @@ extern int yydebug;
     AS = 259,
     NAMESPACE = 260,
     STRUCT = 261,
-    SELF = 262,
-    TRUE = 263,
-    FALSE = 264,
-    TEXT = 265,
-    LOGICAL = 266,
-    NUMBERTOKEN = 267,
-    VOID = 268,
-    RETURN = 269,
-    NUMBER = 270,
-    SINGLEQUOTEDSTRING = 271,
-    DOUBLEQUOTEDSTRING = 272,
-    ID = 273,
-    PLUS = 274,
-    MINUS = 275,
-    TIMES = 276,
-    DIVIDE = 277,
-    EQ = 278,
-    NEQ = 279,
-    LT = 280,
-    GT = 281,
-    LE = 282,
-    GE = 283,
-    AND = 284,
-    OR = 285,
-    NOT = 286,
-    ASSIGN = 287,
-    COMMA = 288,
-    SEMICOLON = 289,
-    COLON = 290,
-    QUESTION = 291,
-    DOT = 292,
-    DOLLAR = 293,
-    OPENPAREN = 294,
-    CLOSEPAREN = 295,
-    OPENCURLY = 296,
-    CLOSECURLY = 297
+    SERIALIZE = 262,
+    DESERIALIZE = 263,
+    SELF = 264,
+    TRUE = 265,
+    FALSE = 266,
+    TEXT = 267,
+    LOGICAL = 268,
+    NUMBERTOKEN = 269,
+    VOID = 270,
+    RETURN = 271,
+    NUMBER = 272,
+    SINGLEQUOTEDSTRING = 273,
+    DOUBLEQUOTEDSTRING = 274,
+    ID = 275,
+    PLUS = 276,
+    MINUS = 277,
+    TIMES = 278,
+    DIVIDE = 279,
+    EQ = 280,
+    NEQ = 281,
+    LT = 282,
+    GT = 283,
+    LE = 284,
+    GE = 285,
+    AND = 286,
+    OR = 287,
+    NOT = 288,
+    ASSIGN = 289,
+    COMMA = 290,
+    SEMICOLON = 291,
+    COLON = 292,
+    QUESTION = 293,
+    DOT = 294,
+    DOLLAR = 295,
+    OPENPAREN = 296,
+    CLOSEPAREN = 297,
+    OPENCURLY = 298,
+    CLOSECURLY = 299
   };
 #endif
 /* Tokens.  */
@@ -96,42 +98,44 @@ extern int yydebug;
 #define AS 259
 #define NAMESPACE 260
 #define STRUCT 261
-#define SELF 262
-#define TRUE 263
-#define FALSE 264
-#define TEXT 265
-#define LOGICAL 266
-#define NUMBERTOKEN 267
-#define VOID 268
-#define RETURN 269
-#define NUMBER 270
-#define SINGLEQUOTEDSTRING 271
-#define DOUBLEQUOTEDSTRING 272
-#define ID 273
-#define PLUS 274
-#define MINUS 275
-#define TIMES 276
-#define DIVIDE 277
-#define EQ 278
-#define NEQ 279
-#define LT 280
-#define GT 281
-#define LE 282
-#define GE 283
-#define AND 284
-#define OR 285
-#define NOT 286
-#define ASSIGN 287
-#define COMMA 288
-#define SEMICOLON 289
-#define COLON 290
-#define QUESTION 291
-#define DOT 292
-#define DOLLAR 293
-#define OPENPAREN 294
-#define CLOSEPAREN 295
-#define OPENCURLY 296
-#define CLOSECURLY 297
+#define SERIALIZE 262
+#define DESERIALIZE 263
+#define SELF 264
+#define TRUE 265
+#define FALSE 266
+#define TEXT 267
+#define LOGICAL 268
+#define NUMBERTOKEN 269
+#define VOID 270
+#define RETURN 271
+#define NUMBER 272
+#define SINGLEQUOTEDSTRING 273
+#define DOUBLEQUOTEDSTRING 274
+#define ID 275
+#define PLUS 276
+#define MINUS 277
+#define TIMES 278
+#define DIVIDE 279
+#define EQ 280
+#define NEQ 281
+#define LT 282
+#define GT 283
+#define LE 284
+#define GE 285
+#define AND 286
+#define OR 287
+#define NOT 288
+#define ASSIGN 289
+#define COMMA 290
+#define SEMICOLON 291
+#define COLON 292
+#define QUESTION 293
+#define DOT 294
+#define DOLLAR 295
+#define OPENPAREN 296
+#define CLOSEPAREN 297
+#define OPENCURLY 298
+#define CLOSECURLY 299
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -165,7 +169,7 @@ union YYSTYPE
   struct BodyNode *body;
   struct ProgramNode *program;
 
-#line 169 "y.tab.h"
+#line 173 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

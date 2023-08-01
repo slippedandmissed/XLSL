@@ -157,8 +157,12 @@ void AST::deallocTree(ArgListNode *node)
 
 void AST::deallocTree(FunctionDeclarationNode *node)
 {
-  AST::deallocTree(node->returnType);
-  free(node->name);
+  if (node->returnType != nullptr) {
+    AST::deallocTree(node->returnType);
+  }
+  if (node->name != nullptr) {
+    free(node->name);
+  }
   if (node->argList != nullptr)
   {
     AST::deallocTree(node->argList);
@@ -202,6 +206,10 @@ void AST::deallocTree(StructDeclarationNode *node)
   free(node->name);
   if (node->declarations != nullptr) {
     AST::deallocTree(node->declarations);
+  }
+  if (node->serialize != nullptr) {
+    AST::deallocTree(node->serialize);
+    AST::deallocTree(node->deserialize);
   }
   free(node);
 }

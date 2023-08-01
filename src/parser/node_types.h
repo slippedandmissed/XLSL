@@ -151,6 +151,8 @@ struct VariableDeclarationListNode {
 struct StructDeclarationNode {
   char *name;
   struct VariableDeclarationListNode *declarations;
+  struct FunctionDeclarationNode *serialize;
+  struct FunctionDeclarationNode *deserialize;
 };
 
 struct StructInstantiationNode {

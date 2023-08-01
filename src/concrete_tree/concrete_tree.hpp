@@ -81,10 +81,11 @@ namespace ConcreteTree
   {
     std::string toString(int indent) const;
     static std::shared_ptr<Struct> localizeFromAST(std::shared_ptr<Namespace>, Scope const &, IdentifierNode *);
-    void populateFromAST(Scope const &, StructDeclarationNode *);
+    void populateFromAST(std::shared_ptr<Struct> self, std::shared_ptr<Namespace>, Scope const &, StructDeclarationNode *);
     std::shared_ptr<Namespace> namespace_;
     std::string name;
     std::vector<Variable> members;
+    std::optional<std::pair<std::shared_ptr<Function>,std::vector<std::shared_ptr<Function>>>> serializers;
   };
 
   struct Scope
