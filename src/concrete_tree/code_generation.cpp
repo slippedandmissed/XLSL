@@ -50,7 +50,7 @@ std::string Expression::getExcelFormula()
     auto data = std::get<std::shared_ptr<Variable>>(this->value);
     auto currentlySearchingForVariable = data;
     bool found = false;
-    std::string excelVarName = "\\INNER";
+    std::string excelVarName = "_xlpm.\\INNER";
     auto currentNamespace = this->scope.context->namespace_;
     while (currentNamespace->parent != nullptr)
     {
@@ -120,7 +120,7 @@ std::string Expression::getExcelFormula()
     variableHeader += "\\" + data.function->name;
     if (data.function == this->scope.context)
     {
-      formula = "\\ME" + variableHeader + "(\\ME" + variableHeader + ",";
+      formula = "_xlpm.\\ME" + variableHeader + "(_xlpm.\\ME" + variableHeader + ",";
     }
     else
     {
@@ -160,7 +160,7 @@ std::string Expression::getExcelFormula()
   case Expression::ExpressionType::TERNARY:
   {
     auto data = std::get<Expression::TernaryData>(this->value);
-    formula = "IF(" + data.condition->getExcelFormula() + "," + data.ifTrue->getExcelFormula() + "," + data.ifFalse->getExcelFormula() + ")";
+    formula = "_xlfn.IF(" + data.condition->getExcelFormula() + "," + data.ifTrue->getExcelFormula() + "," + data.ifFalse->getExcelFormula() + ")";
     break;
   }
   case Expression::ExpressionType::PLUS:
@@ -173,7 +173,7 @@ std::string Expression::getExcelFormula()
     }
     else
     {
-      formula = "CONCAT(" + data.left->getExcelFormula() + "," + data.right->getExcelFormula() + ")";
+      formula = "_xlfn.CONCAT(" + data.left->getExcelFormula() + "," + data.right->getExcelFormula() + ")";
     }
     break;
   }
@@ -234,19 +234,19 @@ std::string Expression::getExcelFormula()
   case Expression::ExpressionType::AND:
   {
     auto data = std::get<Expression::BinaryOpData>(this->value);
-    formula = "AND(" + data.left->getExcelFormula() + "," + data.right->getExcelFormula() + ")";
+    formula = "_xlfn.AND(" + data.left->getExcelFormula() + "," + data.right->getExcelFormula() + ")";
     break;
   }
   case Expression::ExpressionType::OR:
   {
     auto data = std::get<Expression::BinaryOpData>(this->value);
-    formula = "OR(" + data.left->getExcelFormula() + "," + data.right->getExcelFormula() + ")";
+    formula = "_xlfn.OR(" + data.left->getExcelFormula() + "," + data.right->getExcelFormula() + ")";
     break;
   }
   case Expression::ExpressionType::NOT:
   {
     auto data = std::get<std::shared_ptr<Expression>>(this->value);
-    formula = "NOT(" + data->getExcelFormula() + ")";
+    formula = "_xlfn.NOT(" + data->getExcelFormula() + ")";
     break;
   }
   }
@@ -281,11 +281,11 @@ std::string Function::getExcelFormula()
 
     if (this->arguments.size() == 0)
     {
-      formula = "LAMBDA(" + returnFormula + ")";
+      formula = "_xlfn.LAMBDA(" + returnFormula + ")";
     }
     else
     {
-      formula = "LAMBDA(";
+      formula = "_xlfn.LAMBDA(";
       std::string variableHeader;
       auto currentNamespace = this->namespace_;
       while (currentNamespace->parent != nullptr)
@@ -301,18 +301,18 @@ std::string Function::getExcelFormula()
       }
       for (auto argumentName : argumentNames)
       {
-        formula += "\\OUTER" + argumentName + ",";
+        formula += "_xlpm.\\OUTER" + argumentName + ",";
       }
-      formula += "LET(\\FUNC" + variableHeader + ",LAMBDA(\\ME" + variableHeader + ",";
+      formula += "_xlfn.LET(_xlpm.\\FUNC" + variableHeader + ",_xlfn.LAMBDA(_xlpm.\\ME" + variableHeader + ",";
       for (auto argumentName : argumentNames)
       {
-        formula += "\\INNER" + argumentName + ",";
+        formula += "_xlpm.\\INNER" + argumentName + ",";
       }
       formula += returnFormula;
-      formula += "),\\FUNC" + variableHeader + "(\\FUNC" + variableHeader;
+      formula += "),_xlpm.\\FUNC" + variableHeader + "(_xlpm.\\FUNC" + variableHeader;
       for (auto argumentName : argumentNames)
       {
-        formula += ",\\OUTER" + argumentName;
+        formula += ",_xlpm.\\OUTER" + argumentName;
       }
       formula += ")))";
     }

@@ -72,6 +72,10 @@ int main(int argc, char *argv[])
   }
   formula += ")";
 
+  std::cout << argumentLabels.size() << std::endl;
+  for (auto argumentLabel : argumentLabels) {
+    std::cout << argumentLabel << std::endl;
+  }
   std::cout << formula << std::endl;
 
   return 0;
